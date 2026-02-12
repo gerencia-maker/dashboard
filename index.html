@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ejecuciones de Venta — El Rancherito</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,#fff7ed 0%,#fff 40%,#eff6ff 100%);min-height:100vh;color:#374151}
+.container{max-width:1300px;margin:0 auto;padding:14px}
+h1{font-size:22px;font-weight:800;background:linear-gradient(135deg,#f97316,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:inline}
+.header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.sub{color:#6b7280;font-size:11px;margin-top:2px}
+.tabs{display:flex;gap:5px;margin:14px 0;flex-wrap:wrap}
+.tab{padding:6px 14px;border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;border:none;transition:all .2s}
+.ta{background:#f97316;color:#fff;box-shadow:0 3px 12px rgba(249,115,22,.3)}
+.ti{background:#fff;color:#6b7280;border:1px solid #e5e7eb}
+.ti:hover{background:#fff7ed;color:#f97316}
+.fb{background:#fff;border-radius:12px;padding:10px 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;box-shadow:0 1px 3px rgba(0,0,0,.06);border:1px solid #f1f5f9;margin-bottom:14px}
+.fb label{font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px}
+.fg{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+.sb{padding:4px 10px;border-radius:7px;font-size:10px;font-weight:600;cursor:pointer;border:2px solid #e5e7eb;background:#fff;color:#6b7280;transition:all .15s}
+.sb:hover{border-color:#f97316;color:#f97316}
+.sb.ac{background:#f97316;color:#fff;border-color:#f97316}
+.sb.cmp{background:#3b82f6;color:#fff;border-color:#3b82f6}
+.ba{padding:4px 10px;border-radius:7px;font-size:10px;font-weight:600;cursor:pointer;border:2px solid #10b981;background:#10b981;color:#fff}
+.ba.off{background:#fff;color:#10b981}
+.si{padding:5px 10px;border-radius:7px;border:1px solid #e5e7eb;font-size:11px;font-family:inherit;width:180px;outline:none}
+.si:focus{border-color:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,.1)}
+.ml{font-size:9px;padding:2px 7px;border-radius:5px;font-weight:700}
+.ms{background:#dcfce7;color:#15803d}.mc{background:#dbeafe;color:#1d4ed8}
+.grid{display:grid;gap:12px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}.g4{grid-template-columns:repeat(4,1fr)}.g6{grid-template-columns:repeat(6,1fr)}
+.card{background:#fff;border-radius:12px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.06);border:1px solid #f1f5f9;transition:all .2s}
+.card:hover{box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.cc{cursor:pointer}.cc:hover{border-color:#f97316}
+.kl{font-size:9px;color:#9ca3af;text-transform:uppercase;letter-spacing:.5px}
+.kv{font-size:18px;font-weight:800;margin-top:2px}
+.ks{font-size:10px;color:#9ca3af;margin-top:2px}
+.ct{font-weight:700;color:#374151;margin-bottom:10px;font-size:12px;display:flex;justify-content:space-between;align-items:center}
+.tg{font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px;background:#f1f5f9;color:#6b7280}
+table{width:100%;border-collapse:collapse;font-size:10px}
+th{background:#1e293b;color:#fff;padding:6px 7px;text-align:left;font-weight:600;font-size:9px;white-space:nowrap}
+th:not(:first-child){text-align:right}
+td{padding:5px 7px;border-bottom:1px solid #f1f5f9}
+td:not(:first-child){text-align:right}
+tr:nth-child(even){background:#f8fafc}
+tr.hl{background:#fff7ed!important}
+tr:hover{background:#fef3c7!important}
+.badge{display:inline-block;padding:1px 7px;border-radius:5px;font-size:9px;font-weight:700}
+.bg{background:#dcfce7;color:#15803d}.by{background:#fef9c3;color:#a16207}.br{background:#fee2e2;color:#dc2626}.bb{background:#dbeafe;color:#1d4ed8}
+.footer{text-align:center;color:#9ca3af;font-size:10px;margin-top:24px;padding:14px}
+.sp>*+*{margin-top:12px}
+.ox{overflow-x:auto}
+.hi{font-weight:700;color:#f97316}
+.cb{position:relative;height:280px;width:100%}
+.cbt{height:400px}
+.fi{animation:fi .3s ease}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.cg{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cl{border-left:4px solid}
+.dt{font-size:9px;font-weight:700;margin-left:4px}.du{color:#15803d}.dd{color:#dc2626}
+.catbtn{padding:6px 12px;border-radius:8px;font-size:10px;font-weight:700;cursor:pointer;border:2px solid #e5e7eb;background:#fff;transition:all .15s;margin:3px}
+.catbtn:hover{transform:translateY(-1px)}
+.catbtn.sel{color:#fff;border-color:transparent}
+@media(max-width:900px){.g2,.g3,.g4,.g6{grid-template-columns:1fr}.g4{grid-template-columns:1fr 1fr}.g6{grid-template-columns:1fr 1fr 1fr}.cg{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header"><div><h1>📊 Ejecuciones de Venta — El Rancherito</h1><p class="sub">15 Nov 2025 – 15 Ene 2026 · 60 días · 7 sedes · 157,806 platos despachados</p></div><div id="mi"></div></div>
+<div class="tabs" id="tabs"></div>
+<div id="fa"></div>
+<div id="ct" class="fi"></div>
+<div class="footer">El Rancherito · Dashboard Interactivo de Ejecuciones · Datos del POS · Nov 15 2025 – Ene 15 2026</div>
+</div>
+<script>
+var CL=['#f97316','#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#ec4899'];
+var C6=['#f97316','#3b82f6','#10b981','#f59e0b','#8b5cf6','#ec4899'];
+var fm=function(n){return n!=null?Math.round(n).toLocaleString('es-CO'):'-'};
+var fp=function(n){return n.toFixed(1)+'%'};
+
+// === CORRECT DATA: 2002 propio = 2002 total - 3006 ===
+// Category order: 3001-TIPICOS, 3002-CAZUELAS, 3004-COCINA TRAD, 3005-SOPAS, 2002-DESAYUNOS(propio), 3006-DES.CACEROLAS
+var catCodes=['3001','3002','3004','3005','2002','3006'];
+var catNames=['Típicos','Cazuelas','Cocina Tradicional','Sopas','Desayunos','Des. Cacerolas'];
+var catKeys=['tip','caz','coc','sop','des','dcac'];
+
+var sedes=[
+  {s:'Rionegro',t:39177,d:653,tip:7715,caz:5136,coc:6844,sop:659,des:17662,dcac:1161,fr:4905.8,le:473.4,aj:831.8,sa:1411.5,mo:1125.8,sp:8748.2},
+  {s:'Palmas',t:26654,d:444,tip:7875,caz:3821,coc:5890,sop:460,des:7905,dcac:703,fr:4216.8,le:408.5,aj:650.3,sa:1732.5,mo:817.7,sp:7825.7},
+  {s:'Guarne',t:23601,d:393,tip:5171,caz:3589,coc:4613,sop:460,des:9145,dcac:623,fr:3564.0,le:395.1,aj:570.8,sa:796.8,mo:866.8,sp:6193.4},
+  {s:'Copacabana',t:23059,d:384,tip:6248,caz:3595,coc:5020,sop:653,des:7062,dcac:481,fr:3470.7,le:414.4,aj:526.8,sa:814.8,mo:952.6,sp:6179.2},
+  {s:'Envigado',t:20591,d:343,tip:6120,caz:4344,coc:6212,sop:494,des:3164,dcac:257,fr:3619.0,le:480.3,aj:782.1,sa:1245.8,mo:1128.1,sp:7255.3},
+  {s:'Molinos',t:14763,d:246,tip:4705,caz:2857,coc:4689,sop:338,des:2025,dcac:149,fr:2536.2,le:343.9,aj:606.4,sa:945.8,mo:856.0,sp:5288.2},
+  {s:'Caldas',t:9961,d:166,tip:2662,caz:1731,coc:1893,sop:183,des:3302,dcac:190,fr:1538.3,le:190.3,aj:213.7,sa:314.5,mo:392.6,sp:2649.4}
+];
+
+var ALL={s:'Todas',t:157806,d:2630,tip:40496,caz:25073,coc:35161,sop:3247,des:50265,dcac:3564,fr:23850.8,le:2705.9,aj:4181.9,sa:7261.7,mo:6139.6,sp:44139.9};
+var SN=sedes.map(function(s){return s.s});
+
+// Products per category with per-sede data [Rio,Gua,Cop,Pal,Cal,Env,Mol] matching sedes order
+var P={
+'3001':[
+  {n:'Bandeja Paisa Rancherito',q:12787,g:385,sd:[2323,1508,2029,3171,563,1868,1325]},
+  {n:'Frijoles c/Chicharrón',q:7977,g:385,sd:[1531,1028,1254,1106,862,1161,1035]},
+  {n:'Bandeja Paisa Mediana',q:4576,g:0,sd:[934,596,741,962,250,582,511]},
+  {n:'Bandeja Montañera c/Chicharrón',q:3177,g:385,sd:[625,393,494,528,144,580,413]},
+  {n:'Frijoles c/Carne Molida',q:2072,g:385,sd:[430,276,261,327,233,319,226]},
+  {n:'Bandeja Montañera c/Res',q:2062,g:385,sd:[372,302,333,389,78,337,251]},
+  {n:'Bandeja de Lentejas',q:1725,g:410,sd:[283,198,317,258,76,318,220]},
+  {n:'Media de Frijoles c/Arroz',q:1278,g:250,sd:[308,189,171,205,145,144,116]},
+  {n:'Frijoles c/Porción Arroz',q:1099,g:385,sd:[302,137,157,214,57,137,95]},
+  {n:'Frijoles c/Res',q:765,g:385,sd:[112,99,124,122,68,140,100]},
+  {n:'Bandeja Montañera c/Cerdo',q:715,g:385,sd:[119,97,113,104,38,154,90]},
+  {n:'Bandeja Paisa c/Carne Res',q:566,g:385,sd:[124,53,35,212,15,70,57]},
+  {n:'Frijoles c/Cerdo',q:439,g:385,sd:[75,42,70,55,41,80,76]},
+  {n:'Bandeja Montañera C.Molida',q:344,g:0,sd:[0,0,0,80,43,136,85]},
+  {n:'Bandeja Montañera c/Pollo',q:253,g:385,sd:[23,35,14,60,16,58,47]},
+  {n:'Bandeja Montañera C.Molida(2)',q:247,g:385,sd:[99,88,60,0,0,0,0]},
+  {n:'Bandeja Paisa Mediana Res',q:162,g:385,sd:[31,14,19,47,5,25,21]},
+  {n:'Bandeja Paisa C. Cerdo',q:76,g:385,sd:[18,11,7,19,2,8,11]},
+  {n:'Menú Trad. Cerdo Apanado',q:65,g:0,sd:[0,19,12,0,18,0,16]},
+  {n:'Menú Trad. Pollo Apanado',q:55,g:0,sd:[0,25,19,0,8,1,2]}
+],
+'3002':[
+  {n:'Cazuela Tradicional',q:10959,g:430,sd:[2439,1439,1563,1708,763,1896,1151]},
+  {n:'Cazuela Ranchera',q:5085,g:430,sd:[918,686,769,743,407,917,645]},
+  {n:'Cazuela de Lentejas',q:4329,g:410,sd:[744,653,630,675,335,758,534]},
+  {n:'Cazuela Mexicana',q:1857,g:430,sd:[366,343,304,317,0,321,206]},
+  {n:'Cazuela Pulled Pork',q:1291,g:400,sd:[241,179,171,173,135,231,161]},
+  {n:'Cazuela Frijol Vegetariana',q:1039,g:430,sd:[286,181,115,157,42,159,99]},
+  {n:'Cazuela Lentejas Vegetariana',q:444,g:410,sd:[105,76,43,48,49,62,61]}
+],
+'3004':[
+  {n:'Sancocho de Res Mediano',q:6752,g:500,sd:[1345,775,823,1340,375,1131,963]},
+  {n:'Mondongo Rancherito Mediano',q:6190,g:500,sd:[1083,881,996,718,454,1142,916]},
+  {n:'Ajiaco Rancherito Mediano',q:4384,g:460,sd:[909,683,551,599,275,804,563]},
+  {n:'Sancocho de Res Rancherito',q:3518,g:1000,sd:[648,367,349,996,106,621,431]},
+  {n:'Mondongo Rancherito',q:3228,g:900,sd:[622,445,474,493,172,599,423]},
+  {n:'Ajiaco Rancherito',q:2135,g:950,sd:[412,242,264,380,86,405,346]}
+],
+'3005':[
+  {n:'Caldo de Sancocho',q:1470,g:250,sd:[364,169,217,266,84,237,133]},
+  {n:'Sopa de Mondongo',q:557,g:250,sd:[98,103,112,60,43,72,69]},
+  {n:'Sopa de Ajiaco',q:548,g:250,sd:[89,107,90,55,22,110,75]},
+  {n:'Tinta de Frijoles',q:236,g:250,sd:[67,36,29,44,25,17,18]},
+  {n:'Sopa de Lentejas',q:227,g:250,sd:[37,30,34,25,7,55,39]},
+  {n:'Caldo de Costilla Res',q:24,g:0,sd:[0,0,22,2,0,0,0]}
+],
+'2002':[
+  {n:'Calentao c/Chicharrón',q:4613,g:150,sd:[1458,724,617,1011,165,398,240]},
+  {n:'Calentao Tradicional',q:3377,g:150,sd:[1273,605,416,495,184,261,143]},
+  {n:'Calentao c/Res',q:2426,g:150,sd:[640,370,354,527,168,255,112]},
+  {n:'Calentao c/Cerdo',q:1219,g:150,sd:[343,187,161,280,81,112,55]},
+  {n:'Calentao c/Chorizo',q:135,g:150,sd:[47,20,21,20,7,16,4]},
+  {n:'Canasta de Panadería',q:27,g:0,sd:[0,0,27,0,0,0,0]},
+  {n:'Calentao Mexicano',q:3,g:0,sd:[0,0,0,0,0,3,0]}
+],
+'3006':[
+  {n:'Cacerola de Calentao',q:1047,g:150,sd:[304,161,137,209,86,89,61]},
+  {n:'Cacerola del Rancherito',q:104,g:0,sd:[0,0,0,0,104,0,0]}
+]
+};
+
+var sopNames=['Fríjol','Sancocho','Mondongo','Ajiaco','Lentejas'];
+var sopKeys=['fr','sa','mo','aj','le'];
+var sopTotals=[23850.8,7261.7,6139.6,4181.9,2705.9];
+
+Chart.defaults.font.family='Inter';Chart.defaults.font.size=10;
+
+// === STATE ===
+var st={tab:0,sel:[],srch:'',catFilter:null};
+
+function gf(){
+  if(st.sel.length===0)return{d:ALL,l:'Todas las Sedes',m:'all'};
+  if(st.sel.length===1){var s=sedes.find(function(x){return x.s===st.sel[0]});return{d:s,l:s.s,m:'single'}}
+  return{d:st.sel.map(function(n){return sedes.find(function(x){return x.s===n})}),l:st.sel.join(' vs '),m:'compare'}
+}
+
+function sedeIdx(name){return SN.indexOf(name)}
+
+// === HELPERS ===
+function kp(l,v,su,co){co=co||'#f97316';return'<div class="card"><div class="kl">'+l+'</div><div class="kv" style="color:'+co+'">'+v+'</div>'+(su?'<div class="ks">'+su+'</div>':'')+'</div>'}
+function cx(id,t){return'<div class="cb'+(t?' cbt':'')+'"><canvas id="'+id+'"></canvas></div>'}
+function tb(h,r){var o='<table><thead><tr>';for(var i=0;i<h.length;i++)o+='<th>'+h[i]+'</th>';o+='</tr></thead><tbody>';for(var j=0;j<r.length;j++){var hl=r[j]._h;o+='<tr'+(hl?' class="hl"':'')+'>';var c=r[j];for(var k=0;k<c.length;k++){if(typeof c[k]==='object'&&c[k]&&c[k]._h)continue;o+='<td>'+c[k]+'</td>'}o+='</tr>'}return o+'</tbody></table>'}
+
+// === FILTER BAR ===
+function rf(){
+  var f=gf();
+  var m='';
+  if(f.m==='all')m='<span class="ml ms">Todas las sedes</span>';
+  else if(f.m==='single')m='<span class="ml ms">'+f.l+'</span>';
+  else m='<span class="ml mc">Comparando: '+f.l+'</span>';
+  document.getElementById('mi').innerHTML=m;
+
+  var h='<div class="fb"><div class="fg"><label>Sedes:</label>';
+  h+='<button class="ba'+(st.sel.length===0?'':' off')+'" onclick="cs()">Todas</button>';
+  SN.forEach(function(n){
+    var a=st.sel.indexOf(n)>=0;
+    h+='<button class="sb'+(a?(st.sel.length>1?' cmp':' ac'):'')+'" onclick="ts(\''+n+'\')">'+n+'</button>';
+  });
+  h+='</div>';
+  if(st.tab===2||st.tab===1){
+    h+='<div class="fg"><label>Buscar:</label><input type="text" class="si" placeholder="Buscar producto..." value="'+st.srch+'" oninput="sp(this.value)"></div>';
+  }
+  h+='<div class="fg" style="margin-left:auto"><span style="font-size:9px;color:#9ca3af">Click=filtrar · 2 clicks=comparar</span></div></div>';
+  document.getElementById('fa').innerHTML=h;
+}
+
+function ts(n){var i=st.sel.indexOf(n);if(i>=0)st.sel.splice(i,1);else if(st.sel.length<2)st.sel.push(n);else st.sel=[n];rr()}
+function cs(){st.sel=[];rr()}
+function sp(v){st.srch=v.toLowerCase();rc()}
+function setCat(c){st.catFilter=st.catFilter===c?null:c;rc()}
+
+// === TAB: RESUMEN ===
+function bRes(){
+  var f=gf();if(f.m==='compare')return bCmp(f.d);
+  var d=f.d;
+  return'<div class="sp"><div class="grid g4">'+
+    kp('Total Platos',fm(d.t),fm(d.d)+'/día · '+(f.m==='all'?'7 sedes':f.l))+
+    kp('Producción Sopa',fm(Math.round(d.sp))+' kg',(d.sp/60).toFixed(1)+' kg/día','#ef4444')+
+    kp('Ollas/Día (160kg)',(d.sp/60/160).toFixed(1),'~'+Math.round(d.sp/60)+' kg diarios','#8b5cf6')+
+    kp('Platos/Día',fm(d.d),f.m==='all'?Math.round(d.d/7)+'/sede/día':'en 60 días','#10b981')+
+    '</div>'+
+    '<div class="grid g6">'+catNames.map(function(n,i){var k=catKeys[i];var v=d[k];return kp(catCodes[i]+' '+n,fm(v),fp(v/d.t*100)+' · '+Math.round(v/60)+'/día',C6[i])}).join('')+'</div>'+
+    '<div class="grid g2"><div class="card"><div class="ct">Platos por Sede <span class="tg">Click=filtrar</span></div>'+cx('r1')+'</div>'+
+    '<div class="card"><div class="ct">Mix de Categorías</div>'+cx('r2')+'</div></div></div>';
+}
+
+function cRes(){
+  var f=gf();if(f.m==='compare'){cCmp(f.d);return}
+  var cd=f.m==='all'?sedes:[f.d];
+  new Chart(document.getElementById('r1'),{type:'bar',data:{labels:cd.map(function(s){return s.s}),datasets:[{data:cd.map(function(s){return s.t}),backgroundColor:'#f97316',borderRadius:5}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return fm(c.raw)+' platos'}}}},onClick:function(e,el){if(el.length>0&&f.m==='all')ts(cd[el[0].index].s)}}});
+  var d=f.d;
+  new Chart(document.getElementById('r2'),{type:'doughnut',data:{labels:catNames.map(function(n,i){return catCodes[i]+' '+n+' '+fp(d[catKeys[i]]/d.t*100)}),datasets:[{data:catKeys.map(function(k){return d[k]}),backgroundColor:C6,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:9}}}}}});
+}
+
+// === TAB: CATEGORÍAS (drill-down) ===
+function bCat(){
+  var f=gf();if(f.m==='compare')return bCmp(f.d);
+  var d=f.d;
+  var si=f.m==='single'?sedeIdx(d.s):-1;
+
+  // Category buttons
+  var h='<div class="sp"><div style="margin-bottom:12px">';
+  catCodes.forEach(function(c,i){
+    var sel=st.catFilter===c;
+    h+='<button class="catbtn'+(sel?' sel':'')+'" style="'+(sel?'background:'+C6[i]+';color:#fff;border-color:'+C6[i]:'color:'+C6[i]+';border-color:'+C6[i])+'" onclick="setCat(\''+c+'\')">'+c+' — '+catNames[i]+' ('+fm(d[catKeys[i]])+')</button>';
+  });
+  h+='</div>';
+
+  if(st.catFilter){
+    // Show specific category
+    var ci=catCodes.indexOf(st.catFilter);
+    var cn=catNames[ci];var ck=catKeys[ci];var co=C6[ci];
+    var prods=P[st.catFilter]||[];
+    var filtered=prods;
+    if(st.srch){filtered=prods.filter(function(p){return p.n.toLowerCase().indexOf(st.srch)>=0})}
+
+    var display=filtered.map(function(p){
+      var qty=si>=0?p.sd[si]:p.q;
+      return{n:p.n,q:qty,g:p.g}
+    }).sort(function(a,b){return b.q-a.q}).filter(function(p){return p.q>0});
+
+    var catTotal=d[ck];
+    var prodSum=display.reduce(function(s,p){return s+p.q},0);
+    var gap=catTotal-prodSum;
+
+    h+='<div class="grid g4">'+
+      kp('Total '+cn,fm(catTotal),fp(catTotal/d.t*100)+' del total',co)+
+      kp('Productos Detallados',fm(prodSum),display.length+' productos',co)+
+      (gap>0?kp('Otros (sin detalle)',fm(gap),'Productos sin desglose sopa','#6b7280'):kp('Cobertura','100%','Todos los productos detallados','#10b981'))+
+      kp(cn+'/Día',Math.round(catTotal/60),'en 60 días',co)+
+      '</div>';
+
+    h+='<div class="grid g2"><div class="card"><div class="ct">Productos — '+st.catFilter+' '+cn+'</div>'+cx('cat1',true)+'</div>';
+
+    // Per sede breakdown of this category
+    h+='<div class="card"><div class="ct">'+cn+' por Sede</div>'+cx('cat2')+'</div></div>';
+
+    // Product table
+    var ac=0;
+    h+='<div class="card ox"><div class="ct">Detalle de Productos <span class="tg">'+display.length+' items</span></div>'+
+      '<table><thead><tr><th>#</th><th>Producto</th><th>Unidades</th><th>%Cat</th><th>Acum%</th><th>Sopa/Porc</th><th>Zona</th></tr></thead><tbody>';
+    display.forEach(function(p,i){
+      var pc=p.q/catTotal*100;ac+=pc;
+      var z=ac<=50?'A':ac<=80?'B':'C';var cl=z==='A'?'bg':z==='B'?'by':'br';
+      h+='<tr><td>'+(i+1)+'</td><td><b>'+p.n+'</b></td><td>'+fm(p.q)+'</td><td>'+fp(pc)+'</td><td><b>'+fp(ac)+'</b></td><td>'+(p.g>0?p.g+'g':'—')+'</td><td><span class="badge '+cl+'">'+z+'</span></td></tr>';
+    });
+    h+='</tbody></table></div>';
+
+  } else {
+    // Overview of all categories
+    h+='<div class="grid g2"><div class="card"><div class="ct">Platos por Categoría</div>'+cx('cat1')+'</div>'+
+      '<div class="card"><div class="ct">Distribución %</div>'+cx('cat2')+'</div></div>';
+
+    h+='<div class="card"><div class="ct">Categorías por Sede (Stacked)</div>'+cx('cat3')+'</div>';
+
+    h+='<div class="card ox"><div class="ct">Mix por Sede (%)</div>'+
+      '<table><thead><tr><th>Sede</th>';
+    catNames.forEach(function(n,i){h+='<th>'+catCodes[i]+' '+n+'</th>'});
+    h+='<th>Total</th></tr></thead><tbody>';
+    sedes.forEach(function(s){
+      var vals=catKeys.map(function(k){return s[k]/s.t*100});
+      var mx=Math.max.apply(null,vals);
+      h+='<tr'+(st.sel.indexOf(s.s)>=0?' class="hl"':'')+'><td><b style="cursor:pointer" onclick="ts(\''+s.s+'\')">'+s.s+'</b></td>';
+      vals.forEach(function(v){h+='<td>'+(v===mx?'<span class="hi">'+fp(v)+'</span>':fp(v))+'</td>'});
+      h+='<td><b>'+fm(s.t)+'</b></td></tr>';
+    });
+    h+='</tbody></table></div>';
+  }
+  return h+'</div>';
+}
+
+function cCat(){
+  var f=gf();if(f.m==='compare'){cCmp(f.d);return}
+  var d=f.d;var si=f.m==='single'?sedeIdx(d.s):-1;
+
+  if(st.catFilter){
+    var ci=catCodes.indexOf(st.catFilter);
+    var prods=(P[st.catFilter]||[]).map(function(p){
+      return{n:p.n,q:si>=0?p.sd[si]:p.q}
+    }).sort(function(a,b){return b.q-a.q}).filter(function(p){return p.q>0}).slice(0,15);
+
+    new Chart(document.getElementById('cat1'),{type:'bar',data:{labels:prods.map(function(p){return p.n}),datasets:[{data:prods.map(function(p){return p.q}),backgroundColor:C6[ci],borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
+
+    var ck=catKeys[ci];
+    new Chart(document.getElementById('cat2'),{type:'bar',data:{labels:sedes.map(function(s){return s.s}),datasets:[{data:sedes.map(function(s){return s[ck]}),backgroundColor:sedes.map(function(s){return st.sel.indexOf(s.s)>=0?C6[ci]+'cc':C6[ci]}),borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},onClick:function(e,el){if(el.length>0)ts(sedes[el[0].index].s)}}});
+  } else {
+    new Chart(document.getElementById('cat1'),{type:'bar',data:{labels:catNames.map(function(n,i){return catCodes[i]+' '+n}),datasets:[{data:catKeys.map(function(k){return d[k]}),backgroundColor:C6,borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
+    new Chart(document.getElementById('cat2'),{type:'doughnut',data:{labels:catNames.map(function(n,i){return catCodes[i]+' '+n}),datasets:[{data:catKeys.map(function(k){return d[k]}),backgroundColor:C6,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10}}}}});
+    new Chart(document.getElementById('cat3'),{type:'bar',data:{labels:sedes.map(function(s){return s.s}),datasets:catKeys.map(function(k,i){return{label:catCodes[i]+' '+catNames[i],data:sedes.map(function(s){return s[k]}),backgroundColor:C6[i]}})},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:9}}}},scales:{x:{stacked:true},y:{stacked:true}},onClick:function(e,el){if(el.length>0)ts(sedes[el[0].index].s)}}});
+  }
+}
+
+// === TAB: PRODUCTOS (all products, searchable) ===
+function bProd(){
+  var f=gf();var si=f.m==='single'?sedeIdx(f.d.s):-1;
+  var all=[];
+  catCodes.forEach(function(c,ci){
+    (P[c]||[]).forEach(function(p){
+      var q=si>=0?p.sd[si]:p.q;
+      if(q>0) all.push({n:p.n,q:q,c:catCodes[ci]+' '+catNames[ci],g:p.g,ci:ci});
+    });
+  });
+  all.sort(function(a,b){return b.q-a.q});
+  if(st.srch){all=all.filter(function(p){return p.n.toLowerCase().indexOf(st.srch)>=0||p.c.toLowerCase().indexOf(st.srch)>=0})}
+
+  var total=all.reduce(function(s,p){return s+p.q},0);
+  var ac=0;
+
+  var h='<div class="sp"><div class="card"><div class="ct">Top Productos'+(f.m==='single'?' — '+f.l:'')+' <span class="tg">'+all.length+' productos</span></div>'+cx('p1',true)+'</div>';
+  h+='<div class="card ox"><div class="ct">Tabla Completa de Productos</div>';
+  h+='<table><thead><tr><th>#</th><th>Producto</th><th>Categoría</th><th>Unidades</th><th>%</th><th>Acum%</th><th>Sopa/Porc</th><th>Zona</th></tr></thead><tbody>';
+  all.slice(0,30).forEach(function(p,i){
+    var pc=p.q/total*100;ac+=pc;
+    var z=ac<=50?'A':ac<=80?'B':'C';var cl=z==='A'?'bg':z==='B'?'by':'br';
+    h+='<tr><td>'+(i+1)+'</td><td><b>'+p.n+'</b></td><td><span class="badge" style="background:'+C6[p.ci]+'22;color:'+C6[p.ci]+'">'+p.c+'</span></td><td>'+fm(p.q)+'</td><td>'+fp(pc)+'</td><td><b>'+fp(ac)+'</b></td><td>'+(p.g>0?p.g+'g':'—')+'</td><td><span class="badge '+cl+'">'+z+'</span></td></tr>';
+  });
+  h+='</tbody></table></div></div>';
+  return h;
+}
+
+function cProd(){
+  var f=gf();var si=f.m==='single'?sedeIdx(f.d.s):-1;
+  var all=[];
+  catCodes.forEach(function(c,ci){(P[c]||[]).forEach(function(p){var q=si>=0?p.sd[si]:p.q;if(q>0)all.push({n:p.n,q:q,ci:ci})})});
+  all.sort(function(a,b){return b.q-a.q});
+  if(st.srch){all=all.filter(function(p){return p.n.toLowerCase().indexOf(st.srch)>=0})}
+  var top=all.slice(0,15);
+  new Chart(document.getElementById('p1'),{type:'bar',data:{labels:top.map(function(p){return p.n}),datasets:[{data:top.map(function(p){return p.q}),backgroundColor:top.map(function(p){return C6[p.ci]}),borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return fm(c.raw)+' unidades'}}}}}});
+}
+
+// === TAB: SOPAS ===
+function bSop(){
+  var f=gf();if(f.m==='compare')return bCmp(f.d);
+  var d=f.d;
+  var h='<div class="sp"><div class="grid g5" style="grid-template-columns:repeat(5,1fr)">';
+  sopNames.forEach(function(n,i){var k=sopKeys[i];var v=d[k];h+=kp(n,(v/60).toFixed(1)+' kg/día',fm(Math.round(v))+' kg · '+fp(v/d.sp*100),CL[i])});
+  h+='</div><div class="grid g2"><div class="card"><div class="ct">Consumo por Sede (kg)</div>'+cx('sp1')+'</div>'+
+    '<div class="card"><div class="ct">Distribución de Sopas</div>'+cx('sp2')+'</div></div>';
+  h+='<div class="card ox"><div class="ct">Detalle por Sede (kg) <span class="tg">Click=filtrar</span></div>';
+  h+='<table><thead><tr><th>Sede</th><th>Fríjol</th><th>Sancocho</th><th>Mondongo</th><th>Ajiaco</th><th>Lentejas</th><th>TOTAL</th><th>kg/Día</th><th>Ollas/Día</th></tr></thead><tbody>';
+  sedes.forEach(function(s){
+    h+='<tr'+(st.sel.indexOf(s.s)>=0?' class="hl"':'')+'><td><b style="cursor:pointer" onclick="ts(\''+s.s+'\')">'+s.s+'</b></td>'+
+      '<td>'+fm(Math.round(s.fr))+'</td><td>'+fm(Math.round(s.sa))+'</td><td>'+fm(Math.round(s.mo))+'</td><td>'+fm(Math.round(s.aj))+'</td><td>'+fm(Math.round(s.le))+'</td>'+
+      '<td><b>'+fm(Math.round(s.sp))+'</b></td><td>'+(s.sp/60).toFixed(1)+'</td><td>'+(s.sp/60/160).toFixed(1)+'</td></tr>';
+  });
+  h+='</tbody></table></div></div>';
+  return h;
+}
+
+function cSop(){
+  var f=gf();if(f.m==='compare'){cCmp(f.d);return}
+  new Chart(document.getElementById('sp1'),{type:'bar',data:{labels:sedes.map(function(s){return s.s}),datasets:sopKeys.map(function(k,i){return{label:sopNames[i],data:sedes.map(function(s){return Math.round(s[k])}),backgroundColor:CL[i]}})},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10}}},scales:{x:{stacked:true},y:{stacked:true}},onClick:function(e,el){if(el.length>0)ts(sedes[el[0].index].s)}}});
+  var d=f.d;
+  new Chart(document.getElementById('sp2'),{type:'doughnut',data:{labels:sopNames.map(function(n,i){return n+' '+fp(d[sopKeys[i]]/d.sp*100)}),datasets:[{data:sopKeys.map(function(k){return Math.round(d[k])}),backgroundColor:CL.slice(0,5),borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},cutout:'50%'}});
+}
+
+// === TAB: SEDES ===
+function bSed(){
+  var f=gf();if(f.m==='compare')return bCmp(f.d);
+  var h='<div class="sp"><div class="grid g2"><div class="card"><div class="ct">Platos/Día por Sede</div>'+cx('sd1')+'</div>'+
+    '<div class="card"><div class="ct">Composición por Sede</div>'+cx('sd2')+'</div></div>';
+  h+='<div class="card ox"><div class="ct">Ranking de Sedes <span class="tg">Click nombre=filtrar</span></div>';
+  h+='<table><thead><tr><th>Sede</th><th>Total</th><th>Platos/Día</th>';
+  catNames.forEach(function(n,i){h+='<th>'+catCodes[i]+'</th>'});
+  h+='<th>% Total</th></tr></thead><tbody>';
+  sedes.forEach(function(s){
+    h+='<tr'+(st.sel.indexOf(s.s)>=0?' class="hl"':'')+'><td><b style="cursor:pointer" onclick="ts(\''+s.s+'\')">'+s.s+'</b></td><td><b>'+fm(s.t)+'</b></td><td>'+s.d+'</td>';
+    catKeys.forEach(function(k){h+='<td>'+fm(s[k])+'</td>'});
+    h+='<td>'+fp(s.t/157806*100)+'</td></tr>';
+  });
+  h+='</tbody></table></div></div>';
+  return h;
+}
+
+function cSed(){
+  var f=gf();if(f.m==='compare'){cCmp(f.d);return}
+  var cols=sedes.map(function(s){return st.sel.indexOf(s.s)>=0?'#f97316':'#93c5fd'});
+  if(st.sel.length===0)cols=sedes.map(function(){return'#3b82f6'});
+  new Chart(document.getElementById('sd1'),{type:'bar',data:{labels:sedes.map(function(s){return s.s}),datasets:[{data:sedes.map(function(s){return s.d}),backgroundColor:cols,borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},onClick:function(e,el){if(el.length>0)ts(sedes[el[0].index].s)}}});
+  new Chart(document.getElementById('sd2'),{type:'bar',data:{labels:sedes.map(function(s){return s.s}),datasets:catKeys.map(function(k,i){return{label:catCodes[i]+' '+catNames[i],data:sedes.map(function(s){return s[k]}),backgroundColor:C6[i]}})},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:9}}}},scales:{x:{stacked:true},y:{stacked:true}}}});
+}
+
+// === TAB: EFICIENCIA ===
+function bEfi(){
+  var f=gf();if(f.m==='compare')return bCmp(f.d);
+  var h='<div class="sp"><div class="grid g2"><div class="card"><div class="ct">Platos/kg Sopa <span class="tg">Mayor=más variedad sin sopa</span></div>'+cx('ef1')+'</div>'+
+    '<div class="card"><div class="ct">% Desayunos por Sede <span class="tg">No llevan sopa pesada</span></div>'+cx('ef2')+'</div></div>';
+  h+='<div class="card"><div class="ct">Mix % por Categoría (Stacked 100%)</div>'+cx('ef3')+'</div>';
+  h+='<div class="card ox"><div class="ct">Ranking de Eficiencia</div>';
+  var sorted=[].concat(sedes).sort(function(a,b){return(b.t/b.sp)-(a.t/a.sp)});
+  h+='<table><thead><tr><th>#</th><th>Sede</th><th>Platos</th><th>kg Sopa</th><th>Platos/kg</th><th>Sopa kg/Día</th><th>%Desay.</th><th>%Típ.</th><th>%Coc.Trad.</th><th>%Caz.</th></tr></thead><tbody>';
+  sorted.forEach(function(s,i){
+    h+='<tr'+(st.sel.indexOf(s.s)>=0?' class="hl"':'')+'><td>'+(i+1)+'</td><td><b onclick="ts(\''+s.s+'\')" style="cursor:pointer">'+s.s+'</b></td><td>'+fm(s.t)+'</td><td>'+fm(Math.round(s.sp))+'</td><td><b>'+(s.t/s.sp).toFixed(2)+'</b></td><td>'+(s.sp/60).toFixed(1)+'</td><td>'+fp(s.des/s.t*100)+'</td><td>'+fp(s.tip/s.t*100)+'</td><td>'+fp(s.coc/s.t*100)+'</td><td>'+fp(s.caz/s.t*100)+'</td></tr>';
+  });
+  h+='</tbody></table></div></div>';
+  return h;
+}
+
+function cEfi(){
+  var f=gf();if(f.m==='compare'){cCmp(f.d);return}
+  var sr=[].concat(sedes).sort(function(a,b){return(b.t/b.sp)-(a.t/a.sp)});
+  new Chart(document.getElementById('ef1'),{type:'bar',data:{labels:sr.map(function(s){return s.s}),datasets:[{data:sr.map(function(s){return+(s.t/s.sp).toFixed(2)}),backgroundColor:sr.map(function(s){var r=s.t/s.sp;return r>4?'#10b981':r>3?'#f59e0b':'#ef4444'}),borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},onClick:function(e,el){if(el.length>0)ts(sr[el[0].index].s)}}});
+  var ds=[].concat(sedes).sort(function(a,b){return(b.des/b.t)-(a.des/a.t)});
+  new Chart(document.getElementById('ef2'),{type:'bar',data:{labels:ds.map(function(s){return s.s}),datasets:[{data:ds.map(function(s){return+(s.des/s.t*100).toFixed(1)}),backgroundColor:'#f97316',borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:function(v){return v+'%'}}}}}});
+  new Chart(document.getElementById('ef3'),{type:'bar',data:{labels:sedes.map(function(s){return s.s}),datasets:catKeys.map(function(k,i){return{label:catCodes[i]+' '+catNames[i],data:sedes.map(function(s){return+(s[k]/s.t*100).toFixed(1)}),backgroundColor:C6[i]}})},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:9}}}},scales:{x:{stacked:true},y:{stacked:true,max:100,ticks:{callback:function(v){return v+'%'}}}}}});
+}
+
+// === COMPARE MODE ===
+function bCmp(pair){
+  var a=pair[0],b=pair[1];
+  var h='<div class="sp"><div class="cg">'+
+    '<div class="card cl" style="border-color:#f97316"><div class="kl">'+a.s+'</div><div class="kv" style="color:#f97316">'+fm(a.t)+' platos</div><div class="ks">'+a.d+'/día</div></div>'+
+    '<div class="card cl" style="border-color:#3b82f6"><div class="kl">'+b.s+'</div><div class="kv" style="color:#3b82f6">'+fm(b.t)+' platos</div><div class="ks">'+b.d+'/día</div></div></div>';
+  h+='<div class="card"><div class="ct">Comparación por Categoría</div>'+cx('cmp1')+'</div>';
+  h+='<div class="card"><div class="ct">Comparación de Sopas (kg)</div>'+cx('cmp2')+'</div>';
+  h+='<div class="card ox"><div class="ct">Detalle Numérico</div>';
+  var metrics=[{l:'Total Platos',va:a.t,vb:b.t}];
+  catNames.forEach(function(n,i){metrics.push({l:catCodes[i]+' '+n,va:a[catKeys[i]],vb:b[catKeys[i]]})});
+  metrics.push({l:'Sopa Total (kg)',va:Math.round(a.sp),vb:Math.round(b.sp)});
+  sopNames.forEach(function(n,i){metrics.push({l:n+' (kg)',va:Math.round(a[sopKeys[i]]),vb:Math.round(b[sopKeys[i]])})});
+  h+=tb(['Métrica',a.s,b.s,'Δ','Ganador'],metrics.map(function(m){
+    var d=m.va-m.vb;var w=d>0?a.s:(d<0?b.s:'=');var wc=d>0?'bg':(d<0?'bb':'by');
+    return[m.l,'<b>'+fm(m.va)+'</b>','<b>'+fm(m.vb)+'</b>',(d>=0?'+':'')+fm(d),'<span class="badge '+wc+'">'+w+'</span>']
+  }));
+  h+='</div></div>';
+  return h;
+}
+
+function cCmp(pair){
+  var a=pair[0],b=pair[1];
+  new Chart(document.getElementById('cmp1'),{type:'bar',data:{labels:catNames.map(function(n,i){return catCodes[i]}),datasets:[
+    {label:a.s,data:catKeys.map(function(k){return a[k]}),backgroundColor:'#f97316',borderRadius:3},
+    {label:b.s,data:catKeys.map(function(k){return b[k]}),backgroundColor:'#3b82f6',borderRadius:3}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}}});
+  new Chart(document.getElementById('cmp2'),{type:'bar',data:{labels:sopNames,datasets:[
+    {label:a.s,data:sopKeys.map(function(k){return Math.round(a[k])}),backgroundColor:'#f97316',borderRadius:3},
+    {label:b.s,data:sopKeys.map(function(k){return Math.round(b[k])}),backgroundColor:'#3b82f6',borderRadius:3}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}}});
+}
+
+// === RENDER ===
+var builders=[bRes,bCat,bProd,bSop,bSed,bEfi];
+var chartFns=[cRes,cCat,cProd,cSop,cSed,cEfi];
+var tabLabels=['Resumen','Categorías','Productos','Sopas','Sedes','Eficiencia'];
+var ce=document.getElementById('ct');
+var te=document.getElementById('tabs');
+
+function rc(){ce.innerHTML=builders[st.tab]();ce.className='fi';setTimeout(function(){chartFns[st.tab]()},60)}
+function rr(){rf();document.querySelectorAll('.tab').forEach(function(t,j){t.className='tab '+(j===st.tab?'ta':'ti')});rc()}
+function sw(i){st.tab=i;st.srch='';st.catFilter=null;rr()}
+
+tabLabels.forEach(function(n,i){
+  var b=document.createElement('button');b.textContent=n;
+  b.className='tab '+(i===0?'ta':'ti');
+  b.onclick=function(){sw(i)};te.appendChild(b);
+});
+rr();
+</script>
+</body>
+</html>
