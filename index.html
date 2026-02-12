@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ejecuciones de Venta — El Rancherito</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,#fff7ed 0%,#fff 40%,#eff6ff 100%);min-height:100vh}
+.container{max-width:1200px;margin:0 auto;padding:16px}
+h1{font-size:26px;font-weight:800;background:linear-gradient(135deg,#f97316,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.subtitle{color:#6b7280;font-size:13px;margin-top:4px}
+.tabs{display:flex;gap:8px;margin:20px 0;flex-wrap:wrap}
+.tab{padding:8px 18px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s}
+.tab-active{background:#f97316;color:#fff;box-shadow:0 4px 14px rgba(249,115,22,.3)}
+.tab-inactive{background:#fff;color:#6b7280;border:1px solid #e5e7eb}
+.tab-inactive:hover{background:#fff7ed;color:#f97316}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:1fr 1fr 1fr}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g5{grid-template-columns:repeat(5,1fr)}
+.card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.06);border:1px solid #f1f5f9}
+.kl{font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.5px}
+.kv{font-size:22px;font-weight:800;margin-top:4px}
+.ks{font-size:11px;color:#9ca3af;margin-top:2px}
+.ct{font-weight:700;color:#374151;margin-bottom:14px;font-size:14px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:#1e293b;color:#fff;padding:8px 10px;text-align:left;font-weight:600;font-size:11px}
+th:not(:first-child){text-align:right}
+td{padding:7px 10px;border-bottom:1px solid #f1f5f9}
+td:not(:first-child){text-align:right}
+tr:nth-child(even){background:#f8fafc}
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700}
+.bg{background:#dcfce7;color:#15803d}.by{background:#fef9c3;color:#a16207}.br{background:#fee2e2;color:#dc2626}
+.footer{text-align:center;color:#9ca3af;font-size:11px;margin-top:30px;padding:16px}
+.space>*+*{margin-top:16px}
+.ox{overflow-x:auto}
+.hl{font-weight:700;color:#f97316}
+.cb{position:relative;height:300px;width:100%}
+@media(max-width:768px){.g2,.g3,.g4,.g5{grid-template-columns:1fr}.g4{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div>
+    <h1>📊 Ejecuciones de Venta — El Rancherito</h1>
+    <p class="subtitle">15 Nov 2025 – 15 Ene 2026 · 60 días · 7 sedes · 161,370 platos despachados</p>
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <div id="content"></div>
+  <div class="footer">El Rancherito · Ejecuciones de Venta · 15 Nov 2025 – 15 Ene 2026 · 7 Sedes · 54 Productos</div>
+</div>
+
+<script>
+var C7=['#f97316','#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#ec4899'];
+var C6=['#f97316','#3b82f6','#10b981','#f59e0b','#8b5cf6','#ec4899'];
+var fm=function(n){return n!=null?n.toLocaleString('es-CO'):'-'};
+
+var sedes=[
+  {s:'Rionegro',t:40338,d:672,tip:7715,caz:5136,coc:6844,sop:659,des:18823,dcac:1161,fr:4905.8,le:473.4,aj:831.8,sa:1411.5,mo:1125.8,sp:8748.2,pr:43},
+  {s:'Palmas',t:27357,d:456,tip:7875,caz:3821,coc:5890,sop:460,des:8608,dcac:703,fr:4216.8,le:408.5,aj:650.3,sa:1732.5,mo:817.7,sp:7825.7,pr:43},
+  {s:'Guarne',t:24224,d:404,tip:5171,caz:3589,coc:4613,sop:460,des:9768,dcac:623,fr:3564.0,le:395.1,aj:570.8,sa:796.8,mo:866.8,sp:6193.4,pr:46},
+  {s:'Copacabana',t:23540,d:392,tip:6248,caz:3595,coc:5020,sop:653,des:7543,dcac:481,fr:3470.7,le:414.4,aj:526.8,sa:814.8,mo:952.6,sp:6179.2,pr:49},
+  {s:'Envigado',t:20848,d:347,tip:6120,caz:4344,coc:6212,sop:494,des:3421,dcac:257,fr:3619.0,le:480.3,aj:782.1,sa:1245.8,mo:1128.1,sp:7255.3,pr:45},
+  {s:'Molinos',t:14912,d:249,tip:4705,caz:2857,coc:4689,sop:338,des:2174,dcac:149,fr:2536.2,le:343.9,aj:606.4,sa:945.8,mo:856.0,sp:5288.2,pr:45},
+  {s:'Caldas',t:10151,d:169,tip:2662,caz:1731,coc:1893,sop:183,des:3492,dcac:190,fr:1538.3,le:190.3,aj:213.7,sa:314.5,mo:392.6,sp:2649.4,pr:43}
+];
+
+var prods=[
+  {n:'Bandeja Paisa Rancherito',q:12787,c:'Típicos',g:385},
+  {n:'Cazuela Rancherito Tradicional',q:10959,c:'Cazuelas',g:430},
+  {n:'Frijoles c/Chicharrón',q:7977,c:'Típicos',g:385},
+  {n:'Sancocho de Res Mediano',q:6752,c:'Cocina Trad.',g:500},
+  {n:'Mondongo Rancherito Mediano',q:6190,c:'Cocina Trad.',g:500},
+  {n:'Cazuela Rancherito Ranchera',q:5085,c:'Cazuelas',g:430},
+  {n:'Calentao c/Chicharrón',q:4613,c:'Desayunos',g:150},
+  {n:'Bandeja Paisa Mediana',q:4576,c:'Típicos',g:0},
+  {n:'Ajiaco Rancherito Mediano',q:4384,c:'Cocina Trad.',g:460},
+  {n:'Cazuela de Lentejas',q:4329,c:'Cazuelas',g:410},
+  {n:'Sancocho de Res Rancherito',q:3518,c:'Cocina Trad.',g:1000},
+  {n:'Calentao Tradicional',q:3377,c:'Desayunos',g:150},
+  {n:'Mondongo Rancherito',q:3228,c:'Cocina Trad.',g:900},
+  {n:'Bandeja Montañera c/Chicharrón',q:3177,c:'Típicos',g:385},
+  {n:'Calentao c/Res',q:2426,c:'Desayunos',g:150},
+  {n:'Ajiaco Rancherito',q:2135,c:'Cocina Trad.',g:950},
+  {n:'Frijoles c/Carne Molida',q:2072,c:'Típicos',g:385},
+  {n:'Bandeja Montañera c/Res',q:2062,c:'Típicos',g:385},
+  {n:'Cazuela Mexicana',q:1857,c:'Cazuelas',g:430},
+  {n:'Bandeja de Lentejas',q:1725,c:'Típicos',g:410}
+];
+
+var sopas=[
+  {n:'Fríjol',v:23850.8,p:'54.0%',d:397.5},
+  {n:'Sancocho',v:7261.7,p:'16.4%',d:121.0},
+  {n:'Mondongo',v:6139.6,p:'13.9%',d:102.3},
+  {n:'Ajiaco',v:4181.9,p:'9.5%',d:69.7},
+  {n:'Lentejas',v:2705.9,p:'6.1%',d:45.1}
+];
+
+var cats=[
+  {c:'Desayunos',v:53829,p:33.4,col:'#f97316'},
+  {c:'Típicos',v:40496,p:25.1,col:'#3b82f6'},
+  {c:'Cocina Trad.',v:35161,p:21.8,col:'#10b981'},
+  {c:'Cazuelas',v:25073,p:15.5,col:'#f59e0b'},
+  {c:'Desay. Cacerolas',v:3564,p:2.2,col:'#8b5cf6'},
+  {c:'Sopas',v:3247,p:2.0,col:'#ec4899'}
+];
+
+Chart.defaults.font.family='Inter';Chart.defaults.font.size=11;
+
+function kp(l,v,su,co){co=co||'#f97316';return '<div class="card"><div class="kl">'+l+'</div><div class="kv" style="color:'+co+'">'+v+'</div>'+(su?'<div class="ks">'+su+'</div>':'')+'</div>'}
+function tb(h,r){var o='<table><thead><tr>';for(var i=0;i<h.length;i++)o+='<th>'+h[i]+'</th>';o+='</tr></thead><tbody>';for(var j=0;j<r.length;j++){o+='<tr>';for(var k=0;k<r[j].length;k++)o+='<td>'+r[j][k]+'</td>';o+='</tr>'}return o+'</tbody></table>'}
+function cx(id){return '<div class="cb"><canvas id="'+id+'"></canvas></div>'}
+
+// ========= TAB BUILDERS =========
+
+function buildResumen(){
+  return '<div class="space"><div class="grid g4">'+
+    kp('Platos Despachados','161,370','2,690/día · 384/sede/día')+
+    kp('Categoría #1','Desayunos','53,829 platos · 33.4%','#3b82f6')+
+    kp('Producto #1','Bandeja Paisa','12,787 unidades · 7 sedes','#10b981')+
+    kp('Producción Sopas','44,140 kg','735.7 kg/día · 4.6 ollas','#ef4444')+
+    kp('Productos Activos','54','en 7 sedes','#8b5cf6')+
+    kp('Sopa Dominante','Fríjol 54%','23,851 kg · 397.5 kg/día','#f59e0b')+
+    kp('Sede Líder','Rionegro','40,338 platos · 672/día','#ec4899')+
+    kp('Ollas/Día (160kg)','4.6','735.7 kg/día total','#14b8a6')+
+    '</div><div class="grid g2">'+
+    '<div class="card"><div class="ct">Platos Despachados por Sede</div>'+cx('c1')+'</div>'+
+    '<div class="card"><div class="ct">Mix de Categorías (% del Total)</div>'+cx('c2')+'</div>'+
+    '</div></div>';
+}
+
+function chartsResumen(){
+  new Chart(document.getElementById('c1'),{type:'bar',data:{labels:sedes.map(function(s){return s.s}),datasets:[{data:sedes.map(function(s){return s.t}),backgroundColor:'#f97316',borderRadius:6}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return fm(c.raw)+' platos'}}}}}});
+  new Chart(document.getElementById('c2'),{type:'doughnut',data:{labels:cats.map(function(c){return c.c+' '+c.p+'%'}),datasets:[{data:cats.map(function(c){return c.v}),backgroundColor:C6,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}}});
+}
+
+function buildSedes(){
+  return '<div class="space"><div class="grid g2">'+
+    '<div class="card"><div class="ct">Platos/Día por Sede</div>'+cx('c3')+'</div>'+
+    '<div class="card"><div class="ct">Categorías por Sede (Stacked)</div>'+cx('c4')+'</div>'+
+    '</div><div class="card ox"><div class="ct">Detalle de Ejecuciones por Sede</div>'+
+    tb(['Sede','Platos','Platos/Día','Típicos','Cazuelas','Cocina Trad.','Sopas','Desayunos','Des. Cac.','Productos','% Total'],
+      sedes.map(function(s){return['<b>'+s.s+'</b>',fm(s.t),s.d,fm(s.tip),fm(s.caz),fm(s.coc),fm(s.sop),fm(s.des),fm(s.dcac),s.pr,(s.t/161370*100).toFixed(1)+'%']}))+
+    '</div></div>';
+}
+
+function chartsSedes(){
+  new Chart(document.getElementById('c3'),{type:'bar',data:{labels:sedes.map(function(s){return s.s}),datasets:[{data:sedes.map(function(s){return s.d}),backgroundColor:'#3b82f6',borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
+  new Chart(document.getElementById('c4'),{type:'bar',data:{labels:sedes.map(function(s){return s.s}),datasets:[
+    {label:'Desayunos',data:sedes.map(function(s){return s.des}),backgroundColor:'#f97316'},
+    {label:'Típicos',data:sedes.map(function(s){return s.tip}),backgroundColor:'#3b82f6'},
+    {label:'Cocina Trad.',data:sedes.map(function(s){return s.coc}),backgroundColor:'#10b981'},
+    {label:'Cazuelas',data:sedes.map(function(s){return s.caz}),backgroundColor:'#f59e0b'},
+    {label:'Des. Cac.',data:sedes.map(function(s){return s.dcac}),backgroundColor:'#8b5cf6'},
+    {label:'Sopas',data:sedes.map(function(s){return s.sop}),backgroundColor:'#ec4899'}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:12}}},scales:{x:{stacked:true},y:{stacked:true}}}});
+}
+
+function buildProductos(){
+  var ac=0;
+  return '<div class="space"><div class="card"><div class="ct">Top 20 Productos por Unidades Despachadas</div>'+cx('c5')+'</div>'+
+    '<div class="card ox"><div class="ct">Análisis Pareto — Top 20</div>'+
+    tb(['#','Producto','Unidades','% Total','Acum %','Categoría','Sopa/Porción','Zona'],
+      prods.map(function(p,i){var pc=p.q/161370*100;ac+=pc;var z=ac<=50?'A':ac<=80?'B':'C';var cl=z==='A'?'bg':z==='B'?'by':'br';
+        return[i+1,'<b>'+p.n+'</b>',fm(p.q),pc.toFixed(1)+'%','<b>'+ac.toFixed(1)+'%</b>',p.c,p.g>0?p.g+'g':'—','<span class="badge '+cl+'">'+z+'</span>']}))+
+    '</div></div>';
+}
+
+function chartsProductos(){
+  new Chart(document.getElementById('c5'),{type:'bar',data:{labels:prods.map(function(p){return p.n}),datasets:[{data:prods.map(function(p){return p.q}),backgroundColor:'#f97316',borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return fm(c.raw)+' unidades'}}}}}});
+}
+
+function buildSopas(){
+  return '<div class="space"><div class="grid g5">'+
+    sopas.map(function(s,i){return kp(s.n,s.d+' kg/día',fm(Math.round(s.v))+' kg · '+s.p,C7[i])}).join('')+
+    '</div><div class="grid g2">'+
+    '<div class="card"><div class="ct">Consumo por Sede (kg) — Stacked</div>'+cx('c6')+'</div>'+
+    '<div class="card"><div class="ct">Distribución de Sopas (% del Total)</div>'+cx('c7')+'</div>'+
+    '</div><div class="card ox"><div class="ct">Detalle Consumo Sopa por Sede (kg)</div>'+
+    tb(['Sede','Fríjol','Lentejas','Ajiaco','Sancocho','Mondongo','TOTAL','kg/Día','Ollas/Día'],
+      sedes.map(function(s){return['<b>'+s.s+'</b>',fm(Math.round(s.fr)),fm(Math.round(s.le)),fm(Math.round(s.aj)),fm(Math.round(s.sa)),fm(Math.round(s.mo)),'<b>'+fm(Math.round(s.sp))+'</b>',(s.sp/60).toFixed(1),(s.sp/60/160).toFixed(1)]}))+
+    '</div></div>';
+}
+
+function chartsSopas(){
+  new Chart(document.getElementById('c6'),{type:'bar',data:{labels:sedes.map(function(s){return s.s}),datasets:[
+    {label:'Fríjol',data:sedes.map(function(s){return s.fr}),backgroundColor:'#f97316'},
+    {label:'Sancocho',data:sedes.map(function(s){return s.sa}),backgroundColor:'#10b981'},
+    {label:'Mondongo',data:sedes.map(function(s){return s.mo}),backgroundColor:'#3b82f6'},
+    {label:'Ajiaco',data:sedes.map(function(s){return s.aj}),backgroundColor:'#f59e0b'},
+    {label:'Lentejas',data:sedes.map(function(s){return s.le}),backgroundColor:'#8b5cf6'}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:12}}},scales:{x:{stacked:true},y:{stacked:true}}}});
+  new Chart(document.getElementById('c7'),{type:'doughnut',data:{labels:sopas.map(function(s){return s.n+' '+s.p}),datasets:[{data:sopas.map(function(s){return Math.round(s.v)}),backgroundColor:C7.slice(0,5),borderWidth:3,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},cutout:'50%'}});
+}
+
+function buildEficiencia(){
+  // Concentration: platos per kg of soup
+  var eff=sedes.map(function(s){return{s:s.s,ppk:(s.t/s.sp).toFixed(2),spd:(s.sp/60).toFixed(1),dpd:s.d,pct_des:(s.des/s.t*100).toFixed(1),pct_tip:(s.tip/s.t*100).toFixed(1)}});
+  eff.sort(function(a,b){return b.ppk-a.ppk});
+  
+  return '<div class="space"><div class="card"><div class="ct">Platos por kg de Sopa (Mayor = Más variedad sin sopa)</div>'+cx('c8')+'</div>'+
+    '<div class="grid g2">'+
+    '<div class="card"><div class="ct">% Desayunos por Sede<br><span style="font-size:11px;color:#9ca3af;font-weight:400">Desayunos no llevan sopa</span></div>'+cx('c9')+'</div>'+
+    '<div class="card ox"><div class="ct">Ranking de Productividad</div>'+
+    tb(['#','Sede','Platos/kg Sopa','Sopa kg/Día','Platos/Día','% Desayunos'],
+      eff.map(function(e,i){return[i+1,'<b>'+e.s+'</b>','<b>'+e.ppk+'</b>',e.spd,e.dpd,e.pct_des+'%']}))+
+    '</div></div></div>';
+}
+
+function chartsEficiencia(){
+  var ratios=sedes.map(function(s){return{s:s.s,v:+(s.t/s.sp).toFixed(2)}});
+  ratios.sort(function(a,b){return b.v-a.v});
+  new Chart(document.getElementById('c8'),{type:'bar',data:{labels:ratios.map(function(r){return r.s}),datasets:[{data:ratios.map(function(r){return r.v}),backgroundColor:ratios.map(function(r){return r.v>4?'#10b981':r.v>3?'#f59e0b':'#ef4444'}),borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.raw+' platos/kg'}}}}}});
+  
+  var desPct=sedes.map(function(s){return{s:s.s,v:+(s.des/s.t*100).toFixed(1)}});
+  desPct.sort(function(a,b){return b.v-a.v});
+  new Chart(document.getElementById('c9'),{type:'bar',data:{labels:desPct.map(function(d){return d.s}),datasets:[{data:desPct.map(function(d){return d.v}),backgroundColor:'#f97316',borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.raw+'% desayunos'}}}},scales:{y:{ticks:{callback:function(v){return v+'%'}}}}}});
+}
+
+function buildCategorias(){
+  return '<div class="space"><div class="grid g2">'+
+    '<div class="card"><div class="ct">Platos por Categoría</div>'+cx('c10')+'</div>'+
+    '<div class="card"><div class="ct">Participación por Categoría</div>'+cx('c11')+'</div>'+
+    '</div><div class="card ox"><div class="ct">Mix de Categorías por Sede (%)</div>'+
+    tb(['Sede','Desayunos','Típicos','Cocina Trad.','Cazuelas','Des. Cac.','Sopas','Total'],
+      sedes.map(function(s){
+        var vals=[s.des/s.t*100,s.tip/s.t*100,s.coc/s.t*100,s.caz/s.t*100,s.dcac/s.t*100,s.sop/s.t*100];
+        var mx=Math.max.apply(null,vals);
+        return['<b>'+s.s+'</b>'].concat(vals.map(function(v){return v===mx?'<span class="hl">'+v.toFixed(1)+'%</span>':v.toFixed(1)+'%'})).concat([fm(s.t)])}))+
+    '</div><div class="card ox"><div class="ct">Resumen por Categoría</div>'+
+    tb(['Categoría','Platos','% Total','Platos/Día','Platos/Día/Sede'],
+      cats.map(function(c){return['<b>'+c.c+'</b>',fm(c.v),c.p.toFixed(1)+'%',Math.round(c.v/60),Math.round(c.v/60/7)]}))+
+    '</div></div>';
+}
+
+function chartsCategorias(){
+  new Chart(document.getElementById('c10'),{type:'bar',data:{labels:cats.map(function(c){return c.c}),datasets:[{data:cats.map(function(c){return c.v}),backgroundColor:C6,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return fm(c.raw)+' platos'}}}}}});
+  new Chart(document.getElementById('c11'),{type:'doughnut',data:{labels:cats.map(function(c){return c.c+' '+c.p+'%'}),datasets:[{data:cats.map(function(c){return c.v}),backgroundColor:C6,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}}});
+}
+
+// ========= TAB SYSTEM =========
+var builders=[buildResumen,buildSedes,buildProductos,buildSopas,buildEficiencia,buildCategorias];
+var chartFns=[chartsResumen,chartsSedes,chartsProductos,chartsSopas,chartsEficiencia,chartsCategorias];
+var tabNames=['Resumen','Sedes','Productos','Sopas','Eficiencia','Categorías'];
+var contentEl=document.getElementById('content');
+var tabsEl=document.getElementById('tabs');
+
+function switchTab(i){
+  document.querySelectorAll('.tab').forEach(function(t,j){t.className='tab '+(j===i?'tab-active':'tab-inactive')});
+  contentEl.innerHTML=builders[i]();
+  setTimeout(function(){chartFns[i]()},60);
+}
+
+tabNames.forEach(function(n,i){
+  var b=document.createElement('button');b.textContent=n;
+  b.className='tab '+(i===0?'tab-active':'tab-inactive');
+  b.onclick=function(){switchTab(i)};tabsEl.appendChild(b);
+});
+
+switchTab(0);
+</script>
+</body>
+</html>
