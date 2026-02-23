@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>User Journey — Con-Héctor · Eleva · Finsus</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+      font-family: 'Segoe UI', -apple-system, sans-serif;
+      background: #1a1a2e;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .label { font-size: 13px; color: rgba(255,255,255,0.5); letter-spacing: 1px; text-transform: uppercase; }
+    .phone {
+      width: 375px;
+      height: 812px;
+      background: #FAFBFC;
+      border-radius: 50px;
+      border: 8px solid #333;
+      box-shadow: 0 0 0 3px #555, 0 20px 60px rgba(0,0,0,0.5);
+      overflow: hidden;
+      position: relative;
+    }
+    .notch {
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 160px; height: 32px; background: #333;
+      border-radius: 0 0 22px 22px; z-index: 20;
+    }
+    .notch-pill {
+      position: absolute; top: 11px; left: 50%; transform: translateX(-50%);
+      width: 80px; height: 8px; background: #1a1a2e; border-radius: 4px;
+    }
+    .screen {
+      width: 100%; height: 100%;
+      overflow-y: auto; overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+    .screen::-webkit-scrollbar { display: none; }
+    .statusbar {
+      height: 48px; background: rgba(250,251,252,0.97);
+      display: flex; justify-content: space-between;
+      align-items: flex-end; padding: 0 26px 8px;
+      font-size: 13px; font-weight: 600; color: #1e293b;
+      position: sticky; top: 0; z-index: 15;
+    }
+    button { font-family: inherit; }
+    button:active { transform: scale(0.97); }
+  </style>
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+  <script>
+    // Scale phone frame to always fit the viewport
+    function scalePhone() {
+      var phone = document.querySelector('.wrapper');
+      if (!phone) return;
+      var vw = window.innerWidth;
+      var vh = window.innerHeight;
+      // phone is 375+16border = ~391 wide, 812+16+40label = ~862 tall
+      var scaleX = (vw - 20) / 391;
+      var scaleY = (vh - 20) / 870;
+      var s = Math.min(scaleX, scaleY, 1);
+      phone.style.transform = 'scale(' + s + ')';
+      phone.style.transformOrigin = 'center center';
+    }
+    window.addEventListener('load', scalePhone);
+    window.addEventListener('resize', scalePhone);
+  </script>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="label">User Journey &#183; Con-H&#233;ctor &#183; Eleva &#183; Finsus</div>
+    <div class="phone">
+      <div class="notch"><div class="notch-pill"></div></div>
+      <div class="screen">
+        <div class="statusbar">
+          <span>9:41</span>
+          <span style="font-size:11px">&#x25CF;&#x25CF;&#x25CF;&#x25CF; &#x1F50B;</span>
+        </div>
+        <div id="root"></div>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    const steps = [
+      {
+        phase: "Origen", pc: "#F97316", icon: "\u{1F3E6}",
+        title: "Finsus comparte base de rechazados",
+        plat: "Finsus \u2192 Con-H\u00E9ctor",
+        desc: "Finsus le env\u00EDa a Con-H\u00E9ctor una base de datos con microempresarios cuyo cr\u00E9dito fue rechazado. Son personas con inter\u00E9s en financiamiento que no cumplieron requisitos tradicionales.",
+        action: "Carmen solicit\u00F3 un cr\u00E9dito en Finsus y fue rechazada hace 2 semanas",
+        thought: "\"Me rechazaron el cr\u00E9dito. No s\u00E9 qu\u00E9 m\u00E1s puedo hacer...\"",
+        emo: "\u{1F614}", isNew: true,
+      },
+      {
+        phase: "Primer contacto", pc: "#22C55E", icon: "\u{1F4AC}",
+        title: "Con-H\u00E9ctor le escribe por WhatsApp",
+        plat: "WhatsApp",
+        desc: "\"Hola Carmen, soy Con-H\u00E9ctor \u{1F44B}. Sabemos que buscas opciones para hacer crecer tu negocio. Queremos acompa\u00F1arte para que accedas a un cr\u00E9dito. \u00BFTe interesa?\"",
+        action: "Lee el mensaje y responde \"S\u00ED, me interesa\"",
+        thought: "\"\u00BFTodav\u00EDa hay oportunidad? A ver qu\u00E9 me dicen...\"",
+        emo: "\u{1F914}", isNew: true,
+      },
+      {
+        phase: "Diagn\u00F3stico", pc: "#22C55E", icon: "\u{1F50D}",
+        title: "Con-H\u00E9ctor entiende su situaci\u00F3n",
+        plat: "WhatsApp",
+        desc: "Le pregunta: \"\u00BFQu\u00E9 tipo de negocio tienes?\", \"\u00BFPara qu\u00E9 necesitas el cr\u00E9dito?\". Carmen cuenta que tiene tienda de ropa y quiere comprar m\u00E1s inventario.",
+        action: "Platica sobre su negocio e ingresos",
+        thought: "\"Este chatbot me entiende. No me habla como los del banco.\"",
+        emo: "\u{1F91E}", isNew: true,
+      },
+      {
+        phase: "Score inicial", pc: "#22C55E", icon: "\u{1F4CA}",
+        title: "Su score empieza a construirse",
+        plat: "Backend (invisible)",
+        desc: "Carmen no ve nada, pero Eleva ya construye su score con datos de Finsus + la conversaci\u00F3n. Arranca en 20/100.",
+        action: "No hace nada \u2014 todo es autom\u00E1tico",
+        thought: "(Carmen no sabe que esto pasa)",
+        emo: "\u{1F610}", isNew: true,
+      },
+      {
+        phase: "Invitaci\u00F3n", pc: "#EAB308", icon: "\u{1F3AF}",
+        title: "La invita a adquirir habilidades necesarias",
+        plat: "WhatsApp \u2192 Eleva",
+        desc: "\"Carmen, te vamos a acompa\u00F1ar para que adquieras las habilidades necesarias en finanzas para tu negocio. Empieza con este m\u00F3dulo sobre ahorro \u{1F447}\"",
+        action: "Hace clic en el link y llega a Eleva",
+        thought: "\"Si esto me ayuda a que me den el cr\u00E9dito, le entro.\"",
+        emo: "\u{1F4AA}", isNew: true,
+      },
+      {
+        phase: "Registro", pc: "#A855F7", icon: "\u270D\uFE0F",
+        title: "Se registra en Eleva",
+        plat: "Eleva Web",
+        desc: "Llena formulario r\u00E1pido: nombre, g\u00E9nero, tel\u00E9fono, correo y tipo de negocio. El sistema la reconoce autom\u00E1ticamente.",
+        action: "Completa registro en Eleva",
+        thought: "\"Fue r\u00E1pido. Solo pidieron lo b\u00E1sico.\"",
+        emo: "\u{1F610}",
+      },
+      {
+        phase: "Aprendizaje", pc: "#A855F7", icon: "\u{1F4DA}",
+        title: "Completa \"A de Ahorro\"",
+        plat: "Eleva Web",
+        desc: "Ve videos e infograf\u00EDas sobre ahorro formal e informal, imprevistos y metas de ahorro. Lo completa en su celular.",
+        action: "Ve videos, completa m\u00F3dulo",
+        thought: "\"No sab\u00EDa que pod\u00EDa ahorrar de tantas formas.\"",
+        emo: "\u{1F60A}",
+      },
+      {
+        phase: "Refuerzo", pc: "#A855F7", icon: "\u{1F4A1}",
+        title: "Micro-lecci\u00F3n por WhatsApp",
+        plat: "WhatsApp",
+        desc: "\"Carmen, un tip: separa el 10% de cada venta en un sobre aparte antes de pagar proveedores. \u00A1En un mes tendr\u00E1s un colch\u00F3n! \u{1F4B0}\"",
+        action: "Responde \"Gracias, lo voy a intentar \u{1F64F}\"",
+        thought: "\"Se acord\u00F3 de m\u00ED y me dio un consejo pr\u00E1ctico.\"",
+        emo: "\u{1F60A}", isNew: true,
+      },
+      {
+        phase: "Aprendizaje", pc: "#A855F7", icon: "\u{1F4D6}",
+        title: "Completa \"C de Cuentas Claras\"",
+        plat: "Eleva Web",
+        desc: "Aprende sobre ingresos, gastos, presupuesto y ahorro potencial. Usa la calculadora interactiva para su tienda.",
+        action: "Completa segundo m\u00F3dulo y usa calculadora",
+        thought: "\"\u00A1Ahora veo claro cu\u00E1nto gasto y cu\u00E1nto me queda!\"",
+        emo: "\u{1F4AA}",
+      },
+      {
+        phase: "Progreso", pc: "#22C55E", icon: "\u{1F4C8}",
+        title: "Score sube a 45 \u2014 nuevos m\u00F3dulos",
+        plat: "WhatsApp + Eleva",
+        desc: "\"\u00A1Vas muy bien Carmen! \u{1F4AA} Ahora tienes acceso a m\u00F3dulos sobre deudas sanas y servicios financieros. Esto te acerca al cr\u00E9dito.\"",
+        action: "Explora nuevos m\u00F3dulos desbloqueados",
+        thought: "\"Siento que voy avanzando hacia el cr\u00E9dito.\"",
+        emo: "\u{1F4AA}", isNew: true,
+      },
+      {
+        phase: "Rescate", pc: "#EF4444", icon: "\u23F8\uFE0F",
+        title: "Carmen deja de entrar 10 d\u00EDas",
+        plat: "WhatsApp",
+        desc: "Con-H\u00E9ctor escribe casual: \"Hola Carmen, \u00BFc\u00F3mo va la tienda? \u{1F3EA} Tengo un tip sobre negociar con proveedores. \u00BFTe interesa?\"",
+        action: "Responde \"S\u00ED, justo tuve un problema con eso\"",
+        thought: "\"Justo me habla de lo que necesito.\"",
+        emo: "\u{1F60C}", isNew: true,
+      },
+      {
+        phase: "Avanzado", pc: "#A855F7", icon: "\u{1F680}",
+        title: "Completa m\u00F3dulos avanzados",
+        plat: "Eleva Web",
+        desc: "Aprende sobre tipos de deuda, cr\u00E9dito, sobreendeudamiento. Publica su tienda en la comunidad Eleva.",
+        action: "Completa 2 m\u00F3dulos y publica en comunidad",
+        thought: "\"Ahora entiendo el cr\u00E9dito. Ya no me da miedo.\"",
+        emo: "\u{1F60E}",
+      },
+      {
+        phase: "Elegibilidad", pc: "#22C55E", icon: "\u{1F3C6}",
+        title: "Score llega a 72 \u2014 elegible",
+        plat: "WhatsApp + Eleva",
+        desc: "\"\u00A1Carmen, buenas noticias! \u{1F389} Tu preparaci\u00F3n dio frutos. Ahora puedes acceder al cr\u00E9dito. \u00BFLista?\"",
+        action: "Responde \"\u00A1S\u00ED, claro que s\u00ED!\"",
+        thought: "\"\u00A1Por fin! Esta vez voy preparada.\"",
+        emo: "\u{1F929}", isNew: true,
+      },
+      {
+        phase: "Quiz", pc: "#EAB308", icon: "\u{1F4DD}",
+        title: "Completa quiz de cr\u00E9dito",
+        plat: "Eleva Web",
+        desc: "Responde cu\u00E1nto necesita ($15,000 MXN), para qu\u00E9 (inventario) y capacidad de pago mensual.",
+        action: "Completa quiz con info de su negocio",
+        thought: "\"S\u00E9 exactamente para qu\u00E9 necesito el dinero.\"",
+        emo: "\u{1F91E}", isNew: true,
+      },
+      {
+        phase: "Cr\u00E9dito", pc: "#F97316", icon: "\u{1F3E6}",
+        title: "Derivada a Finsus con nuevo perfil",
+        plat: "Finsus",
+        desc: "Vuelve a Finsus con score de 72, 5 m\u00F3dulos completados y 6 semanas de historial positivo.",
+        action: "Inicia nueva solicitud en Finsus",
+        thought: "\"Ahora llego preparada y con respaldo.\"",
+        emo: "\u{1F929}", isNew: true,
+      },
+      {
+        phase: "Ciclo continuo", pc: "#22C55E", icon: "\u{1F504}",
+        title: "Sigue en el ecosistema",
+        plat: "WhatsApp + Eleva",
+        desc: "Sigue aprendiendo: ventas en l\u00EDnea, formalizaci\u00F3n, gesti\u00F3n de deudas. Su score crece para futuro re-cr\u00E9dito.",
+        action: "Sigue aprendiendo y haciendo crecer su negocio",
+        thought: "\"Esto no fue solo para el cr\u00E9dito. Realmente estoy aprendiendo.\"",
+        emo: "\u{1F31F}", isNew: true,
+      },
+    ];
+
+    function getScore(i) {
+      if (i === 0) return null;
+      if (i <= 3) return 20;
+      if (i <= 5) return 25;
+      if (i <= 7) return 35;
+      if (i <= 8) return 45;
+      if (i <= 10) return 52;
+      if (i <= 11) return 65;
+      return 72;
+    }
+
+    function App() {
+      var _a = useState(0), idx = _a[0], set = _a[1];
+      var s = steps[idx];
+      var score = getScore(idx);
+      var sc = !score ? "#94a3b8" : score < 40 ? "#94a3b8" : score < 70 ? "#EAB308" : "#16A34A";
+      var pct = ((idx + 1) / steps.length) * 100;
+
+      var _t = useState(null), tx = _t[0], setTx = _t[1];
+      function ts(e) { setTx(e.touches[0].clientX); }
+      function te(e) {
+        if (tx === null) return;
+        var d = tx - e.changedTouches[0].clientX;
+        if (Math.abs(d) > 50) {
+          if (d > 0 && idx < steps.length - 1) set(idx + 1);
+          if (d < 0 && idx > 0) set(idx - 1);
+        }
+        setTx(null);
+      }
+
+      return (
+        <div onTouchStart={ts} onTouchEnd={te} style={{ background: "#FAFBFC" }}>
+          {/* Top nav */}
+          <div style={{
+            position: "sticky", top: 0, zIndex: 10,
+            background: "rgba(250,251,252,0.97)", backdropFilter: "blur(10px)",
+            borderBottom: "1px solid #e2e8f0", padding: "8px 14px 6px",
+          }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
+              <span style={{ fontSize: 12, fontWeight: 700, color: s.pc }}>{s.phase}</span>
+              <span style={{ fontSize: 11, color: "#94a3b8" }}>{idx + 1}/{steps.length}</span>
+            </div>
+            <div style={{ height: 3, borderRadius: 2, background: "#e2e8f0" }}>
+              <div style={{ height: "100%", borderRadius: 2, width: pct + "%", background: s.pc, transition: "width 0.3s" }} />
+            </div>
+          </div>
+
+          {/* Card content */}
+          <div style={{ padding: "14px 14px 16px" }}>
+            <div style={{ textAlign: "center", marginBottom: 12 }}>
+              <div style={{ fontSize: 36, marginBottom: 4 }}>{s.icon}</div>
+              <h2 style={{ fontSize: 18, fontWeight: 800, color: "#0f172a", lineHeight: 1.3, margin: "0 0 6px" }}>
+                {s.title}
+              </h2>
+              <div style={{ display: "flex", justifyContent: "center", gap: 4, flexWrap: "wrap" }}>
+                <span style={{
+                  fontSize: 10, padding: "2px 7px", borderRadius: 6,
+                  background: s.pc + "14", color: s.pc, fontWeight: 600,
+                }}>{s.plat}</span>
+                {s.isNew && (
+                  <span style={{
+                    fontSize: 10, padding: "2px 7px", borderRadius: 6,
+                    background: "#fef3c7", color: "#b45309", fontWeight: 700,
+                  }}>{"\u2728"} Nueva</span>
+                )}
+              </div>
+            </div>
+
+            {/* Description */}
+            <div style={{
+              padding: 14, borderRadius: 12, background: "#fff",
+              border: "1px solid #e2e8f0", marginBottom: 8,
+              boxShadow: "0 1px 2px rgba(0,0,0,0.03)",
+            }}>
+              <p style={{ fontSize: 14, lineHeight: 1.65, color: "#334155", margin: 0 }}>{s.desc}</p>
+            </div>
+
+            {/* Thought */}
+            <div style={{
+              padding: "10px 12px", borderRadius: 12,
+              background: s.pc + "08", border: "1.5px solid " + s.pc + "20",
+              marginBottom: 8, display: "flex", gap: 8, alignItems: "flex-start",
+            }}>
+              <span style={{ fontSize: 20, flexShrink: 0 }}>{s.emo}</span>
+              <div>
+                <div style={{ fontSize: 9, color: s.pc, textTransform: "uppercase", letterSpacing: 1, fontWeight: 700, marginBottom: 2 }}>
+                  Carmen piensa
+                </div>
+                <div style={{ fontSize: 13, color: "#475569", fontStyle: "italic", lineHeight: 1.5 }}>{s.thought}</div>
+              </div>
+            </div>
+
+            {/* Action */}
+            <div style={{
+              padding: "10px 12px", borderRadius: 12,
+              background: "#EFF6FF", border: "1px solid #BFDBFE", marginBottom: 8,
+            }}>
+              <div style={{ fontSize: 9, color: "#2563EB", textTransform: "uppercase", letterSpacing: 1, fontWeight: 800, marginBottom: 2 }}>
+                {"\u{1F464}"} Carmen hace
+              </div>
+              <div style={{ fontSize: 13, color: "#1e40af", lineHeight: 1.5 }}>{s.action}</div>
+            </div>
+
+            {/* Score */}
+            <div style={{
+              padding: "10px 12px", borderRadius: 12,
+              background: "#fff", border: "1px solid #e2e8f0", marginBottom: 10,
+              display: "flex", alignItems: "center", gap: 10,
+            }}>
+              <div style={{ fontSize: 20, fontWeight: 800, color: sc, minWidth: 46 }}>
+                {score === null ? "\u2014" : score}
+                {score !== null && <span style={{ fontSize: 11, color: "#94a3b8" }}>/100</span>}
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ height: 5, borderRadius: 3, background: "#f1f5f9" }}>
+                  <div style={{
+                    height: "100%", borderRadius: 3, transition: "width 0.4s",
+                    width: (score || 0) + "%",
+                    background: score >= 70 ? "#16A34A" : score >= 40 ? "#EAB308" : "#94a3b8",
+                  }} />
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", marginTop: 2, fontSize: 8, color: "#b0b8c4" }}>
+                  <span>0</span><span style={{ color: "#EAB308" }}>40</span><span style={{ color: "#16A34A" }}>70</span><span>100</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Buttons */}
+            <div style={{ display: "flex", gap: 8 }}>
+              <button onClick={function() { set(Math.max(0, idx - 1)); }} disabled={idx === 0}
+                style={{
+                  flex: 1, padding: "11px", borderRadius: 10, fontSize: 13, fontWeight: 600,
+                  cursor: idx === 0 ? "default" : "pointer",
+                  border: "1.5px solid #e2e8f0", background: "#fff",
+                  color: idx === 0 ? "#cbd5e1" : "#475569",
+                }}>{"\u2190"} Anterior</button>
+              <button onClick={function() { set(Math.min(steps.length - 1, idx + 1)); }}
+                disabled={idx === steps.length - 1}
+                style={{
+                  flex: 1, padding: "11px", borderRadius: 10, fontSize: 13, fontWeight: 700,
+                  cursor: idx === steps.length - 1 ? "default" : "pointer",
+                  border: "1.5px solid " + s.pc + "50",
+                  background: idx === steps.length - 1 ? "#f8fafc" : s.pc + "12",
+                  color: idx === steps.length - 1 ? "#cbd5e1" : s.pc,
+                }}>Siguiente {"\u2192"}</button>
+            </div>
+
+            {/* Dots */}
+            <div style={{ display: "flex", justifyContent: "center", gap: 3, marginTop: 10 }}>
+              {steps.map(function(st, i) {
+                return (
+                  <div key={i} onClick={function() { set(i); }} style={{
+                    width: i === idx ? 16 : 5, height: 5, borderRadius: 3,
+                    cursor: "pointer", transition: "all 0.3s",
+                    background: i === idx ? st.pc : i < idx ? st.pc + "40" : "#ddd",
+                  }} />
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
