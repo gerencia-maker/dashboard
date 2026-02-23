@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>User Journey — Con-Héctor · Eleva · Finsus</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+    body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif; background: #FAFBFC; }
+    #root { min-height: 100vh; min-height: 100dvh; }
+    button { font-family: inherit; }
+    button:active { transform: scale(0.97); }
+  </style>
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const journeySteps = [
+      {
+        id: "finsus_db", phase: "Origen", phaseColor: "#F97316", phaseIcon: "\u{1F3E6}",
+        title: "Finsus comparte base de datos de cr\u00E9ditos rechazados",
+        platform: "Finsus \u2192 Con-H\u00E9ctor", platformIcon: "\u{1F4CB}",
+        description: "Finsus le env\u00EDa a Con-H\u00E9ctor una base de datos con los microempresarios cuyo cr\u00E9dito fue rechazado. Son personas que ya demostraron inter\u00E9s en financiamiento pero no cumplieron los requisitos tradicionales.",
+        userAction: "Carmen solicit\u00F3 un cr\u00E9dito en Finsus y fue rechazada hace 2 semanas",
+        systemAction: "Finsus exporta base de datos (nombre, tel\u00E9fono, motivo de rechazo) \u2192 Con-H\u00E9ctor Flask la importa y segmenta por pa\u00EDs y tipo de rechazo.",
+        userThought: "\"Me rechazaron el cr\u00E9dito. No s\u00E9 qu\u00E9 m\u00E1s puedo hacer...\"",
+        layer: null, emotion: "frustrated", isNew: true,
+      },
+      {
+        id: "first_message", phase: "Primer contacto", phaseColor: "#22C55E", phaseIcon: "\u{1F4AC}",
+        title: "Con-H\u00E9ctor le escribe a Carmen por WhatsApp",
+        platform: "WhatsApp", platformIcon: "\u{1F4F1}",
+        description: "Carmen recibe un mensaje de Con-H\u00E9ctor: \"Hola Carmen, soy Con-H\u00E9ctor \u{1F44B}. Sabemos que est\u00E1s buscando opciones para hacer crecer tu negocio. Queremos acompa\u00F1arte para que puedas acceder a un cr\u00E9dito. \u00BFTe interesa saber c\u00F3mo?\"",
+        userAction: "Carmen lee el mensaje y responde \"S\u00ED, me interesa\"",
+        systemAction: "Celery beat dispar\u00F3 tarea send_outreach desde la base de Finsus. El mensaje usa prompt personalizado por pa\u00EDs (M\u00E9xico). Node.js env\u00EDa via Meta API \u2192 Flask registra primera interacci\u00F3n.",
+        userThought: "\"\u00BFTodav\u00EDa hay una oportunidad? A ver qu\u00E9 me dicen...\"",
+        layer: 1, emotion: "curious", isNew: true,
+      },
+      {
+        id: "conversation_needs", phase: "Diagn\u00F3stico conversacional", phaseColor: "#22C55E", phaseIcon: "\u{1F50D}",
+        title: "Con-H\u00E9ctor entiende su situaci\u00F3n",
+        platform: "WhatsApp", platformIcon: "\u{1F4F1}",
+        description: "Con-H\u00E9ctor le hace preguntas naturales: \"Cu\u00E9ntame, \u00BFqu\u00E9 tipo de negocio tienes?\", \"\u00BFPara qu\u00E9 necesitas el cr\u00E9dito?\". Carmen le cuenta que tiene una tienda de ropa y quiere comprar m\u00E1s inventario. Menciona que vende 15 prendas por semana.",
+        userAction: "Platica sobre su negocio, ingresos y necesidades",
+        systemAction: "Flask env\u00EDa conversaci\u00F3n a GPT-4.1-nano con prompt de M\u00E9xico. Extrae financial_signals: has_income=true, business_type='retail_clothing', credit_interest=true, sentiment='hopeful'. Guarda en tabla financial_signals.",
+        userThought: "\"Este chatbot me entiende. No me habla como los del banco.\"",
+        layer: 1, emotion: "hopeful", isNew: true,
+      },
+      {
+        id: "scoring_starts", phase: "Score inicial", phaseColor: "#22C55E", phaseIcon: "\u{1F4CA}",
+        title: "Su score crediticio empieza a construirse",
+        platform: "Backend (invisible para Carmen)", platformIcon: "\u2699\uFE0F",
+        description: "Carmen no ve nada de esto, pero Eleva consulta las se\u00F1ales financieras cada 15 minutos. Con los datos de Finsus + la conversaci\u00F3n con Con-H\u00E9ctor, su score arranca en 20/100. Es bajo, pero ya est\u00E1 en camino.",
+        userAction: "No hace nada \u2014 todo es autom\u00E1tico",
+        systemAction: "Eleva cron \u2192 GET /signals/{phone} desde Flask \u2192 scoring.module calcula: education=0, conversation=20, engagement=5, credit_readiness=15 (por el intento previo en Finsus). Score total: 20.",
+        userThought: "(Carmen no sabe que esto est\u00E1 pasando)",
+        layer: 2, emotion: "neutral", isNew: true,
+      },
+      {
+        id: "invite_eleva", phase: "Invitaci\u00F3n a Eleva", phaseColor: "#EAB308", phaseIcon: "\u{1F3AF}",
+        title: "Con-H\u00E9ctor la invita a adquirir las habilidades necesarias",
+        platform: "WhatsApp \u2192 Eleva", platformIcon: "\u{1F4F1}",
+        description: "Con-H\u00E9ctor le dice: \"Carmen, para que puedas acceder al cr\u00E9dito, te vamos a acompa\u00F1ar para que adquieras las habilidades necesarias en finanzas para tu negocio. Empieza con este m\u00F3dulo corto sobre ahorro \u{1F447}\" y le manda un link directo a Eleva.",
+        userAction: "Hace clic en el link y llega a Eleva",
+        systemAction: "Flask consulta GET /v1/recommendations/{phone} de Eleva. Score < 40 \u2192 ruta b\u00E1sica: A de Ahorro + C de Cuentas Claras. Genera deep link al m\u00F3dulo con pre-registro.",
+        userThought: "\"Si esto me ayuda a que me den el cr\u00E9dito, le entro.\"",
+        layer: 3, emotion: "motivated", isNew: true,
+      },
+      {
+        id: "register_eleva", phase: "Registro", phaseColor: "#A855F7", phaseIcon: "\u270D\uFE0F",
+        title: "Se registra en Eleva",
+        platform: "Eleva Web", platformIcon: "\u{1F4BB}",
+        description: "Llena el formulario r\u00E1pido: nombre, g\u00E9nero, tel\u00E9fono, correo y tipo de negocio. El tel\u00E9fono ya coincide con el de WhatsApp, as\u00ED que el sistema la reconoce autom\u00E1ticamente.",
+        userAction: "Completa registro en Eleva",
+        systemAction: "Eleva crea perfil. phone_number vincula autom\u00E1ticamente con su historial en Con-H\u00E9ctor. El score se actualiza con el nuevo dato: engagement +5.",
+        userThought: "\"Fue r\u00E1pido. Solo me pidieron lo b\u00E1sico.\"",
+        layer: null, emotion: "neutral",
+      },
+      {
+        id: "first_module", phase: "Aprendizaje", phaseColor: "#A855F7", phaseIcon: "\u{1F4DA}",
+        title: "Completa el m\u00F3dulo \"A de Ahorro\"",
+        platform: "Eleva Web", platformIcon: "\u{1F4BB}",
+        description: "Carmen ve los videos e infograf\u00EDas sobre ahorro formal e informal, ahorro para imprevistos y metas de ahorro. Lo completa en su celular durante la hora de comida de su tienda.",
+        userAction: "Ve videos, navega infograf\u00EDas, completa m\u00F3dulo",
+        systemAction: "Eleva registra module_completed. gamification.module suma 50 puntos. Webhook \u2192 Flask: {type: 'module_completed', module: 'ahorro'}. Score: education +15.",
+        userThought: "\"No sab\u00EDa que pod\u00EDa ahorrar de tantas formas. Voy a probar la del sobre.\"",
+        layer: 4, emotion: "happy",
+      },
+      {
+        id: "micro_lesson", phase: "Refuerzo", phaseColor: "#A855F7", phaseIcon: "\u{1F4A1}",
+        title: "Recibe micro-lecci\u00F3n personalizada",
+        platform: "WhatsApp", platformIcon: "\u{1F4F1}",
+        description: "Al d\u00EDa siguiente, Con-H\u00E9ctor le env\u00EDa: \"Carmen, ayer aprendiste sobre ahorro \u{1F4B0}. Un tip para tu tienda: separa el 10% de cada venta del d\u00EDa en un sobre aparte antes de pagar proveedores. \u00A1As\u00ED en un mes tendr\u00E1s un colch\u00F3n!\"",
+        userAction: "Lee el mensaje y responde \"Gracias, lo voy a intentar \u{1F64F}\"",
+        systemAction: "Celery beat dispar\u00F3 send_nudges \u2192 tarea micro_lesson con GPT-4.1-nano usando contexto: m\u00F3dulo ahorro completado + negocio tipo retail. Registra interacci\u00F3n positiva.",
+        userThought: "\"Se acord\u00F3 de m\u00ED y me dio un consejo que s\u00ED puedo aplicar hoy.\"",
+        layer: 4, emotion: "happy", isNew: true,
+      },
+      {
+        id: "second_module", phase: "Aprendizaje", phaseColor: "#A855F7", phaseIcon: "\u{1F4D6}",
+        title: "Completa \"C de Cuentas Claras\"",
+        platform: "Eleva Web", platformIcon: "\u{1F4BB}",
+        description: "Carmen aprende sobre ingresos, gastos, c\u00F3mo hacer un presupuesto y diagn\u00F3stico de ahorro potencial. Usa la calculadora interactiva para mapear los n\u00FAmeros de su tienda.",
+        userAction: "Completa segundo m\u00F3dulo y usa la calculadora",
+        systemAction: "module_completed + quiz_passed \u2192 80 puntos. Score: education=30, conversation=25, engagement=25. Score total: 45.",
+        userThought: "\"\u00A1Ahora veo claro cu\u00E1nto gasto y cu\u00E1nto me queda! Nunca lo hab\u00EDa calculado.\"",
+        layer: 4, emotion: "motivated",
+      },
+      {
+        id: "score_grows", phase: "Progreso", phaseColor: "#22C55E", phaseIcon: "\u{1F4C8}",
+        title: "Su score sube a 45 \u2014 se desbloquean m\u00F3dulos",
+        platform: "WhatsApp + Eleva", platformIcon: "\u{1F4F1}",
+        description: "Con-H\u00E9ctor le avisa: \"\u00A1Vas muy bien Carmen! \u{1F4AA} Ya completaste lo b\u00E1sico. Ahora tienes acceso a m\u00F3dulos sobre deudas sanas y servicios financieros. Esto te acerca m\u00E1s al cr\u00E9dito.\"",
+        userAction: "Explora los nuevos m\u00F3dulos desbloqueados",
+        systemAction: "Orquestador detecta score > 40 \u2192 recommendation.module actualiza ruta: agrega D de Deudas Sanas + Servicios Financieros. Flask env\u00EDa refuerzo positivo via WhatsApp.",
+        userThought: "\"Siento que voy avanzando. Ya me dijeron que me acerco al cr\u00E9dito.\"",
+        layer: 3, emotion: "motivated", isNew: true,
+      },
+      {
+        id: "stagnation", phase: "Rescate", phaseColor: "#EF4444", phaseIcon: "\u23F8\uFE0F",
+        title: "Carmen deja de entrar por 10 d\u00EDas",
+        platform: "WhatsApp", platformIcon: "\u{1F4F1}",
+        description: "Tuvo una semana complicada con un problema de proveedor. Dej\u00F3 de usar Eleva. Con-H\u00E9ctor le escribe casual: \"Hola Carmen, \u00BFc\u00F3mo va la tienda? \u{1F3EA} Tengo un tip r\u00E1pido sobre c\u00F3mo negociar mejor con tus proveedores. \u00BFTe interesa?\"",
+        userAction: "Responde \"S\u00ED, justo tuve un problema con eso\" y retoma",
+        systemAction: "Celery beat detect\u00F3 USER_INACTIVE (10 d\u00EDas). Orquestador baj\u00F3 complejidad y gener\u00F3 nudge basado en: \u00FAltimo m\u00F3dulo + tipo de negocio + historial de conversaci\u00F3n.",
+        userThought: "\"Es cierto, no puedo dejar esto. Y justo me habla de lo que necesito.\"",
+        layer: 5, emotion: "relieved", isNew: true,
+      },
+      {
+        id: "advanced_modules", phase: "Formaci\u00F3n avanzada", phaseColor: "#A855F7", phaseIcon: "\u{1F680}",
+        title: "Completa m\u00F3dulos de deudas sanas y servicios financieros",
+        platform: "Eleva Web", platformIcon: "\u{1F4BB}",
+        description: "Carmen aprende sobre tipos de deuda, c\u00F3mo funciona el cr\u00E9dito, c\u00F3mo evitar sobreendeudamiento, transformaci\u00F3n digital y cuentas bancarias. Publica su tienda en \"Publica y Contacta\".",
+        userAction: "Completa 2 m\u00F3dulos m\u00E1s y publica en la comunidad",
+        systemAction: "Score: education=50, conversation=35, engagement=40, credit_readiness=30. Score total: 72. gamification.module acumula 280 puntos.",
+        userThought: "\"Ahora entiendo c\u00F3mo funciona el cr\u00E9dito. Ya no me da miedo.\"",
+        layer: 4, emotion: "confident",
+      },
+      {
+        id: "credit_threshold", phase: "Elegibilidad", phaseColor: "#22C55E", phaseIcon: "\u{1F3C6}",
+        title: "Score llega a 72 \u2014 elegible para cr\u00E9dito",
+        platform: "WhatsApp + Eleva", platformIcon: "\u{1F4F1}",
+        description: "Con-H\u00E9ctor le manda un mensaje especial: \"\u00A1Carmen, tengo buenas noticias! \u{1F389} Tu preparaci\u00F3n ha dado frutos. Ahora tienes la oportunidad de acceder al cr\u00E9dito que buscabas. \u00BFLista para el siguiente paso?\"",
+        userAction: "Responde emocionada \"\u00A1S\u00ED, claro que s\u00ED!\"",
+        systemAction: "scoring.module detecta score > 70 + credit_interest=true \u2192 trigger quiz de cr\u00E9dito. Orquestador notifica via WhatsApp con copy motivacional.",
+        userThought: "\"\u00A1Por fin! Esta vez s\u00ED voy preparada. Ya s\u00E9 de finanzas.\"",
+        layer: 2, emotion: "excited", isNew: true,
+      },
+      {
+        id: "credit_quiz", phase: "Quiz de cr\u00E9dito", phaseColor: "#EAB308", phaseIcon: "\u{1F4DD}",
+        title: "Completa quiz de inter\u00E9s en cr\u00E9dito",
+        platform: "Eleva Web", platformIcon: "\u{1F4BB}",
+        description: "Carmen responde preguntas: cu\u00E1nto necesita ($15,000 MXN para inventario), para qu\u00E9 lo usar\u00EDa (compra de tela y accesorios), capacidad de pago mensual. El quiz confirma que es candidata viable.",
+        userAction: "Completa quiz con informaci\u00F3n de su negocio",
+        systemAction: "CREDIT_QUIZ_COMPLETED \u2192 finvero-integration.service empaqueta: score=72, 5 m\u00F3dulos completados, se\u00F1ales financieras positivas, datos del quiz, historial Finsus.",
+        userThought: "\"Las preguntas fueron claras. S\u00E9 exactamente para qu\u00E9 necesito el dinero.\"",
+        layer: 3, emotion: "hopeful", isNew: true,
+      },
+      {
+        id: "finsus_redirect", phase: "Derivaci\u00F3n a cr\u00E9dito", phaseColor: "#F97316", phaseIcon: "\u{1F3E6}",
+        title: "Es derivada de vuelta a Finsus con su nuevo perfil",
+        platform: "Finsus", platformIcon: "\u{1F3E6}",
+        description: "Eleva env\u00EDa a Finsus el perfil completo de Carmen: score crediticio alternativo de 72, historial de 5 m\u00F3dulos completados, se\u00F1ales financieras positivas de 6 semanas de conversaci\u00F3n, y resultado del quiz. Carmen vuelve al proceso de cr\u00E9dito, pero esta vez con un perfil mucho m\u00E1s fuerte.",
+        userAction: "Inicia nueva solicitud de cr\u00E9dito en Finsus",
+        systemAction: "POST /v1/scoring/export \u2192 Finsus API. Paquete: score alternativo, m\u00F3dulos completados, tipo de negocio, historial de engagement, motivo de rechazo original + evidencia de mejora.",
+        userThought: "\"La primera vez me rechazaron sin opciones. Ahora llego preparada y con respaldo.\"",
+        layer: 2, emotion: "excited", isNew: true,
+      },
+      {
+        id: "post_credit", phase: "Ciclo continuo", phaseColor: "#22C55E", phaseIcon: "\u{1F504}",
+        title: "Sigue en el ecosistema despu\u00E9s del cr\u00E9dito",
+        platform: "WhatsApp + Eleva", platformIcon: "\u{1F4F1}\u{1F4BB}",
+        description: "Aunque ya accedi\u00F3 al cr\u00E9dito, Carmen sigue en el ecosistema. Con-H\u00E9ctor la acompa\u00F1a con contenido sobre gesti\u00F3n de deudas y formalizaci\u00F3n. Eleva le recomienda m\u00F3dulos de ventas en l\u00EDnea y relaci\u00F3n con proveedores. Su score sigue creciendo para un futuro re-cr\u00E9dito.",
+        userAction: "Sigue aprendiendo y haciendo crecer su negocio",
+        systemAction: "Orquestador ajusta ruta: m\u00F3dulos post-cr\u00E9dito (Deudas Sanas repaso, Formalizaci\u00F3n, Ventas en L\u00EDnea). Score se mantiene y acumula para futuras oportunidades.",
+        userThought: "\"Esto no fue solo para el cr\u00E9dito. Realmente estoy aprendiendo a manejar mi negocio.\"",
+        layer: 5, emotion: "fulfilled", isNew: true,
+      },
+    ];
+
+    var emotionIcons = {
+      frustrated: "\u{1F614}", curious: "\u{1F914}", neutral: "\u{1F610}", happy: "\u{1F60A}",
+      motivated: "\u{1F4AA}", relieved: "\u{1F60C}", hopeful: "\u{1F91E}", excited: "\u{1F929}",
+      fulfilled: "\u{1F31F}", confident: "\u{1F60E}",
+    };
+
+    var layerMeta = {
+      1: { color: "#3B82F6", label: "Capa 1 \u00B7 Conversacional" },
+      2: { color: "#22C55E", label: "Capa 2 \u00B7 Scoring" },
+      3: { color: "#EAB308", label: "Capa 3 \u00B7 Recomendaci\u00F3n" },
+      4: { color: "#A855F7", label: "Capa 4 \u00B7 Educativa" },
+      5: { color: "#EF4444", label: "Capa 5 \u00B7 Orquestaci\u00F3n" },
+    };
+
+    function useScreen() {
+      var get = function() { return window.innerWidth; };
+      var _s = useState(get()), w = _s[0], setW = _s[1];
+      useEffect(function() {
+        var h = function() { setW(get()); };
+        window.addEventListener("resize", h);
+        return function() { window.removeEventListener("resize", h); };
+      }, []);
+      return { w: w, mobile: w < 601, tablet: w >= 601 && w < 960 };
+    }
+
+    function UserJourney() {
+      var _a = useState(0), activeStep = _a[0], setActiveStep = _a[1];
+      var _v = useState("story"), viewMode = _v[0], setViewMode = _v[1];
+      var scr = useScreen();
+      var mob = scr.mobile;
+      var step = journeySteps[activeStep];
+      var progress = ((activeStep + 1) / journeySteps.length) * 100;
+
+      // Swipe
+      var _t = useState(null), touchX = _t[0], setTouchX = _t[1];
+      function onTS(e) { setTouchX(e.touches[0].clientX); }
+      function onTE(e) {
+        if (touchX === null) return;
+        var d = touchX - e.changedTouches[0].clientX;
+        if (Math.abs(d) > 50) {
+          if (d > 0 && activeStep < journeySteps.length - 1) setActiveStep(activeStep + 1);
+          if (d < 0 && activeStep > 0) setActiveStep(activeStep - 1);
+        }
+        setTouchX(null);
+      }
+
+      // Keyboard
+      useEffect(function() {
+        function onK(e) {
+          if (e.key === "ArrowRight") setActiveStep(function(s) { return Math.min(s + 1, journeySteps.length - 1); });
+          if (e.key === "ArrowLeft") setActiveStep(function(s) { return Math.max(s - 1, 0); });
+        }
+        window.addEventListener("keydown", onK);
+        return function() { window.removeEventListener("keydown", onK); };
+      }, []);
+
+      function getScore() {
+        if (activeStep === 0) return null;
+        if (activeStep <= 3) return 20;
+        if (activeStep <= 5) return 25;
+        if (activeStep <= 7) return 35;
+        if (activeStep <= 8) return 45;
+        if (activeStep <= 10) return 52;
+        if (activeStep <= 11) return 65;
+        return 72;
+      }
+      function scoreColor(s) {
+        if (!s) return "#94a3b8";
+        if (s < 40) return "#94a3b8";
+        if (s < 70) return "#EAB308";
+        return "#16A34A";
+      }
+      var score = getScore();
+
+      // Adaptive sizes
+      var pad = mob ? 14 : 20;
+      var maxW = mob ? "100%" : 760;
+      var titleSz = mob ? 21 : 30;
+      var descSz = mob ? 15 : 17;
+      var thoughtSz = mob ? 15 : 17;
+      var colSz = mob ? 14 : 15;
+      var badgeSz = mob ? 11 : 13;
+      var iconSz = mob ? 40 : 56;
+      var scoreSz = mob ? 28 : 36;
+      var btnSz = mob ? 15 : 16;
+
+      function Badge(props) {
+        return (
+          <span style={{
+            fontSize: badgeSz, padding: mob ? "3px 8px" : "4px 12px", borderRadius: 8,
+            background: props.bg, color: props.fg, fontWeight: props.bold ? 700 : 600,
+            border: "1px solid " + props.border, whiteSpace: "nowrap",
+          }}>
+            {props.children}
+          </span>
+        );
+      }
+
+      return (
+        <div style={{ minHeight: "100vh", background: "#FAFBFC", color: "#1e293b" }}
+          onTouchStart={onTS} onTouchEnd={onTE}>
+
+          {/* === TOP BAR === */}
+          <div style={{
+            position: "sticky", top: 0, zIndex: 10,
+            background: "rgba(250,251,252,0.96)", backdropFilter: "blur(12px)",
+            borderBottom: "1px solid #e2e8f0", padding: mob ? "10px 12px" : "14px 20px",
+          }}>
+            <div style={{ maxWidth: maxW, margin: "0 auto" }}>
+              <div style={{
+                display: "flex", justifyContent: "space-between",
+                alignItems: mob ? "flex-start" : "center",
+                flexDirection: mob ? "column" : "row",
+                gap: mob ? 6 : 0, marginBottom: 8,
+              }}>
+                <div style={{ fontSize: mob ? 13 : 15, color: "#475569" }}>
+                  <span style={{ fontWeight: 700, color: step.phaseColor }}>{step.phase}</span>
+                  <span style={{ color: "#94a3b8" }}>{" \u00B7 "}Paso {activeStep + 1}/{journeySteps.length}</span>
+                </div>
+                <div style={{ display: "flex", gap: 4, alignSelf: mob ? "flex-end" : "auto", marginTop: mob ? -22 : 0 }}>
+                  {["story", "timeline"].map(function(m) {
+                    return (
+                      <button key={m} onClick={function() { setViewMode(m); }} style={{
+                        padding: mob ? "4px 8px" : "6px 14px",
+                        borderRadius: 8, fontSize: mob ? 11 : 13, fontWeight: 600, cursor: "pointer",
+                        border: "1.5px solid " + (viewMode === m ? step.phaseColor : "#e2e8f0"),
+                        background: viewMode === m ? step.phaseColor + "12" : "#fff",
+                        color: viewMode === m ? step.phaseColor : "#94a3b8",
+                      }}>
+                        {m === "story" ? "Historia" : "Timeline"}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              <div style={{ height: 5, borderRadius: 3, background: "#e2e8f0" }}>
+                <div style={{
+                  height: "100%", borderRadius: 3, width: progress + "%",
+                  background: "linear-gradient(90deg, " + step.phaseColor + ", " + step.phaseColor + "bb)",
+                  transition: "width 0.4s ease",
+                }} />
+              </div>
+            </div>
+          </div>
+
+          {/* === CONTENT === */}
+          <div style={{ maxWidth: maxW, margin: "0 auto", padding: mob ? "16px 12px 90px" : "28px 20px 120px" }}>
+            {viewMode === "story" ? (
+              <div>
+                {/* Icon + Title */}
+                <div style={{ textAlign: "center", marginBottom: mob ? 18 : 28 }}>
+                  <div style={{ fontSize: iconSz, marginBottom: 8 }}>{step.phaseIcon}</div>
+                  <h2 style={{
+                    fontSize: titleSz, fontWeight: 800, margin: "0 0 10px",
+                    color: "#0f172a", lineHeight: 1.3, padding: mob ? "0 4px" : 0,
+                  }}>
+                    {step.title}
+                  </h2>
+                  <div style={{ display: "flex", justifyContent: "center", gap: 6, flexWrap: "wrap" }}>
+                    <Badge bg={step.phaseColor + "14"} fg={step.phaseColor} border={step.phaseColor + "30"}>
+                      {step.platformIcon} {step.platform}
+                    </Badge>
+                    {step.layer && (
+                      <Badge bg={layerMeta[step.layer].color + "14"} fg={layerMeta[step.layer].color} border={layerMeta[step.layer].color + "30"}>
+                        {layerMeta[step.layer].label}
+                      </Badge>
+                    )}
+                    {step.isNew && (
+                      <Badge bg="#f59e0b14" fg="#d97706" border="#f59e0b30" bold>
+                        {"\u2728"} Nueva
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+
+                {/* Description */}
+                <div style={{
+                  padding: mob ? "16px" : "24px", borderRadius: 16, background: "#fff",
+                  border: "1px solid #e2e8f0", marginBottom: 12,
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+                }}>
+                  <p style={{ fontSize: descSz, lineHeight: 1.8, color: "#334155", margin: 0 }}>
+                    {step.description}
+                  </p>
+                </div>
+
+                {/* Thought */}
+                <div style={{
+                  padding: mob ? "12px 14px" : "18px 22px", borderRadius: 16,
+                  background: step.phaseColor + "08",
+                  border: "1.5px solid " + step.phaseColor + "20",
+                  marginBottom: 12, display: "flex", gap: mob ? 10 : 14, alignItems: "flex-start",
+                }}>
+                  <span style={{ fontSize: mob ? 24 : 32, flexShrink: 0, lineHeight: 1 }}>{emotionIcons[step.emotion]}</span>
+                  <div>
+                    <div style={{
+                      fontSize: 11, color: step.phaseColor, textTransform: "uppercase",
+                      letterSpacing: 1.2, marginBottom: 4, fontWeight: 700,
+                    }}>
+                      Carmen piensa
+                    </div>
+                    <div style={{ fontSize: thoughtSz, color: "#475569", fontStyle: "italic", lineHeight: 1.6 }}>
+                      {step.userThought}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Two cols — stack on mobile */}
+                <div style={{
+                  display: "grid",
+                  gridTemplateColumns: mob ? "1fr" : "1fr 1fr",
+                  gap: 10,
+                }}>
+                  <div style={{
+                    padding: mob ? "14px" : "18px 20px", borderRadius: 14,
+                    background: "#EFF6FF", border: "1px solid #BFDBFE",
+                  }}>
+                    <div style={{ fontSize: 12, color: "#2563EB", textTransform: "uppercase", letterSpacing: 1, fontWeight: 800, marginBottom: 6 }}>
+                      {"\u{1F464}"} Carmen hace
+                    </div>
+                    <div style={{ fontSize: colSz, color: "#1e40af", lineHeight: 1.6 }}>{step.userAction}</div>
+                  </div>
+                  <div style={{
+                    padding: mob ? "14px" : "18px 20px", borderRadius: 14,
+                    background: "#F0FDF4", border: "1px solid #BBF7D0",
+                  }}>
+                    <div style={{ fontSize: 12, color: "#16A34A", textTransform: "uppercase", letterSpacing: 1, fontWeight: 800, marginBottom: 6 }}>
+                      {"\u2699\uFE0F"} Sistema ejecuta
+                    </div>
+                    <div style={{ fontSize: colSz, color: "#15803d", lineHeight: 1.6 }}>{step.systemAction}</div>
+                  </div>
+                </div>
+
+                {/* Nav buttons */}
+                <div style={{ display: "flex", marginTop: mob ? 20 : 32, gap: mob ? 8 : 14 }}>
+                  <button
+                    onClick={function() { setActiveStep(Math.max(0, activeStep - 1)); }}
+                    disabled={activeStep === 0}
+                    style={{
+                      flex: 1, padding: mob ? "13px 6px" : "16px", borderRadius: 14,
+                      fontSize: btnSz, fontWeight: 600,
+                      cursor: activeStep === 0 ? "default" : "pointer",
+                      border: "1.5px solid #e2e8f0", background: "#fff",
+                      color: activeStep === 0 ? "#cbd5e1" : "#475569",
+                    }}
+                  >
+                    {"\u2190"} Anterior
+                  </button>
+                  <button
+                    onClick={function() { setActiveStep(Math.min(journeySteps.length - 1, activeStep + 1)); }}
+                    disabled={activeStep === journeySteps.length - 1}
+                    style={{
+                      flex: 1, padding: mob ? "13px 6px" : "16px", borderRadius: 14,
+                      fontSize: btnSz, fontWeight: 700,
+                      cursor: activeStep === journeySteps.length - 1 ? "default" : "pointer",
+                      border: "1.5px solid " + step.phaseColor + "50",
+                      background: activeStep === journeySteps.length - 1 ? "#f8fafc" : step.phaseColor + "12",
+                      color: activeStep === journeySteps.length - 1 ? "#cbd5e1" : step.phaseColor,
+                    }}
+                  >
+                    Siguiente {"\u2192"}
+                  </button>
+                </div>
+
+                {mob && (
+                  <div style={{ textAlign: "center", marginTop: 8, fontSize: 11, color: "#b0b8c4" }}>
+                    {"\u2190"} Desliza para navegar {"\u2192"}
+                  </div>
+                )}
+              </div>
+            ) : (
+              /* === TIMELINE === */
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                {journeySteps.map(function(s, i) {
+                  var isAct = i === activeStep;
+                  var isPast = i < activeStep;
+                  var dotSz = isAct ? (mob ? 24 : 32) : (mob ? 14 : 20);
+                  return (
+                    <div key={s.id} style={{ display: "flex", gap: mob ? 10 : 16 }}>
+                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: mob ? 24 : 32, flexShrink: 0 }}>
+                        <div onClick={function() { setActiveStep(i); }} style={{
+                          width: dotSz, height: dotSz, borderRadius: "50%",
+                          cursor: "pointer", transition: "all 0.3s",
+                          background: isAct ? s.phaseColor : isPast ? s.phaseColor + "30" : "#e2e8f0",
+                          border: "2.5px solid " + (isAct || isPast ? s.phaseColor : "#cbd5e1"),
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          fontSize: isAct ? (mob ? 10 : 14) : 0, flexShrink: 0, marginTop: 2,
+                        }}>
+                          {isAct && <span>{s.phaseIcon}</span>}
+                        </div>
+                        {i < journeySteps.length - 1 && (
+                          <div style={{
+                            width: 2.5, flex: 1, minHeight: 14,
+                            background: isPast ? s.phaseColor + "50" : "#e2e8f0",
+                          }} />
+                        )}
+                      </div>
+                      <div onClick={function() { setActiveStep(i); }} style={{
+                        flex: 1, padding: mob ? "8px 10px" : "12px 18px",
+                        borderRadius: 14, marginBottom: 4, cursor: "pointer",
+                        background: isAct ? "#fff" : "transparent",
+                        border: "1.5px solid " + (isAct ? s.phaseColor + "35" : "transparent"),
+                        boxShadow: isAct ? "0 2px 8px " + s.phaseColor + "12" : "none",
+                      }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+                          <span style={{
+                            fontSize: mob ? 13 : 16, fontWeight: isAct ? 700 : 500,
+                            color: isAct ? "#0f172a" : "#64748b", lineHeight: 1.3,
+                          }}>
+                            {s.title}
+                          </span>
+                          {s.isNew && (
+                            <span style={{
+                              fontSize: 9, padding: "1px 5px", borderRadius: 4,
+                              background: "#fef3c7", color: "#b45309", fontWeight: 700,
+                            }}>NUEVO</span>
+                          )}
+                        </div>
+                        {isAct && (
+                          <div style={{ marginTop: 6, fontSize: mob ? 13 : 15, color: "#475569", lineHeight: 1.6 }}>
+                            {s.description}
+                          </div>
+                        )}
+                        <div style={{ display: "flex", gap: 6, marginTop: isAct ? 8 : 4, flexWrap: "wrap" }}>
+                          <span style={{ fontSize: mob ? 10 : 12, color: "#94a3b8" }}>{s.platformIcon} {s.platform}</span>
+                          {s.layer && <span style={{ fontSize: mob ? 10 : 12, color: layerMeta[s.layer].color, fontWeight: 600 }}>{layerMeta[s.layer].label}</span>}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Dots */}
+            <div style={{ display: "flex", justifyContent: "center", gap: mob ? 4 : 6, marginTop: 22, flexWrap: "wrap" }}>
+              {journeySteps.map(function(s, i) {
+                return (
+                  <div key={i} onClick={function() { setActiveStep(i); }} style={{
+                    width: i === activeStep ? (mob ? 20 : 28) : (mob ? 7 : 10),
+                    height: mob ? 7 : 10, borderRadius: 5,
+                    cursor: "pointer", transition: "all 0.3s",
+                    background: i === activeStep ? s.phaseColor : i < activeStep ? s.phaseColor + "40" : "#e2e8f0",
+                  }} />
+                );
+              })}
+            </div>
+
+            {/* Score */}
+            <div style={{
+              marginTop: 20, padding: mob ? "14px" : "20px 24px", borderRadius: 16,
+              background: "#fff", border: "1px solid #e2e8f0",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+            }}>
+              <div style={{
+                fontSize: mob ? 11 : 13, fontWeight: 700, color: "#64748b",
+                textTransform: "uppercase", letterSpacing: 1.2, marginBottom: 10,
+              }}>
+                Score crediticio de Carmen
+              </div>
+              <div style={{
+                display: "flex", alignItems: "center", gap: mob ? 12 : 16,
+                flexDirection: mob ? "column" : "row",
+              }}>
+                <div style={{
+                  fontSize: scoreSz, fontWeight: 800, color: scoreColor(score),
+                  minWidth: mob ? "auto" : 80, textAlign: mob ? "center" : "left",
+                }}>
+                  {score === null ? "\u2014" : score}
+                  {score !== null && <span style={{ fontSize: mob ? 14 : 18, color: "#94a3b8" }}>/100</span>}
+                </div>
+                <div style={{ flex: 1, width: "100%" }}>
+                  <div style={{ height: mob ? 8 : 10, borderRadius: 5, background: "#f1f5f9" }}>
+                    <div style={{
+                      height: "100%", borderRadius: 5, transition: "width 0.5s ease",
+                      width: (score || 0) + "%",
+                      background: score && score >= 70
+                        ? "linear-gradient(90deg, #22C55E, #16A34A)"
+                        : score && score >= 40
+                          ? "linear-gradient(90deg, #EAB308, #22C55E)"
+                          : "#94a3b8",
+                    }} />
+                  </div>
+                  <div style={{
+                    display: "flex", justifyContent: "space-between",
+                    marginTop: 4, fontSize: mob ? 9 : 11, color: "#94a3b8",
+                  }}>
+                    <span>Inicio</span>
+                    <span style={{ color: "#EAB308" }}>40 \u2014 B\u00E1sicos</span>
+                    <span style={{ color: "#16A34A" }}>70 \u2014 Cr\u00E9dito</span>
+                    <span>100</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {!mob && (
+              <div style={{ textAlign: "center", marginTop: 10, fontSize: 12, color: "#b0b8c4" }}>
+                Usa las flechas {"\u2190 \u2192"} del teclado para navegar
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<UserJourney />);
+  </script>
+</body>
+</html>
