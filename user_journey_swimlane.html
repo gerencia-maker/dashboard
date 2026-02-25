@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Journey Integrado · Con-Héctor × Eleva</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+    background: #FFFFFF;
+    color: #1E293B;
+    min-height: 100vh;
+  }
+  button { font-family: inherit; }
+  .header {
+    padding: 28px 20px 20px;
+    text-align: center;
+    background: linear-gradient(180deg, rgba(79,70,229,0.04) 0%, transparent 100%);
+    border-bottom: 1px solid #F3F4F6;
+  }
+  .header-brands { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 8px; }
+  .header-brands .eleva { font-size: 12px; font-weight: 700; color: #D97706; letter-spacing: 1px; }
+  .header-brands .eleva span { color: #4F46E5; }
+  .header-brands .dot { color: #CBD5E1; }
+  .header-brands .ch { font-size: 12px; font-weight: 700; color: #16A34A; letter-spacing: 0.5px; }
+  h1 {
+    font-size: clamp(22px, 5vw, 30px);
+    font-weight: 800;
+    margin: 0 0 6px;
+    background: linear-gradient(135deg, #1E293B 0%, #4F46E5 50%, #D97706 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+  }
+  .subtitle { color: #6B7280; font-size: 13px; margin: 0 auto; max-width: 360px; line-height: 1.5; }
+  .content { max-width: 600px; margin: 0 auto; padding: 16px 14px 40px; }
+
+  /* Legend */
+  .legend { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin: 16px 0; padding: 14px; border-radius: 14px; background: #F9FAFB; border: 1px solid #E5E7EB; }
+  .legend-item { display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 10px; }
+  .legend-bar { height: 4px; border-radius: 2px; }
+  .legend-label { font-size: 12px; font-weight: 600; }
+  .legend-sub { font-size: 10px; color: #9CA3AF; }
+
+  /* Stats */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 0 0 16px; }
+  .stat-card { text-align: center; padding: 12px 6px; border-radius: 12px; }
+  .stat-icon { font-size: 16px; }
+  .stat-count { font-size: 22px; font-weight: 700; line-height: 1.2; }
+  .stat-label { font-size: 10px; color: #6B7280; margin-top: 2px; }
+
+  /* Filters */
+  .filters { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-bottom: 16px; }
+  .filter-btn { padding: 7px 16px; border-radius: 10px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s; letter-spacing: -0.2px; background: transparent; }
+  .filter-btn:hover { opacity: 0.8; }
+
+  /* Lane headers */
+  .lane-header { display: flex; justify-content: space-between; padding: 0 4px; margin-bottom: 12px; }
+  .lane-label { display: flex; align-items: center; gap: 6px; }
+  .lane-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .lane-text { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; }
+
+  /* Center line */
+  .timeline-container { position: relative; }
+  .center-line { position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: #E5E7EB; transform: translateX(-50%); z-index: 0; }
+
+  /* Phase header */
+  .phase-header { display: flex; align-items: center; gap: 12px; padding: 18px 0 10px; margin-bottom: 4px; position: relative; z-index: 1; }
+  .phase-icon-box { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+  .phase-name { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
+  .phase-meta { font-size: 11px; color: #6B7280; }
+
+  /* Step card */
+  .step-wrapper { position: relative; margin-bottom: 12px; cursor: pointer; z-index: 1; }
+  .step-align { display: flex; }
+  .step-align.left { justify-content: flex-start; }
+  .step-align.right { justify-content: flex-end; }
+  .step-align.center { justify-content: center; }
+  .step-card { padding: 14px 16px; border-radius: 14px; transition: all 0.3s ease; position: relative; overflow: hidden; background: #FAFAFA; border: 1.5px solid #E5E7EB; }
+  .step-card.expanded { }
+  .step-card.w-wide { width: 92%; }
+  .step-card.w-normal { width: 82%; }
+
+  /* Bridge top bar */
+  .bridge-bar { position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 14px 14px 0 0; }
+  /* Side accent */
+  .side-accent { position: absolute; top: 0; bottom: 0; width: 3px; }
+  .side-accent.left { left: 0; border-radius: 14px 0 0 14px; }
+  .side-accent.right { right: 0; border-radius: 0 14px 14px 0; }
+
+  /* Step content */
+  .step-header { display: flex; align-items: center; gap: 10px; }
+  .step-header .icon { font-size: 20px; flex-shrink: 0; }
+  .owner-badge { font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 5px; letter-spacing: 0.8px; text-transform: uppercase; flex-shrink: 0; }
+  .bridge-direction { font-size: 9px; color: #9CA3AF; font-family: monospace; }
+  .step-title { font-size: 14px; font-weight: 600; color: #1E293B; margin-top: 3px; line-height: 1.3; }
+  .step-arrow { font-size: 11px; color: #9CA3AF; transition: transform 0.3s; flex-shrink: 0; }
+  .step-arrow.open { transform: rotate(180deg); }
+  .step-desc { font-size: 12px; color: #6B7280; line-height: 1.5; margin-top: 4px; padding-left: 30px; }
+  .step-detail { margin-top: 10px; padding-top: 10px; padding-left: 30px; border-top: 1px solid #E5E7EB; }
+  .step-detail-text { font-size: 11px; color: #6B7280; line-height: 1.6; font-family: 'JetBrains Mono', monospace; background: #F3F4F6; padding: 8px 12px; border-radius: 8px; }
+
+  /* End marker */
+  .end-marker { text-align: center; padding: 24px 0; }
+  .end-badge { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 14px; background: rgba(22,163,74,0.07); border: 1px solid rgba(34,197,94,0.2); }
+  .end-badge .icon { font-size: 18px; }
+  .end-badge .text { font-size: 13px; font-weight: 700; color: #16A34A; }
+  .end-sub { font-size: 11px; color: #6B7280; margin-top: 8px; }
+
+  /* Summary table */
+  .summary { margin-top: 16px; border-radius: 16px; overflow: hidden; border: 1px solid #E5E7EB; }
+  .summary-header { padding: 12px 16px; background: #F3F4F6; border-bottom: 1px solid #E5E7EB; font-size: 13px; font-weight: 700; color: #64748b; }
+  .summary-grid { display: grid; grid-template-columns: 1fr 1fr; font-size: 12px; }
+  .summary-col { padding: 14px 16px; }
+  .summary-col.ch { border-right: 1px solid #E5E7EB; background: rgba(22,163,74,0.04); }
+  .summary-col.eleva { background: rgba(79,70,229,0.04); }
+  .summary-col-title { font-weight: 700; margin-bottom: 10px; font-size: 13px; }
+  .summary-item { padding: 4px 0; color: #64748b; display: flex; gap: 6px; line-height: 1.4; }
+  .summary-item .bullet { flex-shrink: 0; }
+  .bridge-row { padding: 12px 16px; border-top: 1px solid #E5E7EB; background: rgba(217,119,6,0.04); }
+  .bridge-row-title { font-weight: 700; color: #D97706; margin-bottom: 8px; font-size: 13px; }
+  .flows-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 11px; }
+  .flow-item { display: flex; align-items: center; gap: 4px; color: #64748b; padding: 3px 0; }
+  .flow-from, .flow-to { font-weight: 600; font-size: 10px; }
+  .flow-arrow { color: #CBD5E1; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-brands">
+    <span class="eleva">e<span>l</span>eva</span>
+    <span class="dot">·</span>
+    <span class="ch">Con-Héctor</span>
+  </div>
+  <h1>User Journey Integrado</h1>
+  <p class="subtitle">
+    De rechazo crediticio a acceso a crédito formal.<br>
+    <span>Quién hace qué y dónde se conectan.</span>
+  </p>
+</div>
+
+<div class="content" id="app"></div>
+
+<script>
+const PHASES = [
+  {
+    id: "captacion", name: "Captación", icon: "📡", color: "#F59E0B",
+    steps: [
+      { owner: "ch", title: "Recepción de base rechazada", desc: "Finsus/Finvero comparte base de personas rechazadas para crédito", detail: "Archivo con phone_number, motivo de rechazo, fecha", icon: "📋" },
+      { owner: "ch", title: "Outreach proactivo WhatsApp", desc: "Con-Héctor contacta al usuario con mensaje empático y personalizado", detail: "Template HSM aprobado por Meta · Tono cálido · Sin mencionar rechazo", icon: "💬" },
+      { owner: "ch", title: "Diagnóstico conversacional", desc: "IA conversa para entender perfil, necesidades y situación financiera", detail: "GPT-4.1-nano · Prompts por país · Extrae señales financieras automáticamente", icon: "🔍" },
+    ],
+  },
+  {
+    id: "onboarding", name: "Onboarding", icon: "🚀", color: "#3B82F6",
+    steps: [
+      { owner: "bridge", title: "Invitación a Eleva", desc: "Con-Héctor envía deep link personalizado para registrarse en Eleva", detail: "Link con UTM tracking · Precarga phone_number · Score inicial: ~20", icon: "🔗", from: "ch", to: "eleva" },
+      { owner: "eleva", title: "Registro en plataforma", desc: "Usuario se registra con nombre, género, teléfono, correo, tipo de negocio", detail: "Acepta políticas de privacidad · Se crea perfil en PostgreSQL", icon: "📝" },
+      { owner: "eleva", title: "Asignación de ruta inicial", desc: "Motor de recomendación asigna módulos básicos según perfil", detail: "Score < 40 → A de Ahorro + C de Cuentas Claras + El Inicio", icon: "🗺️" },
+    ],
+  },
+  {
+    id: "educacion", name: "Educación", icon: "📚", color: "#8B5CF6",
+    steps: [
+      { owner: "eleva", title: "Módulos de capacitación", desc: "Usuario avanza por videos e infografías de temas financieros y de negocio", detail: "6 módulos financieros + 7 de negocio · Básico y Avanzado · Evaluaciones", icon: "🎓" },
+      { owner: "eleva", title: "Gamificación y puntos", desc: "Cada módulo completado suma puntos, desbloquea trofeos y sube de nivel", detail: "XP por módulo · Logros especiales · Ranking en comunidad", icon: "🏆" },
+      { owner: "bridge", title: "Micro-contenido por WhatsApp", desc: "Con-Héctor envía tips personalizados basados en el módulo actual", detail: "Celery task genera micro-lecciones con GPT · 50-100 palabras · Diario", icon: "📲", from: "ch", to: "eleva" },
+      { owner: "bridge", title: "Nudges de reactivación", desc: "Si el usuario lleva 3+ días inactivo, CH envía recordatorio motivacional", detail: "Celery beat schedule · 9am · Personalizado según última actividad", icon: "⏰", from: "ch", to: "eleva" },
+    ],
+  },
+  {
+    id: "scoring", name: "Scoring", icon: "📊", color: "#16A34A",
+    steps: [
+      { owner: "bridge", title: "Señales financieras → Score", desc: "CH envía señales de conversación, Eleva las combina con progreso educativo", detail: "GET /signals · Cron cada 15min · Componentes: educación + conversación + engagement", icon: "📈", from: "ch", to: "eleva" },
+      { owner: "eleva", title: "Cálculo de score combinado", desc: "Eleva pondera todas las señales para generar un score crediticio alternativo", detail: "Score 0-100 · Ponderaciones configurables desde CMS · Historial versionado", icon: "🧮" },
+      { owner: "bridge", title: "Notificación de avance", desc: "Cuando el score sube, CH felicita al usuario por WhatsApp", detail: "Webhook Eleva → CH · Mensaje de refuerzo positivo · Desbloquea contenido avanzado", icon: "🎉", from: "eleva", to: "ch" },
+    ],
+  },
+  {
+    id: "credito", name: "Acceso a crédito", icon: "💳", color: "#EF4444",
+    steps: [
+      { owner: "eleva", title: "Score alcanza umbral", desc: "Cuando el score supera 70+, se habilita la sección de crédito", detail: "Score ≥ 70 · Mínimo 3 módulos completados · Quiz de interés activado", icon: "✅" },
+      { owner: "bridge", title: "Quiz de interés en crédito", desc: "CH acompaña el quiz por WhatsApp mientras Eleva lo registra", detail: "Preguntas: monto, plazo, destino del crédito · Respuestas alimentan perfil", icon: "❓", from: "ch", to: "eleva" },
+      { owner: "eleva", title: "Derivación a Finvero/Finsus", desc: "Eleva empaqueta score + perfil + historial y lo envía al aliado crediticio", detail: "POST /v1/scoring/export · JWT · Perfil completo con evidencia educativa", icon: "🏦" },
+      { owner: "ch", title: "Seguimiento post-derivación", desc: "Con-Héctor mantiene comunicación durante el proceso de evaluación crediticia", detail: "Actualizaciones de estado · Tips de preparación · Soporte emocional", icon: "🤝" },
+    ],
+  },
+];
+
+const OWN = {
+  ch:     { label: "Con-Héctor", sublabel: "WhatsApp · IA", color: "#16A34A", bg: "rgba(22,163,74,0.07)", border: "rgba(22,163,74,0.3)" },
+  eleva:  { label: "Eleva", sublabel: "Plataforma Web", color: "#4F46E5", bg: "rgba(79,70,229,0.06)", border: "rgba(79,70,229,0.25)" },
+  bridge: { label: "Conexión", sublabel: "CH ↔ Eleva", color: "#D97706", bg: "rgba(217,119,6,0.06)", border: "rgba(217,119,6,0.25)" },
+};
+
+let currentFilter = "all";
+let expandedStep = null;
+
+function render() {
+  const app = document.getElementById("app");
+  const filtered = PHASES.map(p => ({
+    ...p,
+    steps: p.steps.filter(s => {
+      if (currentFilter === "all") return true;
+      if (currentFilter === "bridge") return s.owner === "bridge";
+      if (currentFilter === "ch") return s.owner === "ch" || (s.owner === "bridge" && s.from === "ch");
+      if (currentFilter === "eleva") return s.owner === "eleva" || (s.owner === "bridge" && (s.to === "eleva" || s.from === "eleva"));
+      return true;
+    }),
+  })).filter(p => p.steps.length > 0);
+
+  const allSteps = PHASES.flatMap(p => p.steps);
+  const chCount = allSteps.filter(s => s.owner === "ch").length;
+  const elevaCount = allSteps.filter(s => s.owner === "eleva").length;
+  const bridgeCount = allSteps.filter(s => s.owner === "bridge").length;
+
+  let html = "";
+
+  // Legend
+  html += `<div class="legend">`;
+  [{key:"ch",w:10},{key:"eleva",w:10},{key:"bridge",w:24}].forEach(({key,w}) => {
+    const c = OWN[key];
+    const bg = key === "bridge"
+      ? `linear-gradient(90deg, ${OWN.ch.color}, ${c.color}, ${OWN.eleva.color})`
+      : c.color;
+    html += `<div class="legend-item" style="background:${c.bg};border:1px solid ${c.border}">
+      <div class="legend-bar" style="width:${w}px;background:${bg}"></div>
+      <span class="legend-label" style="color:${c.color}">${c.label}</span>
+      <span class="legend-sub">${c.sublabel}</span>
+    </div>`;
+  });
+  html += `</div>`;
+
+  // Stats
+  const stats = [
+    { label: "Con-Héctor", count: chCount, color: OWN.ch.color, icon: "🤖" },
+    { label: "Eleva", count: elevaCount, color: OWN.eleva.color, icon: "📱" },
+    { label: "Conexiones", count: bridgeCount, color: OWN.bridge.color, icon: "⚡" },
+    { label: "Total", count: allSteps.length, color: "#6B7280", icon: "📍" },
+  ];
+  html += `<div class="stats">`;
+  stats.forEach(s => {
+    html += `<div class="stat-card" style="background:${s.color}08;border:1px solid ${s.color}20">
+      <div class="stat-icon">${s.icon}</div>
+      <div class="stat-count" style="color:${s.color}">${s.count}</div>
+      <div class="stat-label">${s.label}</div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  // Filters
+  const filters = [
+    { key: "all", label: "Todo", color: "#6B7280" },
+    { key: "ch", label: "🤖 Con-Héctor", color: OWN.ch.color },
+    { key: "eleva", label: "📱 Eleva", color: OWN.eleva.color },
+    { key: "bridge", label: "⚡ Conexiones", color: OWN.bridge.color },
+  ];
+  html += `<div class="filters">`;
+  filters.forEach(f => {
+    const active = currentFilter === f.key;
+    html += `<button class="filter-btn" onclick="setFilter('${f.key}')" style="
+      border:1.5px solid ${active ? f.color : '#E5E7EB'};
+      background:${active ? f.color + '15' : 'transparent'};
+      color:${active ? f.color : '#64748b'};
+    ">${f.label}</button>`;
+  });
+  html += `</div>`;
+
+  // Lane headers
+  html += `<div class="lane-header">
+    <div class="lane-label">
+      <div class="lane-dot" style="background:${OWN.ch.color}"></div>
+      <span class="lane-text" style="color:${OWN.ch.color}">← CON-HÉCTOR</span>
+    </div>
+    <div class="lane-label">
+      <span class="lane-text" style="color:${OWN.eleva.color}">ELEVA →</span>
+      <div class="lane-dot" style="background:${OWN.eleva.color}"></div>
+    </div>
+  </div>`;
+
+  // Timeline
+  html += `<div class="timeline-container"><div class="center-line"></div>`;
+
+  let stepNum = 0;
+  filtered.forEach(phase => {
+    // Phase header
+    html += `<div class="phase-header">
+      <div class="phase-icon-box" style="background:${phase.color}18;border:1.5px solid ${phase.color}35">
+        ${phase.icon}
+      </div>
+      <div>
+        <div class="phase-name" style="color:${phase.color}">${phase.name}</div>
+        <div class="phase-meta">${phase.steps.length} pasos · ${phase.steps.filter(s=>s.owner==="ch").length} CH · ${phase.steps.filter(s=>s.owner==="eleva").length} Eleva · ${phase.steps.filter(s=>s.owner==="bridge").length} conexiones</div>
+      </div>
+    </div>`;
+
+    phase.steps.forEach((step, i) => {
+      stepNum++;
+      const key = `${phase.id}-${i}`;
+      const c = OWN[step.owner];
+      const isBridge = step.owner === "bridge";
+      const isExpanded = expandedStep === key;
+      const align = isBridge ? "center" : step.owner === "ch" ? "left" : "right";
+      const widthClass = isBridge ? "w-wide" : "w-normal";
+
+      const cardBg = isExpanded ? c.bg : "#FAFAFA";
+      const cardBorder = isExpanded ? c.border : "#E5E7EB";
+
+      let accent = "";
+      if (isBridge) {
+        const fromC = step.from === "ch" ? OWN.ch.color : OWN.eleva.color;
+        const toC = step.to === "ch" ? OWN.ch.color : OWN.eleva.color;
+        accent = `<div class="bridge-bar" style="background:linear-gradient(90deg,${fromC},${c.color},${toC})"></div>`;
+      } else {
+        const side = step.owner === "ch" ? "left" : "right";
+        accent = `<div class="side-accent ${side}" style="background:${c.color}"></div>`;
+      }
+
+      const bridgeDir = isBridge ? `<span class="bridge-direction">${OWN[step.from]?.label} → ${OWN[step.to]?.label}</span>` : "";
+
+      const detailHtml = isExpanded ? `<div class="step-detail"><div class="step-detail-text">${step.detail}</div></div>` : "";
+
+      html += `<div class="step-wrapper" onclick="toggleStep('${key}')">
+        <div class="step-align ${align}">
+          <div class="step-card ${widthClass}" style="background:${cardBg};border-color:${cardBorder}">
+            ${accent}
+            <div class="step-header">
+              <span class="icon">${step.icon}</span>
+              <div style="flex:1;min-width:0">
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                  <span class="owner-badge" style="background:${c.color}20;color:${c.color}">${c.label}</span>
+                  ${bridgeDir}
+                </div>
+                <div class="step-title">${step.title}</div>
+              </div>
+              <span class="step-arrow ${isExpanded ? 'open' : ''}">▼</span>
+            </div>
+            <div class="step-desc">${step.desc}</div>
+            ${detailHtml}
+          </div>
+        </div>
+      </div>`;
+    });
+  });
+
+  html += `</div>`; // close timeline
+
+  // End marker
+  html += `<div class="end-marker">
+    <div class="end-badge">
+      <span class="icon">🎯</span>
+      <span class="text">Crédito aprobado</span>
+    </div>
+    <div class="end-sub">Score 0 → 72+ · Rechazado → Acreditado</div>
+  </div>`;
+
+  // Summary table
+  const chItems = ["Contacto inicial WhatsApp","Diagnóstico con IA (GPT)","Extracción de señales","Micro-contenido diario","Nudges de reactivación","Acompañamiento del quiz","Seguimiento post-crédito"];
+  const elevaItems = ["Registro y perfil del usuario","Módulos educativos (13)","Motor de recomendación","Scoring crediticio combinado","Gamificación y puntos","Quiz de interés en crédito","Derivación a Finvero/Finsus"];
+  const flows = [
+    { from: "CH", to: "Eleva", what: "Señales financieras" },
+    { from: "CH", to: "Eleva", what: "Invitación + deep link" },
+    { from: "Eleva", to: "CH", what: "Recomendaciones" },
+    { from: "Eleva", to: "CH", what: "Eventos de progreso" },
+    { from: "CH", to: "Eleva", what: "Micro-contenido triggers" },
+    { from: "Eleva", to: "Finvero", what: "Score + perfil" },
+  ];
+
+  html += `<div class="summary">
+    <div class="summary-header">Resumen de responsabilidades</div>
+    <div class="summary-grid">
+      <div class="summary-col ch">
+        <div class="summary-col-title" style="color:${OWN.ch.color}">🤖 Con-Héctor</div>
+        ${chItems.map(it => `<div class="summary-item"><span class="bullet" style="color:${OWN.ch.color}">•</span>${it}</div>`).join("")}
+      </div>
+      <div class="summary-col eleva">
+        <div class="summary-col-title" style="color:${OWN.eleva.color}">📱 Eleva</div>
+        ${elevaItems.map(it => `<div class="summary-item"><span class="bullet" style="color:${OWN.eleva.color}">•</span>${it}</div>`).join("")}
+      </div>
+    </div>
+    <div class="bridge-row">
+      <div class="bridge-row-title">⚡ Puntos de conexión</div>
+      <div class="flows-grid">
+        ${flows.map(f => {
+          const fromColor = f.from === "CH" ? OWN.ch.color : OWN.eleva.color;
+          const toColor = f.to === "CH" ? OWN.ch.color : f.to === "Finvero" ? "#EF4444" : OWN.eleva.color;
+          return `<div class="flow-item">
+            <span class="flow-from" style="color:${fromColor}">${f.from}</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-to" style="color:${toColor}">${f.to}</span>
+            <span>${f.what}</span>
+          </div>`;
+        }).join("")}
+      </div>
+    </div>
+  </div>`;
+
+  app.innerHTML = html;
+}
+
+function setFilter(f) { currentFilter = f; expandedStep = null; render(); }
+function toggleStep(key) { expandedStep = expandedStep === key ? null : key; render(); }
+
+render();
+</script>
+</body>
+</html>
