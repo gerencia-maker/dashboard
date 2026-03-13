@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa de Calor - El Rancherito</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
+:root{--bg:#f5f2ec;--s1:#ffffff;--s2:#f0ece3;--s3:#e8e2d8;--bd:#ddd8ce;--bd2:#c8c2b5;--am:#c47d0a;--amd:#fef3dc;--amg:rgba(196,125,10,.1);--gn:#1e8f56;--gnd:#d4f0e2;--gng:rgba(30,143,86,.1);--rd:#cc2222;--tx:#1a1814;--t2:#5a5248;--t3:#9a9288;--t4:#bbb4a8;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;min-height:100vh;padding:24px 20px 60px;}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--bd);}
+.topbar h1{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;color:var(--am);}
+.topbar .sub{font-size:11px;color:var(--t3);margin-top:3px;}
+.chip{background:var(--amd);color:var(--am);font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:1px;text-transform:uppercase;font-family:'DM Mono',monospace;border:1px solid rgba(196,125,10,.25);}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
+.kpi{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:15px 17px;position:relative;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+.kpi::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--am),transparent);opacity:.5;}
+.kpi .lb{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--t3);font-weight:600;margin-bottom:6px;}
+.kpi .vl{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--am);line-height:1;}
+.kpi .ht{font-size:11px;color:var(--t3);margin-top:4px;}
+.mtabs{display:flex;gap:3px;margin-bottom:16px;background:var(--s1);padding:4px;border-radius:10px;border:1px solid var(--bd);width:fit-content;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+.mtab{padding:7px 18px;font-size:12px;font-weight:600;border-radius:7px;cursor:pointer;color:var(--t2);border:none;background:none;}
+.mtab.on{background:var(--am);color:#fff;}
+.fbar{display:flex;align-items:center;gap:7px;background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:9px 14px;margin-bottom:14px;flex-wrap:wrap;box-shadow:0 1px 4px rgba(0,0,0,.04);}
+.flb{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--t3);font-weight:600;font-family:'DM Mono',monospace;white-space:nowrap;}
+.fsep{width:1px;height:18px;background:var(--bd);margin:0 3px;}
+.fbtn{padding:4px 11px;font-size:11px;font-weight:500;border-radius:6px;cursor:pointer;color:var(--t2);border:1px solid var(--bd);background:var(--s2);white-space:nowrap;}
+.fbtn:hover{border-color:var(--bd2);color:var(--tx);}
+.fa{background:var(--amg)!important;border-color:var(--am)!important;color:var(--am)!important;font-weight:600!important;}
+.fg{background:var(--gng)!important;border-color:var(--gn)!important;color:var(--gn)!important;font-weight:600!important;}
+.fb{background:rgba(80,80,200,.07)!important;border-color:#5050cc!important;color:#4040bb!important;font-weight:600!important;}
+.fab{background:linear-gradient(135deg,var(--amg),var(--gng))!important;border-color:var(--am)!important;color:var(--am)!important;font-weight:600!important;}
+/* hora selector chips */
+.hora-sel{display:flex;flex-wrap:wrap;gap:4px;}
+.hchip{padding:3px 9px;font-size:10px;font-weight:500;border-radius:5px;cursor:pointer;color:var(--t2);border:1px solid var(--bd);background:var(--s2);white-space:nowrap;font-family:'DM Mono',monospace;}
+.hchip:hover{border-color:var(--bd2);color:var(--tx);}
+.hchip.on{background:var(--am);color:#fff;border-color:var(--am);font-weight:700;}
+.hchip.all{background:var(--amg);border-color:var(--am);color:var(--am);font-weight:700;}
+.mtog{display:flex;gap:3px;background:var(--s2);padding:3px;border-radius:7px;border:1px solid var(--bd);}
+.mto{padding:3px 10px;font-size:10px;font-weight:600;border-radius:5px;cursor:pointer;color:var(--t3);border:none;background:none;text-transform:uppercase;}
+.mto.on{background:var(--s1);color:var(--am);box-shadow:0 1px 3px rgba(0,0,0,.09);}
+.pnl{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:17px 19px;margin-bottom:14px;box-shadow:0 1px 5px rgba(0,0,0,.05);}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.ptit{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--t2);font-weight:700;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+.ptl{display:flex;align-items:center;gap:6px;}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--am);flex-shrink:0;}
+.dotg{background:var(--gn);}
+.hmw{overflow-x:auto;}
+.hmt{width:100%;border-collapse:separate;border-spacing:2px;font-size:11px;}
+.hmt th{padding:4px 8px;text-align:center;font-weight:600;color:var(--t3);font-size:10px;text-transform:uppercase;white-space:nowrap;}
+.hmt th.rl{text-align:right;min-width:130px;}
+.hmt td{padding:5px 7px;text-align:center;font-size:11px;font-weight:600;border-radius:4px;cursor:pointer;font-family:'DM Mono',monospace;white-space:nowrap;transition:transform .1s;}
+.hmt td:hover{transform:scale(1.07);outline:1.5px solid var(--am);z-index:2;position:relative;}
+.hmt td.rl{text-align:right;background:transparent!important;font-family:'DM Sans',sans-serif;color:var(--tx);font-weight:400;padding-right:10px;cursor:default;transform:none!important;outline:none!important;}
+.brow{display:flex;align-items:center;gap:8px;margin-bottom:7px;cursor:pointer;}
+.pnm{font-size:11px;color:var(--t2);min-width:175px;max-width:175px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pnm.sel{color:var(--am)!important;font-weight:600;}
+.btrk{flex:1;height:16px;background:var(--s3);border-radius:4px;overflow:hidden;}
+.bfil{height:100%;border-radius:4px;}
+.bval{font-size:10px;color:var(--t3);min-width:72px;text-align:right;font-family:'DM Mono',monospace;line-height:1.4;}
+.sw{display:flex;align-items:center;gap:7px;}
+input[type=range]{-webkit-appearance:none;width:90px;height:4px;background:var(--s3);border-radius:2px;outline:none;cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--am);cursor:pointer;}
+.rv{font-size:10px;color:var(--am);font-family:'DM Mono',monospace;min-width:22px;}
+.srch{background:var(--s2);border:1px solid var(--bd);border-radius:7px;padding:5px 11px;font-size:11px;color:var(--tx);outline:none;width:160px;font-family:'DM Sans',sans-serif;}
+.srch:focus{border-color:var(--am);}
+.srch::placeholder{color:var(--t3);}
+.sbtn{background:none;border:1px solid var(--bd);border-radius:6px;color:var(--t3);font-size:10px;padding:4px 9px;cursor:pointer;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+.sbtn.on{border-color:var(--am);color:var(--am);background:var(--amg);}
+.insgs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.ins{background:var(--s2);border:1px solid var(--bd);border-radius:9px;padding:13px 15px;}
+.ins .ilb{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;font-weight:600;margin-bottom:6px;}
+.ins .ivl{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;line-height:1;}
+.ins .isb{font-size:11px;color:var(--t2);margin-top:4px;}
+.ins .idc{font-size:10px;color:var(--t3);margin-top:6px;line-height:1.5;}
+.crow{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid var(--bd);cursor:default;transition:background .15s;border-radius:5px;}
+.crow:last-child{border-bottom:none;}
+.crow:hover{background:var(--s2);}
+.cnm{font-size:12px;color:var(--tx);flex:1;}
+.cbw{display:flex;gap:6px;align-items:center;flex:2;}
+.mbr{height:14px;border-radius:3px;min-width:4px;}
+.cvs{display:flex;gap:12px;min-width:150px;justify-content:flex-end;}
+.cv{font-size:11px;font-family:'DM Mono',monospace;}
+.leg{display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;align-items:center;}
+.lgi{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--t3);}
+.lsw{width:10px;height:10px;border-radius:2px;}
+.view{display:none;}
+.view.active{display:block;}
+#TIP{position:fixed;background:var(--s1);border:1px solid var(--bd2);border-radius:9px;padding:9px 13px;font-size:12px;color:var(--tx);pointer-events:none;z-index:999;display:none;max-width:230px;box-shadow:0 4px 18px rgba(0,0,0,.11);line-height:1.6;}
+.hora-badge{display:inline-block;background:var(--amd);color:var(--am);font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;font-family:'DM Mono',monospace;border:1px solid rgba(196,125,10,.3);}
+.hora-badge.all{background:var(--s3);color:var(--t2);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <h1>Mapa de Calor &mdash; El Rancherito</h1>
+    <div class="sub">Palmas &middot; Copacabana &middot; Enero 2026 &middot; Dashboard interactivo</div>
+  </div>
+  <div class="chip">FoodLogic Analytics</div>
+</div>
+
+<div class="kpis">
+  <div class="kpi"><div class="lb">Venta Total Palmas</div><div class="vl">$889M</div><div class="ht">Enero 2026</div></div>
+  <div class="kpi"><div class="lb">Venta Total Copacabana</div><div class="vl">$1.003B</div><div class="ht">Enero 2026</div></div>
+  <div class="kpi"><div class="lb">Pico horario</div><div class="vl" style="font-size:15px">1pm - 4pm</div><div class="ht">~43-45% de venta total</div></div>
+  <div class="kpi"><div class="lb">Venta combinada</div><div class="vl">$1.893B</div><div class="ht">Ambas sedes</div></div>
+</div>
+
+<div class="mtabs">
+  <button class="mtab on" data-view="horas">Por Hora</button>
+  <button class="mtab" data-view="productos">Productos</button>
+  <button class="mtab" data-view="categorias">Categorias</button>
+</div>
+
+<!-- ═══ HORAS ═══ -->
+<div class="view active" id="view-horas">
+  <div class="fbar">
+    <span class="flb">Sede</span>
+    <button class="fbtn fab" id="fha">Ambas</button>
+    <button class="fbtn" id="fhp">Palmas</button>
+    <button class="fbtn" id="fhc">Copacabana</button>
+    <div class="fsep"></div>
+    <span class="flb">Dia</span>
+    <button class="fbtn fb" id="fhd0">Todos</button>
+    <button class="fbtn" id="fhd1">Lun-Vie</button>
+    <button class="fbtn" id="fhd2">Sab-Dom</button>
+    <div class="fsep"></div>
+    <span class="flb">Metrica</span>
+    <div class="mtog">
+      <button class="mto on" id="mhp">%</button>
+      <button class="mto" id="mhv">$</button>
+    </div>
+    <div class="fsep"></div>
+    <span class="flb">Top N</span>
+    <div class="sw">
+      <input type="range" min="3" max="14" value="14" id="sln">
+      <span class="rv" id="rvh">14</span>
+    </div>
+  </div>
+  <!-- Heatmap full width -->
+  <div class="pnl" style="margin-bottom:14px">
+    <div class="ptit"><div class="ptl"><span class="dot"></span>MAPA CALOR - HORAS</div><div style="font-size:10px;color:var(--am)" id="hslbl">AMBAS SEDES</div></div>
+    <div class="leg" id="legh"></div>
+    <div class="hmw" id="hmh"></div>
+  </div>
+  <!-- Chart full width below -->
+  <div class="pnl" style="margin-bottom:14px">
+    <div class="ptit"><div class="ptl"><span class="dot dotg"></span>COMPARACION DIRECTA POR FRANJA</div></div>
+    <canvas id="cht-h" height="120"></canvas>
+  </div>
+  <div class="pnl">
+    <div class="ptit"><div class="ptl"><span class="dot"></span>INSIGHTS POR FRANJA</div></div>
+    <div class="insgs">
+      <div class="ins"><div class="ilb">Bloque Rey</div><div class="ivl" style="color:var(--am)">1pm - 4pm</div><div class="isb">Palmas 43.5% &middot; Copa 44.7%</div><div class="idc">Pico de almuerzo dominante. Ambas sedes concentran casi la mitad de la venta en estas 3 horas.</div></div>
+      <div class="ins"><div class="ilb">Diferencial clave</div><div class="ivl" style="color:var(--gn)">4pm - 5pm</div><div class="isb">Palmas 18.9% vs Copa 10.4%</div><div class="idc">Palmas tiene segundo pico de tarde mucho mas fuerte. Zona comercial u oficinas cercanas.</div></div>
+      <div class="ins"><div class="ilb">Oportunidad nocturna</div><div class="ivl" style="color:var(--rd)">8pm - 10pm</div><div class="isb">~11% ambas sedes</div><div class="idc">Copa cierra mejor la noche post 10pm (7.9% vs 4.3% Palmas). Potencial de crecimiento.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PRODUCTOS ═══ -->
+<div class="view" id="view-productos">
+  <div class="fbar">
+    <span class="flb">Sede</span>
+    <button class="fbtn fab" id="fpa">Ambas</button>
+    <button class="fbtn" id="fpp">Palmas</button>
+    <button class="fbtn" id="fpc">Copacabana</button>
+    <div class="fsep"></div>
+    <span class="flb">Metrica</span>
+    <div class="mtog">
+      <button class="mto on" id="mpq">Cant.</button>
+      <button class="mto" id="mpv">$</button>
+    </div>
+    <div class="fsep"></div>
+    <span class="flb">Top N</span>
+    <div class="sw">
+      <input type="range" min="5" max="30" value="15" id="slp">
+      <span class="rv" id="rvp">15</span>
+    </div>
+    <div class="fsep"></div>
+    <input type="text" class="srch" id="psrch" placeholder="Buscar producto...">
+    <div class="fsep"></div>
+    <span class="flb">Orden</span>
+    <button class="sbtn on" id="sdd">Mayor</button>
+    <button class="sbtn" id="sda">Menor</button>
+  </div>
+  <!-- Filtro de hora productos -->
+  <div class="fbar" id="fbar-hora-p">
+    <span class="flb">Franja horaria</span>
+    <div class="hora-sel" id="hsel-p"></div>
+  </div>
+  <div class="pnl" style="margin-bottom:6px;padding:10px 14px;background:var(--amd);border-color:rgba(196,125,10,.2)">
+    <span style="font-size:11px;color:var(--am);font-weight:500">Filtrando por hora: </span>
+    <span class="hora-badge" id="hora-badge-p">Todas las franjas</span>
+    <span style="font-size:11px;color:var(--t3);margin-left:8px">Los datos de productos se ponderan por participacion horaria</span>
+  </div>
+  <div class="g2" id="pgrid" style="margin-bottom:14px">
+    <div class="pnl" id="ppp" style="margin-bottom:0">
+      <div class="ptit"><div class="ptl"><span class="dot"></span><span id="pptit">PALMAS - TOP 15</span></div><div style="font-size:10px;color:var(--t3)" id="pptot"></div></div>
+      <div id="barp"></div>
+    </div>
+    <div class="pnl" id="pcp" style="margin-bottom:0">
+      <div class="ptit"><div class="ptl"><span class="dot dotg"></span><span id="pctit">COPACABANA - TOP 15</span></div><div style="font-size:10px;color:var(--t3)" id="pctot"></div></div>
+      <div id="barc"></div>
+    </div>
+  </div>
+  <div class="pnl">
+    <div class="ptit"><div class="ptl"><span class="dot"></span>MAPA DE CALOR - PRODUCTOS COMUNES</div></div>
+    <div style="font-size:10px;color:var(--t3);margin-bottom:10px">Clic en fila para resaltar</div>
+    <div class="hmw" id="hmp"></div>
+  </div>
+</div>
+
+<!-- ═══ CATEGORIAS ═══ -->
+<div class="view" id="view-categorias">
+  <div class="fbar">
+    <span class="flb">Sede</span>
+    <button class="fbtn fab" id="fca">Ambas</button>
+    <button class="fbtn" id="fcp">Palmas</button>
+    <button class="fbtn" id="fcc">Copacabana</button>
+    <div class="fsep"></div>
+    <span class="flb">Metrica</span>
+    <div class="mtog">
+      <button class="mto on" id="mcv">$ Valor</button>
+      <button class="mto" id="mcq">Cant.</button>
+    </div>
+    <div class="fsep"></div>
+    <span class="flb">Ordenar por</span>
+    <button class="fbtn fb" id="csp">Palmas</button>
+    <button class="fbtn" id="csc">Copa</button>
+    <button class="fbtn" id="csd">Delta</button>
+  </div>
+  <!-- Filtro de hora categorias -->
+  <div class="fbar" id="fbar-hora-c">
+    <span class="flb">Franja horaria</span>
+    <div class="hora-sel" id="hsel-c"></div>
+  </div>
+  <div class="pnl" style="margin-bottom:6px;padding:10px 14px;background:var(--amd);border-color:rgba(196,125,10,.2)">
+    <span style="font-size:11px;color:var(--am);font-weight:500">Filtrando por hora: </span>
+    <span class="hora-badge" id="hora-badge-c">Todas las franjas</span>
+    <span style="font-size:11px;color:var(--t3);margin-left:8px">Los datos de categorias se ponderan por participacion horaria</span>
+  </div>
+  <div class="g2" style="margin-bottom:14px">
+    <div class="pnl" style="margin-bottom:0">
+      <div class="ptit"><div class="ptl"><span class="dot"></span>MAPA DE CALOR</div></div>
+      <div class="hmw" id="hmc"></div>
+    </div>
+    <div class="pnl" style="margin-bottom:0">
+      <div class="ptit"><div class="ptl"><span class="dot dotg"></span>BARRAS COMPARATIVAS</div></div>
+      <canvas id="cht-c" height="230"></canvas>
+    </div>
+  </div>
+  <div class="pnl">
+    <div class="ptit"><div class="ptl"><span class="dot"></span>TABLA DETALLADA</div></div>
+    <div id="ctbl"></div>
+  </div>
+</div>
+
+<div id="TIP"></div>
+
+<script>
+var HORAS=['6-7am','7-8am','8-9am','9-10am','10-11am','11am-12pm','12-1pm','1-4pm','4-5pm','5-7pm','7-8pm','8-9pm','9-10pm','10pm+'];
+// Pesos horarios por hora (participacion % - promedio palmas+copa lun-dom)
+var HORA_PCT=[.000086,.003315,.011822,.017717,.025128,.035379,.048430,.438847,.146330,.076365,.039813,.054122,.052291,.048358];
+
+var DH={
+  palmas:{
+    ld:{p:[.000171,.004872,.008777,.018465,.028117,.036889,.048242,.43468,.188786,.042066,.040497,.055742,.055238,.037458],v:[139270,3969860,7151288,15044449,22908660,30056345,39306090,354164190,153817503,34274363,32995998,45416655,45006183,30519952]},
+    sf:{p:[.000075,.003267,.005419,.018719,.030041,.032453,.045125,.432551,.122152,.117527,.042569,.055818,.051759,.042525],v:[35325,1542167,2557806,8836217,14180235,15318830,21300329,204178607,57659686,55476901,20094084,26347894,24432039,20073270]}
+  },
+  copa:{
+    ld:{p:[0,.001758,.014866,.016969,.022139,.033869,.048617,.447013,.103874,.110664,.039128,.052501,.049344,.059257],v:[0,1026838,8683620,9912222,12932359,19783968,28398554,261114704,60676379,64642701,22856145,30667792,28823273,34614208]},
+    sf:{p:[0,.000888,.012581,.023793,.032185,.039185,.057153,.391642,.123402,.121468,.031619,.043288,.044035,.078761],v:[0,342177,4845826,9163842,12396460,15092303,22012851,150843634,47529182,46784115,12178174,16672554,16960492,30335180]}
+  }
+};
+var PP=[
+  {n:'BANDEJA PAISA RANCHERITO',q:1721,v:87324918},{n:'COCA COLA 350 ML',q:2276,v:16531587},
+  {n:'LIMONADA NATURAL',q:1098,v:8663722},{n:'CHICHARRON EL RANCHERITO',q:631,v:24819489},
+  {n:'JUGO DE MANDARINA',q:890,v:10570733},{n:'AREPA DE CHOCOLO',q:369,v:5314688},
+  {n:'TINTO RANCHERITO',q:935,v:3577799},{n:'AGUA BOTELLA',q:1309,v:9893275},
+  {n:'PATACONES DE LA CASA',q:413,v:10669098},{n:'SANCOCHO DE RES',q:475,v:23737547},
+  {n:'BANDEJA PAISA MEDIANA',q:501,v:23842568},{n:'SODA MICHELADA PT350',q:542,v:6489962},
+  {n:'CAZUELA TRAD. RANCHERITO',q:921,v:34424070},{n:'FRIJOLES CON CHICHARRON',q:564,v:17984644},
+  {n:'PECHUGA A LA PLANCHA',q:371,v:15423982},{n:'TRIO AREPITAS x40G',q:209,v:3967147},
+  {n:'DESAYUNO HUEVOS RANCHEROS',q:369,v:9234102},{n:'CHOCOLATE CON LECHE',q:595,v:3635409},
+  {n:'MONDONGO RANCHERITO',q:355,v:11537499},{n:'COSTILLAS BBQ',q:177,v:10087423},
+  {n:'LIMONADA DE COCO',q:508,v:7147248},{n:'AREPA RELLENA PAISA',q:191,v:5963894},
+  {n:'CHURRASCO 300G',q:331,v:19619998},{n:'JARRA DE GUANDOLO',q:343,v:9591304},
+  {n:'PUNTA DE ANCA 320G',q:409,v:25224681},{n:'SOLOMITO 250G',q:316,v:19713042},
+  {n:'CALENTAO CON CHICHARRON',q:453,v:16735749},{n:'SODA FRUTOS ROJOS',q:349,v:4672220},
+  {n:'JARRA DE MANDARINA',q:111,v:6115298},{n:'HUEVO SOLO',q:262,v:749625}
+];
+var PC=[
+  {n:'BANDEJA PAISA RANCHERITO',q:830,v:45374400},{n:'COCA COLA 350 ML',q:2037,v:15960212},
+  {n:'AREPA DE CHOCOLO',q:614,v:9662430},{n:'ALMOJABANA',q:653,v:3377920},
+  {n:'PANDEQUESO X UNIDAD',q:989,v:4120620},{n:'LIMONADA NATURAL',q:875,v:7522420},
+  {n:'CHICHARRON EL RANCHERITO',q:441,v:18830956},{n:'JUGO DE MANDARINA',q:917,v:11772282},
+  {n:'TINTO RANCHERITO',q:962,v:4021710},{n:'FRIJOLES CON CHICHARRON',q:636,v:21933030},
+  {n:'SODA MICHELADA PT350',q:765,v:10029360},{n:'AGUA BOTELLA',q:751,v:6124008},
+  {n:'BANDEJA PAISA MEDIANA',q:291,v:14883500},{n:'PUNTA DE ANCA 320G',q:536,v:35757592},
+  {n:'CHOCOLATE CON LECHE',q:625,v:4187500},{n:'SOLOMITO 250G',q:377,v:25699700},
+  {n:'MONDONGO RANCHERITO',q:445,v:15577382},{n:'LIMONADA DE COCO',q:312,v:4836000},
+  {n:'CAZUELA TRAD. RANCHERITO',q:665,v:27097885},{n:'COSTILLAS BBQ',q:213,v:12924720},
+  {n:'DESAYUNO HUEVOS RANCHEROS',q:202,v:5474200},{n:'CHUZO DE POLLO',q:309,v:9576841},
+  {n:'CHURRASCO 300G',q:278,v:17936640},{n:'JARRA DE GUANDOLO',q:267,v:8033200},
+  {n:'HAMBURGUESA A LA PARRILLA',q:382,v:13713800},{n:'AREPA RELLENA PAISA',q:177,v:5996910},
+  {n:'CALENTAO CON CHICHARRON',q:295,v:11770500},{n:'PATACONES DE LA CASA',q:238,v:6638247},
+  {n:'JARRA DE MANDARINA',q:149,v:8865500},{n:'HUEVO SOLO',q:200,v:629120}
+];
+var CATS=[
+  {n:'ALIMENTOS',pv:839060842,cv:729469692,pq:29630,cq:30136},
+  {n:'JUGOS Y BEBIDAS',pv:163598660,cv:144402934,pq:17150,cq:16730},
+  {n:'LICORES',pv:50750863,cv:24073296,pq:3493,cq:1465},
+  {n:'TIENDA MISCELANEOS',pv:25421665,cv:19945593,pq:1413,cq:1006},
+  {n:'TIENDA COMESTIBLES',pv:6326760,cv:14109435,pq:1144,cq:3061},
+  {n:'OTROS SERVICIOS',pv:91079759,cv:71492915,pq:29728,cq:16047}
+];
+
+var S={
+  sede:'ambas',dia:'todos',hm:'pct',hn:14,
+  psede:'ambas',pm:'qty',pn:15,pq:'',psort:'desc',psel:null,pHora:-1,
+  csede:'ambas',cm:'val',csort:'palmas',cHora:-1
+};
+var cH=null,cC=null;
+
+function fmt(n){return n>=1e9?'$'+(n/1e9).toFixed(2)+'B':n>=1e6?'$'+(n/1e6).toFixed(1)+'M':n>=1e3?'$'+(n/1e3).toFixed(0)+'K':'$'+n;}
+function fN(n){return n>=1e3?(n/1e3).toFixed(1)+'K':''+n;}
+function pF(v){return(v*100).toFixed(1)+'%';}
+function ge(id){return document.getElementById(id);}
+function ea(s){return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function aC(v,mx){
+  var t=Math.min(v/(mx||1),1);
+  if(t<=0)return'#f5f0e8';
+  var s=[[0,[245,240,232]],[.05,[255,235,190]],[.12,[255,215,140]],[.25,[250,185,80]],[.40,[240,160,40]],[.60,[220,130,15]],[.80,[190,100,8]],[1,[155,75,0]]];
+  var lo=s[0],hi=s[s.length-1];
+  for(var i=0;i<s.length-1;i++){if(t>=s[i][0]&&t<=s[i+1][0]){lo=s[i];hi=s[i+1];break;}}
+  var f=lo[0]===hi[0]?0:(t-lo[0])/(hi[0]-lo[0]);
+  return 'rgb('+Math.round(lo[1][0]+(hi[1][0]-lo[1][0])*f)+','+Math.round(lo[1][1]+(hi[1][1]-lo[1][1])*f)+','+Math.round(lo[1][2]+(hi[1][2]-lo[1][2])*f)+')';
+}
+function gC(v,mx){
+  var t=Math.min(v/(mx||1),1);
+  if(t<=0)return'#f0f7f3';
+  var s=[[0,[240,247,243]],[.05,[210,240,225]],[.12,[170,225,200]],[.25,[100,195,155]],[.40,[45,170,115]],[.60,[22,140,85]],[.80,[10,110,60]],[1,[5,80,40]]];
+  var lo=s[0],hi=s[s.length-1];
+  for(var i=0;i<s.length-1;i++){if(t>=s[i][0]&&t<=s[i+1][0]){lo=s[i];hi=s[i+1];break;}}
+  var f=lo[0]===hi[0]?0:(t-lo[0])/(hi[0]-lo[0]);
+  return 'rgb('+Math.round(lo[1][0]+(hi[1][0]-lo[1][0])*f)+','+Math.round(lo[1][1]+(hi[1][1]-lo[1][1])*f)+','+Math.round(lo[1][2]+(hi[1][2]-lo[1][2])*f)+')';
+}
+function fgC(bg){var m=bg.match(/\d+/g);if(!m)return'#1a1814';var l=(0.299*(+m[0])+0.587*(+m[1])+0.114*(+m[2]))/255;return l>.55?'#1a1814':l>.35?'#3a2a08':'#ffffff';}
+
+// TOOLTIP
+var TIP=ge('TIP');
+document.addEventListener('mousemove',function(e){TIP.style.left=(e.clientX+14)+'px';TIP.style.top=(e.clientY-50)+'px';});
+document.addEventListener('mouseover',function(e){
+  var el=e.target;
+  while(el&&el!==document){if(el.getAttribute&&el.getAttribute('data-tip')){TIP.style.display='block';TIP.innerHTML=el.getAttribute('data-tip');return;}el=el.parentNode;}
+  TIP.style.display='none';
+});
+document.addEventListener('mouseout',function(e){if(!e.relatedTarget||!e.relatedTarget.closest||!e.relatedTarget.closest('[data-tip]'))TIP.style.display='none';});
+
+// HORA CHIPS
+function buildHoraChips(selId,stateKey,cb){
+  var el=ge(selId);
+  var html='<button class="hchip all" data-hi="-1">Todas</button>';
+  for(var i=0;i<HORAS.length;i++)html+='<button class="hchip" data-hi="'+i+'">'+HORAS[i]+'</button>';
+  el.innerHTML=html;
+  el.querySelectorAll('.hchip').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var hi=+btn.getAttribute('data-hi');
+      S[stateKey]=hi;
+      el.querySelectorAll('.hchip').forEach(function(b){b.classList.remove('on','all');b.className='hchip';});
+      if(hi===-1){btn.classList.add('all');}else{btn.classList.add('on');}
+      cb();
+    });
+  });
+}
+
+// BUTTON HELPERS
+function setHBtn(s){['fha','fhp','fhc'].forEach(function(id){var e=ge(id);if(e)e.className='fbtn';});var m={ambas:'fha',palmas:'fhp',copa:'fhc'};var e=ge(m[s]);if(e)e.className='fbtn '+(s==='ambas'?'fab':s==='palmas'?'fa':'fg');}
+function setDBtn(d){['fhd0','fhd1','fhd2'].forEach(function(id){var e=ge(id);if(e)e.className='fbtn';});var m={todos:'fhd0',semana:'fhd1',finde:'fhd2'};var e=ge(m[d]);if(e)e.className='fbtn fb';}
+function setPBtn(s){['fpa','fpp','fpc'].forEach(function(id){var e=ge(id);if(e)e.className='fbtn';});var m={ambas:'fpa',palmas:'fpp',copa:'fpc'};var e=ge(m[s]);if(e)e.className='fbtn '+(s==='ambas'?'fab':s==='palmas'?'fa':'fg');}
+function setCBtn(s){['fca','fcp','fcc'].forEach(function(id){var e=ge(id);if(e)e.className='fbtn';});var m={ambas:'fca',palmas:'fcp',copa:'fcc'};var e=ge(m[s]);if(e)e.className='fbtn '+(s==='ambas'?'fab':s==='palmas'?'fa':'fg');}
+function setCsBtn(s){['csp','csc','csd'].forEach(function(id){var e=ge(id);if(e)e.className='fbtn';});var m={palmas:'csp',copa:'csc',delta:'csd'};var e=ge(m[s]);if(e)e.className='fbtn fb';}
+
+// VIEW SWITCH
+document.querySelectorAll('.mtab').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});
+    document.querySelectorAll('.mtab').forEach(function(b){b.classList.remove('on');});
+    var v=btn.getAttribute('data-view');ge('view-'+v).classList.add('active');btn.classList.add('on');
+    if(v==='horas')rbH();
+    if(v==='categorias')rbC();
+  });
+});
+
+// HORAS CONTROLS
+ge('fha').addEventListener('click',function(){S.sede='ambas';setHBtn('ambas');rbH();});
+ge('fhp').addEventListener('click',function(){S.sede='palmas';setHBtn('palmas');rbH();});
+ge('fhc').addEventListener('click',function(){S.sede='copa';setHBtn('copa');rbH();});
+ge('fhd0').addEventListener('click',function(){S.dia='todos';setDBtn('todos');rbH();});
+ge('fhd1').addEventListener('click',function(){S.dia='semana';setDBtn('semana');rbH();});
+ge('fhd2').addEventListener('click',function(){S.dia='finde';setDBtn('finde');rbH();});
+ge('mhp').addEventListener('click',function(){S.hm='pct';ge('mhp').classList.add('on');ge('mhv').classList.remove('on');rbH();});
+ge('mhv').addEventListener('click',function(){S.hm='val';ge('mhv').classList.add('on');ge('mhp').classList.remove('on');rbH();});
+ge('sln').addEventListener('input',function(){S.hn=+this.value;ge('rvh').textContent=this.value;rbH();});
+
+// PRODUCTOS CONTROLS
+ge('fpa').addEventListener('click',function(){S.psede='ambas';setPBtn('ambas');rbP();});
+ge('fpp').addEventListener('click',function(){S.psede='palmas';setPBtn('palmas');rbP();});
+ge('fpc').addEventListener('click',function(){S.psede='copa';setPBtn('copa');rbP();});
+ge('mpq').addEventListener('click',function(){S.pm='qty';ge('mpq').classList.add('on');ge('mpv').classList.remove('on');rbP();});
+ge('mpv').addEventListener('click',function(){S.pm='val';ge('mpv').classList.add('on');ge('mpq').classList.remove('on');rbP();});
+ge('slp').addEventListener('input',function(){S.pn=+this.value;ge('rvp').textContent=this.value;rbP();});
+ge('psrch').addEventListener('input',function(){S.pq=this.value.toLowerCase();rbP();});
+ge('sdd').addEventListener('click',function(){S.psort='desc';ge('sdd').classList.add('on');ge('sda').classList.remove('on');rbP();});
+ge('sda').addEventListener('click',function(){S.psort='asc';ge('sda').classList.add('on');ge('sdd').classList.remove('on');rbP();});
+
+// CATEGORIAS CONTROLS
+ge('fca').addEventListener('click',function(){S.csede='ambas';setCBtn('ambas');rbC();});
+ge('fcp').addEventListener('click',function(){S.csede='palmas';setCBtn('palmas');rbC();});
+ge('fcc').addEventListener('click',function(){S.csede='copa';setCBtn('copa');rbC();});
+ge('mcv').addEventListener('click',function(){S.cm='val';ge('mcv').classList.add('on');ge('mcq').classList.remove('on');rbC();});
+ge('mcq').addEventListener('click',function(){S.cm='qty';ge('mcq').classList.add('on');ge('mcv').classList.remove('on');rbC();});
+ge('csp').addEventListener('click',function(){S.csort='palmas';setCsBtn('palmas');rbC();});
+ge('csc').addEventListener('click',function(){S.csort='copa';setCsBtn('copa');rbC();});
+ge('csd').addEventListener('click',function(){S.csort='delta';setCsBtn('delta');rbC();});
+
+// ── HORAS RENDER ──
+function hRows(){
+  var r=[];
+  if(S.sede!=='copa'){if(S.dia!=='finde')r.push({lb:'Palmas Lun-Dom',d:DH.palmas.ld,c:'a'});if(S.dia!=='semana')r.push({lb:'Palmas Sab/Dom',d:DH.palmas.sf,c:'a'});}
+  if(S.sede!=='palmas'){if(S.dia!=='finde')r.push({lb:'Copa Lun-Dom',d:DH.copa.ld,c:'g'});if(S.dia!=='semana')r.push({lb:'Copa Sab/Dom',d:DH.copa.sf,c:'g'});}
+  return r;
+}
+function rbH(){
+  var rows=hRows(),hs=HORAS.slice(0,S.hn);
+  ge('hslbl').textContent={ambas:'AMBAS SEDES',palmas:'PALMAS',copa:'COPACABANA'}[S.sede];
+  var mx=0;for(var ri=0;ri<rows.length;ri++)for(var hi=0;hi<hs.length;hi++){var v=S.hm==='pct'?rows[ri].d.p[hi]:rows[ri].d.v[hi];if(v>mx)mx=v;}
+  var legHtml='<span style="font-size:10px;color:var(--t3);margin-right:4px">Intensidad:</span>';
+  var lts=[0,.2,.4,.6,.8,1];
+  for(var li=0;li<lts.length;li++){var bg=aC(lts[li],1);var lbl=S.hm==='pct'?pF(lts[li]*mx):(mx>1e6?'$'+((lts[li]*mx)/1e6).toFixed(0)+'M':fmt(lts[li]*mx));legHtml+='<div class="lgi"><div class="lsw" style="background:'+bg+'"></div>'+lbl+'</div>';}
+  ge('legh').innerHTML=legHtml;
+  var html='<table class="hmt"><thead><tr><th class="rl">Tipo</th>';
+  for(var h=0;h<hs.length;h++)html+='<th>'+hs[h]+'</th>';
+  html+='</tr></thead><tbody>';
+  for(var ri=0;ri<rows.length;ri++){
+    var row=rows[ri];html+='<tr><td class="rl">'+row.lb+'</td>';
+    for(var hi2=0;hi2<hs.length;hi2++){
+      var val=S.hm==='pct'?row.d.p[hi2]:row.d.v[hi2];
+      var bg2=row.c==='a'?aC(val,mx):gC(val,mx);
+      var disp2=S.hm==='pct'?pF(row.d.p[hi2]):(val>1e6?'$'+(val/1e6).toFixed(0)+'M':val>1e3?'$'+(val/1e3).toFixed(0)+'K':'$'+val);
+      var tip='<strong style="color:var(--am)">'+ea(HORAS[hi2])+'</strong><br>'+ea(row.lb)+'<br><span style="font-size:15px;font-weight:700">'+pF(row.d.p[hi2])+'</span><br><span style="color:var(--t3)">'+fmt(row.d.v[hi2])+'</span>';
+      html+='<td style="background:'+bg2+';color:'+fgC(bg2)+'" data-tip="'+ea(tip)+'">'+disp2+'</td>';
+    }
+    html+='</tr>';
+  }
+  ge('hmh').innerHTML=html+'</tbody></table>';
+  if(cH){cH.destroy();cH=null;}
+  var col={a:['rgba(196,125,10,.55)','#c47d0a'],g:['rgba(30,143,86,.55)','#1e8f56']};
+  var ds=[];
+  for(var ri2=0;ri2<rows.length;ri2++){
+    (function(r2,idx){
+      ds.push({type:idx<2?'bar':'line',label:r2.lb,
+        data:hs.map(function(_,j){return(r2.d.p[j]*100).toFixed(2);}),
+        backgroundColor:col[r2.c][0],borderColor:col[r2.c][1],
+        borderWidth:idx<2?1.5:2,tension:.4,pointRadius:idx>=2?3:0,fill:false,borderDash:idx>=2?[4,3]:[]});
+    })(rows[ri2],ri2);
+  }
+  cH=new Chart(ge('cht-h').getContext('2d'),{
+    data:{labels:hs,datasets:ds},
+    options:{responsive:true,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{labels:{color:'#9a9288',font:{size:10},boxWidth:10}},
+        tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+c.raw+'%';}}}},
+      scales:{x:{ticks:{color:'#9a9288',font:{size:9}},grid:{color:'#e8e2d8'}},
+        y:{ticks:{color:'#9a9288',font:{size:9},callback:function(v){return v+'%';}},grid:{color:'#e8e2d8'}}}}
+  });
+}
+
+// ── HORA WEIGHT ──
+// Devuelve factor de escala segun franja horaria seleccionada
+function horaFactor(idx){
+  if(idx===-1)return 1; // todas = sin filtro
+  return HORA_PCT[idx]; // fraccion de la venta diaria en esa franja
+}
+function horaLabel(idx){return idx===-1?'Todas las franjas':HORAS[idx];}
+
+// ── PRODUCTOS RENDER ──
+function filtP(list){
+  var k=S.pm==='qty'?'q':'v';
+  var hf=horaFactor(S.pHora);
+  var out=[];
+  for(var i=0;i<list.length;i++){
+    if(list[i].n.toLowerCase().indexOf(S.pq)!==-1){
+      // escalar valor por fraccion horaria
+      var scaled={n:list[i].n,q:Math.round(list[i].q*hf),v:Math.round(list[i].v*hf)};
+      out.push(scaled);
+    }
+  }
+  out.sort(function(a,b){return S.psort==='desc'?b[k]-a[k]:a[k]-b[k];});
+  return out.slice(0,S.pn);
+}
+function mkBars(elId,data,isA,maxV){
+  var k=S.pm==='qty'?'q':'v';
+  var grad=isA?'linear-gradient(90deg,#f5d680,var(--am))':'linear-gradient(90deg,var(--gnd),var(--gn))';
+  var html='';
+  for(var i=0;i<data.length;i++){
+    var p=data[i];var val=p[k],pct=(val/(maxV||1)*100).toFixed(1);
+    var isSel=p.n===S.psel;
+    var dv=S.pm==='qty'?fN(p.q)+' uds':fmt(p.v);var sv=S.pm==='qty'?fmt(p.v):fN(p.q)+' uds';
+    var tip=ea('<b>'+p.n+'</b><br>'+fN(p.q)+' uds<br>'+fmt(p.v)+(S.pHora>-1?'<br><span style="color:var(--t3)">Franja: '+HORAS[S.pHora]+'</span>':''));
+    html+='<div class="brow" data-pname="'+ea(p.n)+'" data-tip="'+tip+'">';
+    html+='<div class="pnm'+(isSel?' sel':'')+'" title="'+ea(p.n)+'">'+ea(p.n)+'</div>';
+    html+='<div class="btrk"><div class="bfil" style="width:'+pct+'%;background:'+grad+'"></div></div>';
+    html+='<div class="bval">'+dv+'<br><span style="color:var(--t4)">'+sv+'</span></div></div>';
+  }
+  ge(elId).innerHTML=html;
+  ge(elId).querySelectorAll('.brow').forEach(function(row){
+    row.addEventListener('click',function(){var name=row.getAttribute('data-pname');S.psel=S.psel===name?null:name;rbP();});
+  });
+}
+function rbP(){
+  var showP=S.psede!=='copa',showC=S.psede!=='palmas';
+  ge('ppp').style.display=showP?'':'none';ge('pcp').style.display=showC?'':'none';
+  ge('pgrid').style.gridTemplateColumns=(showP&&showC)?'1fr 1fr':'1fr';
+  var pd=filtP(PP),cd=filtP(PC);
+  ge('pptit').textContent='PALMAS - TOP '+pd.length;ge('pctit').textContent='COPA - TOP '+cd.length;
+  var k=S.pm==='qty'?'q':'v';
+  var pt=0;for(var i=0;i<pd.length;i++)pt+=pd[i][k];
+  var ct=0;for(var i=0;i<cd.length;i++)ct+=cd[i][k];
+  ge('pptot').textContent=S.pm==='qty'?'Total: '+fN(pt)+' uds':'Total: '+fmt(pt);
+  ge('pctot').textContent=S.pm==='qty'?'Total: '+fN(ct)+' uds':'Total: '+fmt(ct);
+  var mxAll=0;for(var i=0;i<pd.length;i++)if(pd[i][k]>mxAll)mxAll=pd[i][k];for(var i=0;i<cd.length;i++)if(cd[i][k]>mxAll)mxAll=cd[i][k];
+  if(showP)mkBars('barp',pd,true,mxAll);if(showC)mkBars('barc',cd,false,mxAll);
+  ge('hora-badge-p').textContent=horaLabel(S.pHora);
+  ge('hora-badge-p').className=S.pHora===-1?'hora-badge all':'hora-badge';
+  // heatmap
+  var pm={},cm={};for(var i=0;i<pd.length;i++)pm[pd[i].n]=pd[i];for(var i=0;i<cd.length;i++)cm[cd[i].n]=cd[i];
+  var names=[],seen={};for(var i=0;i<pd.length;i++){if(!seen[pd[i].n]){seen[pd[i].n]=1;names.push(pd[i].n);}}for(var i=0;i<cd.length;i++){if(!seen[cd[i].n]){seen[cd[i].n]=1;names.push(cd[i].n);}}names=names.slice(0,20);
+  var mxHM=0;for(var i=0;i<names.length;i++){if(pm[names[i]]&&pm[names[i]][k]>mxHM)mxHM=pm[names[i]][k];if(cm[names[i]]&&cm[names[i]][k]>mxHM)mxHM=cm[names[i]][k];}
+  var totP=0,totC=0;for(var i=0;i<pd.length;i++)totP+=pd[i][k];for(var i=0;i<cd.length;i++)totC+=cd[i][k];
+  var disp=S.pm==='qty'?fN:fmt;
+  var html='<table class="hmt"><thead><tr><th class="rl" style="min-width:200px">Producto</th>';
+  if(showP)html+='<th style="color:var(--am)">Palmas</th><th style="color:var(--am);opacity:.6">%</th>';
+  if(showC)html+='<th style="color:var(--gn)">Copa</th><th style="color:var(--gn);opacity:.6">%</th>';
+  if(showP&&showC)html+='<th>Delta</th>';
+  html+='</tr></thead><tbody>';
+  for(var i=0;i<names.length;i++){
+    var name=names[i];var p=pm[name]||{q:0,v:0},c=cm[name]||{q:0,v:0};
+    var pv=p[k],cv=c[k];var pBg=aC(pv,mxHM),cBg=gC(cv,mxHM);
+    var delta=cv-pv,dPct=pv?(delta>=0?'+':'')+((delta/pv)*100).toFixed(0)+'%':'--';
+    var dClr=delta>=0?'var(--gn)':'var(--rd)';var isSel=name===S.psel;
+    var pPct=totP?pF(pv/totP):'--',cPct=totC?pF(cv/totC):'--';
+    html+='<tr style="'+(isSel?'outline:1.5px solid var(--am);':'')+'" data-pname2="'+ea(name)+'">';
+    html+='<td class="rl" style="color:'+(isSel?'var(--am)':'var(--tx)')+';font-weight:'+(isSel?'600':'400')+'">'+ea(name)+'</td>';
+    if(showP)html+='<td style="background:'+pBg+';color:'+fgC(pBg)+'" data-tip="'+ea('<b>'+name+'</b><br>Palmas: '+disp(pv))+'">'+disp(pv)+'</td><td style="background:'+pBg+';color:'+fgC(pBg)+';opacity:.8">'+pPct+'</td>';
+    if(showC)html+='<td style="background:'+cBg+';color:'+fgC(cBg)+'" data-tip="'+ea('<b>'+name+'</b><br>Copa: '+disp(cv))+'">'+disp(cv)+'</td><td style="background:'+cBg+';color:'+fgC(cBg)+';opacity:.8">'+cPct+'</td>';
+    if(showP&&showC)html+='<td style="color:'+dClr+';font-weight:700">'+dPct+'</td>';
+    html+='</tr>';
+  }
+  ge('hmp').innerHTML=html+'</tbody></table>';
+  ge('hmp').querySelectorAll('tr[data-pname2]').forEach(function(tr){tr.addEventListener('click',function(){var n=tr.getAttribute('data-pname2');S.psel=S.psel===n?null:n;rbP();});});
+}
+
+// ── CATEGORIAS RENDER ──
+function sortCats(cats){
+  var pk=S.cm==='val'?'pv':'pq',ck=S.cm==='val'?'cv':'cq';
+  return cats.slice().sort(function(a,b){return S.csort==='palmas'?b[pk]-a[pk]:S.csort==='copa'?b[ck]-a[ck]:(b[ck]-b[pk])-(a[ck]-a[pk]);});
+}
+function scaledCats(){
+  var hf=horaFactor(S.cHora);
+  return CATS.map(function(c){return{n:c.n,pv:Math.round(c.pv*hf),cv:Math.round(c.cv*hf),pq:Math.round(c.pq*hf),cq:Math.round(c.cq*hf)};});
+}
+function rbC(){
+  var showP=S.csede!=='copa',showC=S.csede!=='palmas';
+  var pk=S.cm==='val'?'pv':'pq',ck=S.cm==='val'?'cv':'cq';
+  var cats=sortCats(scaledCats());
+  var mx=0;for(var i=0;i<cats.length;i++){if(cats[i][pk]>mx)mx=cats[i][pk];if(cats[i][ck]>mx)mx=cats[i][ck];}
+  var totP=0,totC=0;for(var i=0;i<cats.length;i++){totP+=cats[i][pk];totC+=cats[i][ck];}
+  var disp=S.cm==='val'?fmt:fN;
+  ge('hora-badge-c').textContent=horaLabel(S.cHora);
+  ge('hora-badge-c').className=S.cHora===-1?'hora-badge all':'hora-badge';
+  var html='<table class="hmt"><thead><tr><th class="rl" style="min-width:160px">Categoria</th>';
+  if(showP)html+='<th style="color:var(--am)">Palmas</th><th style="color:var(--am);opacity:.7">%</th>';
+  if(showC)html+='<th style="color:var(--gn)">Copa</th><th style="color:var(--gn);opacity:.7">%</th>';
+  if(showP&&showC)html+='<th>Delta</th>';
+  html+='</tr></thead><tbody>';
+  for(var i=0;i<cats.length;i++){
+    var cat=cats[i];var pv=cat[pk],cv=cat[ck];
+    var pBg=aC(pv,mx),cBg=gC(cv,mx);
+    var delta=cv-pv,dPct=pv?(delta>=0?'+':'')+((delta/pv)*100).toFixed(0)+'%':'--';
+    var dClr=delta>=0?'var(--gn)':'var(--rd)';
+    html+='<tr><td class="rl" style="font-weight:500">'+cat.n+'</td>';
+    if(showP)html+='<td style="background:'+pBg+';color:'+fgC(pBg)+'" data-tip="'+ea('<b>'+cat.n+'</b><br>Palmas: '+disp(pv)+'<br>'+pF(totP?pv/totP:0)+' del total')+'">'+disp(pv)+'</td><td style="background:'+pBg+';color:'+fgC(pBg)+';opacity:.8">'+pF(totP?pv/totP:0)+'</td>';
+    if(showC)html+='<td style="background:'+cBg+';color:'+fgC(cBg)+'" data-tip="'+ea('<b>'+cat.n+'</b><br>Copa: '+disp(cv)+'<br>'+pF(totC?cv/totC:0)+' del total')+'">'+disp(cv)+'</td><td style="background:'+cBg+';color:'+fgC(cBg)+';opacity:.8">'+pF(totC?cv/totC:0)+'</td>';
+    if(showP&&showC)html+='<td style="color:'+dClr+';font-weight:700">'+dPct+'</td>';
+    html+='</tr>';
+  }
+  ge('hmc').innerHTML=html+'</tbody></table>';
+  if(cC){cC.destroy();cC=null;}
+  var ds=[];
+  if(showP)ds.push({label:'Palmas',data:cats.map(function(c){return c[pk];}),backgroundColor:'rgba(196,125,10,.55)',borderColor:'#c47d0a',borderWidth:1.5});
+  if(showC)ds.push({label:'Copa',data:cats.map(function(c){return c[ck];}),backgroundColor:'rgba(30,143,86,.55)',borderColor:'#1e8f56',borderWidth:1.5});
+  cC=new Chart(ge('cht-c').getContext('2d'),{type:'bar',data:{labels:cats.map(function(c){return c.n;}),datasets:ds},
+    options:{responsive:true,indexAxis:'y',interaction:{mode:'index',intersect:false},
+      plugins:{legend:{labels:{color:'#9a9288',font:{size:10},boxWidth:10}},tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+disp(c.raw);}}}},
+      scales:{x:{ticks:{color:'#9a9288',font:{size:9},callback:function(v){return disp(v);}},grid:{color:'#e8e2d8'}},y:{ticks:{color:'#9a9288',font:{size:10}},grid:{color:'#e8e2d8'}}}}});
+  var mxBar=mx,cthtml='';
+  for(var i=0;i<cats.length;i++){
+    var cat2=cats[i];var pv2=cat2[pk],cv2=cat2[ck];
+    var delta2=cv2-pv2,dPct2=pv2?(delta2>=0?'+':'')+((delta2/pv2)*100).toFixed(1)+'%':'--';
+    var dClr2=delta2>=0?'var(--gn)':'var(--rd)';
+    cthtml+='<div class="crow" data-tip="'+ea('<b>'+cat2.n+'</b><br>Palmas: '+disp(pv2)+'<br>Copa: '+disp(cv2))+'">';
+    cthtml+='<div class="cnm">'+cat2.n+'</div><div class="cbw">';
+    if(showP)cthtml+='<div class="mbr" style="width:'+((pv2/(mxBar||1))*180).toFixed(0)+'px;background:linear-gradient(90deg,#f5d680,var(--am))"></div>';
+    if(showC)cthtml+='<div class="mbr" style="width:'+((cv2/(mxBar||1))*180).toFixed(0)+'px;background:linear-gradient(90deg,var(--gnd),var(--gn))"></div>';
+    cthtml+='</div><div class="cvs">';
+    if(showP)cthtml+='<span class="cv" style="color:var(--am)">'+disp(pv2)+'</span>';
+    if(showC)cthtml+='<span class="cv" style="color:var(--gn)">'+disp(cv2)+'</span>';
+    if(showP&&showC)cthtml+='<span class="cv" style="color:'+dClr2+';font-weight:600">'+dPct2+'</span>';
+    cthtml+='</div></div>';
+  }
+  ge('ctbl').innerHTML=cthtml;
+}
+
+// INIT
+buildHoraChips('hsel-p','pHora',rbP);
+buildHoraChips('hsel-c','cHora',rbC);
+rbH();rbP();rbC();
+</script>
+</body>
+</html>
