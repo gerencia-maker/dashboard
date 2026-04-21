@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo Ecosistema Eleva — Fundación Capital</title>
+<style>
+/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */
+@layer properties{@supports (((-webkit-hyphens:none)) and (not (margin-trim:inline))) or ((-moz-orient:inline) and (not (color:rgb(from red r g b)))){*,:before,:after,::backdrop{--tw-space-y-reverse:0;--tw-border-style:solid;--tw-leading:initial;--tw-font-weight:initial;--tw-tracking:initial;--tw-shadow:0 0 #0000;--tw-shadow-color:initial;--tw-shadow-alpha:100%;--tw-inset-shadow:0 0 #0000;--tw-inset-shadow-color:initial;--tw-inset-shadow-alpha:100%;--tw-ring-color:initial;--tw-ring-shadow:0 0 #0000;--tw-inset-ring-color:initial;--tw-inset-ring-shadow:0 0 #0000;--tw-ring-inset:initial;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-offset-shadow:0 0 #0000;--tw-backdrop-blur:initial;--tw-backdrop-brightness:initial;--tw-backdrop-contrast:initial;--tw-backdrop-grayscale:initial;--tw-backdrop-hue-rotate:initial;--tw-backdrop-invert:initial;--tw-backdrop-opacity:initial;--tw-backdrop-saturate:initial;--tw-backdrop-sepia:initial}}}@layer theme{:root,:host{--font-sans:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";--font-mono:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;--color-gray-100:oklch(96.7% .003 264.542);--color-gray-300:oklch(87.2% .01 258.338);--color-gray-400:oklch(70.7% .022 261.325);--color-gray-500:oklch(55.1% .027 264.364);--color-gray-600:oklch(44.6% .03 256.802);--color-gray-700:oklch(37.3% .034 259.733);--color-white:#fff;--spacing:.25rem;--container-5xl:64rem;--container-7xl:80rem;--text-xs:.75rem;--text-xs--line-height:calc(1 / .75);--text-sm:.875rem;--text-sm--line-height:calc(1.25 / .875);--text-base:1rem;--text-base--line-height:calc(1.5 / 1);--text-lg:1.125rem;--text-lg--line-height:calc(1.75 / 1.125);--text-xl:1.25rem;--text-xl--line-height:calc(1.75 / 1.25);--text-2xl:1.5rem;--text-2xl--line-height:calc(2 / 1.5);--text-4xl:2.25rem;--text-4xl--line-height:calc(2.5 / 2.25);--text-5xl:3rem;--text-5xl--line-height:1;--font-weight-semibold:600;--font-weight-bold:700;--tracking-widest:.1em;--leading-relaxed:1.625;--radius-md:.375rem;--radius-lg:.5rem;--radius-xl:.75rem;--radius-2xl:1rem;--blur-sm:8px;--default-font-family:var(--font-sans);--default-mono-font-family:var(--font-mono)}}@layer base{*,:after,:before,::backdrop{box-sizing:border-box;border:0 solid;margin:0;padding:0}::file-selector-button{box-sizing:border-box;border:0 solid;margin:0;padding:0}html,:host{-webkit-text-size-adjust:100%;tab-size:4;line-height:1.5;font-family:var(--default-font-family,ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");font-feature-settings:var(--default-font-feature-settings,normal);font-variation-settings:var(--default-font-variation-settings,normal);-webkit-tap-highlight-color:transparent}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;-webkit-text-decoration:inherit;-webkit-text-decoration:inherit;-webkit-text-decoration:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,samp,pre{font-family:var(--default-mono-font-family,ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace);font-feature-settings:var(--default-mono-font-feature-settings,normal);font-variation-settings:var(--default-mono-font-variation-settings,normal);font-size:1em}small{font-size:80%}sub,sup{vertical-align:baseline;font-size:75%;line-height:0;position:relative}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}:-moz-focusring{outline:auto}progress{vertical-align:baseline}summary{display:list-item}ol,ul,menu{list-style:none}img,svg,video,canvas,audio,iframe,embed,object{vertical-align:middle;display:block}img,video{max-width:100%;height:auto}button,input,select,optgroup,textarea{font:inherit;font-feature-settings:inherit;font-variation-settings:inherit;letter-spacing:inherit;color:inherit;opacity:1;background-color:#0000;border-radius:0}::file-selector-button{font:inherit;font-feature-settings:inherit;font-variation-settings:inherit;letter-spacing:inherit;color:inherit;opacity:1;background-color:#0000;border-radius:0}:where(select:is([multiple],[size])) optgroup{font-weight:bolder}:where(select:is([multiple],[size])) optgroup option{padding-inline-start:20px}::file-selector-button{margin-inline-end:4px}::placeholder{opacity:1}@supports (not ((-webkit-appearance:-apple-pay-button))) or (contain-intrinsic-size:1px){::placeholder{color:currentColor}@supports (color:color-mix(in lab, red, red)){::placeholder{color:color-mix(in oklab, currentcolor 50%, transparent)}}}textarea{resize:vertical}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-date-and-time-value{min-height:1lh;text-align:inherit}::-webkit-datetime-edit{display:inline-flex}::-webkit-datetime-edit-fields-wrapper{padding:0}::-webkit-datetime-edit{padding-block:0}::-webkit-datetime-edit-year-field{padding-block:0}::-webkit-datetime-edit-month-field{padding-block:0}::-webkit-datetime-edit-day-field{padding-block:0}::-webkit-datetime-edit-hour-field{padding-block:0}::-webkit-datetime-edit-minute-field{padding-block:0}::-webkit-datetime-edit-second-field{padding-block:0}::-webkit-datetime-edit-millisecond-field{padding-block:0}::-webkit-datetime-edit-meridiem-field{padding-block:0}::-webkit-calendar-picker-indicator{line-height:1}:-moz-ui-invalid{box-shadow:none}button,input:where([type=button],[type=reset],[type=submit]){appearance:button}::file-selector-button{appearance:button}::-webkit-inner-spin-button{height:auto}::-webkit-outer-spin-button{height:auto}[hidden]:where(:not([hidden=until-found])){display:none!important}}@layer components;@layer utilities{.visible{visibility:visible}.relative{position:relative}.sticky{position:sticky}.start{inset-inline-start:var(--spacing)}.top-0{top:calc(var(--spacing) * 0)}.z-20{z-index:20}.mx-4{margin-inline:calc(var(--spacing) * 4)}.mx-auto{margin-inline:auto}.my-3{margin-block:calc(var(--spacing) * 3)}.mt-0\.5{margin-top:calc(var(--spacing) * .5)}.mt-1{margin-top:calc(var(--spacing) * 1)}.mt-2{margin-top:calc(var(--spacing) * 2)}.mt-3{margin-top:calc(var(--spacing) * 3)}.mt-4{margin-top:calc(var(--spacing) * 4)}.mt-16{margin-top:calc(var(--spacing) * 16)}.mb-1{margin-bottom:calc(var(--spacing) * 1)}.mb-2{margin-bottom:calc(var(--spacing) * 2)}.mb-3{margin-bottom:calc(var(--spacing) * 3)}.mb-4{margin-bottom:calc(var(--spacing) * 4)}.mb-6{margin-bottom:calc(var(--spacing) * 6)}.block{display:block}.flex{display:flex}.grid{display:grid}.hidden{display:none}.inline-block{display:inline-block}.inline-flex{display:inline-flex}.table{display:table}.h-2{height:calc(var(--spacing) * 2)}.h-5{height:calc(var(--spacing) * 5)}.h-6{height:calc(var(--spacing) * 6)}.h-7{height:calc(var(--spacing) * 7)}.h-10{height:calc(var(--spacing) * 10)}.min-h-0{min-height:calc(var(--spacing) * 0)}.w-5{width:calc(var(--spacing) * 5)}.w-6{width:calc(var(--spacing) * 6)}.w-7{width:calc(var(--spacing) * 7)}.w-10{width:calc(var(--spacing) * 10)}.w-full{width:100%}.max-w-5xl{max-width:var(--container-5xl)}.max-w-7xl{max-width:var(--container-7xl)}.flex-1{flex:1}.cursor-pointer{cursor:pointer}.grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.items-start{align-items:flex-start}.justify-between{justify-content:space-between}.justify-center{justify-content:center}.gap-1{gap:calc(var(--spacing) * 1)}.gap-2{gap:calc(var(--spacing) * 2)}.gap-3{gap:calc(var(--spacing) * 3)}.gap-4{gap:calc(var(--spacing) * 4)}.gap-10{gap:calc(var(--spacing) * 10)}:where(.space-y-1>:not(:last-child)){--tw-space-y-reverse:0;margin-block-start:calc(calc(var(--spacing) * 1) * var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing) * 1) * calc(1 - var(--tw-space-y-reverse)))}:where(.space-y-1\.5>:not(:last-child)){--tw-space-y-reverse:0;margin-block-start:calc(calc(var(--spacing) * 1.5) * var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing) * 1.5) * calc(1 - var(--tw-space-y-reverse)))}:where(.space-y-2>:not(:last-child)){--tw-space-y-reverse:0;margin-block-start:calc(calc(var(--spacing) * 2) * var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-y-reverse)))}.overflow-hidden{overflow:hidden}.rounded-2xl{border-radius:var(--radius-2xl)}.rounded-full{border-radius:3.40282e38px}.rounded-lg{border-radius:var(--radius-lg)}.rounded-md{border-radius:var(--radius-md)}.rounded-xl{border-radius:var(--radius-xl)}.border{border-style:var(--tw-border-style);border-width:1px}.border-2{border-style:var(--tw-border-style);border-width:2px}.border-t{border-top-style:var(--tw-border-style);border-top-width:1px}.border-b{border-bottom-style:var(--tw-border-style);border-bottom-width:1px}.border-l-4{border-left-style:var(--tw-border-style);border-left-width:4px}.border-dashed{--tw-border-style:dashed;border-style:dashed}.border-\[\#DDE3F0\]{border-color:#dde3f0}.border-\[\#EAE6FA\]{border-color:#eae6fa}.border-gray-300{border-color:var(--color-gray-300)}.bg-\[\#25D366\]{background-color:#25d366}.bg-gray-100{background-color:var(--color-gray-100)}.bg-transparent{background-color:#0000}.bg-white{background-color:var(--color-white)}.bg-white\/70{background-color:#ffffffb3}@supports (color:color-mix(in lab, red, red)){.bg-white\/70{background-color:color-mix(in oklab, var(--color-white) 70%, transparent)}}.p-1\.5{padding:calc(var(--spacing) * 1.5)}.p-2{padding:calc(var(--spacing) * 2)}.p-2\.5{padding:calc(var(--spacing) * 2.5)}.p-3{padding:calc(var(--spacing) * 3)}.p-4{padding:calc(var(--spacing) * 4)}.p-5{padding:calc(var(--spacing) * 5)}.px-2{padding-inline:calc(var(--spacing) * 2)}.px-3{padding-inline:calc(var(--spacing) * 3)}.px-4{padding-inline:calc(var(--spacing) * 4)}.px-6{padding-inline:calc(var(--spacing) * 6)}.px-8{padding-inline:calc(var(--spacing) * 8)}.py-1{padding-block:calc(var(--spacing) * 1)}.py-1\.5{padding-block:calc(var(--spacing) * 1.5)}.py-2{padding-block:calc(var(--spacing) * 2)}.py-3{padding-block:calc(var(--spacing) * 3)}.py-4{padding-block:calc(var(--spacing) * 4)}.py-5{padding-block:calc(var(--spacing) * 5)}.py-6{padding-block:calc(var(--spacing) * 6)}.py-8{padding-block:calc(var(--spacing) * 8)}.pt-2{padding-top:calc(var(--spacing) * 2)}.pt-3{padding-top:calc(var(--spacing) * 3)}.pt-4{padding-top:calc(var(--spacing) * 4)}.pt-8{padding-top:calc(var(--spacing) * 8)}.pb-2{padding-bottom:calc(var(--spacing) * 2)}.pb-4{padding-bottom:calc(var(--spacing) * 4)}.pb-12{padding-bottom:calc(var(--spacing) * 12)}.text-center{text-align:center}.text-2xl{font-size:var(--text-2xl);line-height:var(--tw-leading,var(--text-2xl--line-height))}.text-4xl{font-size:var(--text-4xl);line-height:var(--tw-leading,var(--text-4xl--line-height))}.text-5xl{font-size:var(--text-5xl);line-height:var(--tw-leading,var(--text-5xl--line-height))}.text-base{font-size:var(--text-base);line-height:var(--tw-leading,var(--text-base--line-height))}.text-lg{font-size:var(--text-lg);line-height:var(--tw-leading,var(--text-lg--line-height))}.text-sm{font-size:var(--text-sm);line-height:var(--tw-leading,var(--text-sm--line-height))}.text-xl{font-size:var(--text-xl);line-height:var(--tw-leading,var(--text-xl--line-height))}.text-xs{font-size:var(--text-xs);line-height:var(--tw-leading,var(--text-xs--line-height))}.text-\[8px\]{font-size:8px}.text-\[9px\]{font-size:9px}.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.text-\[12px\]{font-size:12px}.text-\[13px\]{font-size:13px}.text-\[14px\]{font-size:14px}.leading-relaxed{--tw-leading:var(--leading-relaxed);line-height:var(--leading-relaxed)}.font-bold{--tw-font-weight:var(--font-weight-bold);font-weight:var(--font-weight-bold)}.font-semibold{--tw-font-weight:var(--font-weight-semibold);font-weight:var(--font-weight-semibold)}.tracking-widest{--tw-tracking:var(--tracking-widest);letter-spacing:var(--tracking-widest)}.whitespace-nowrap{white-space:nowrap}.text-gray-400{color:var(--color-gray-400)}.text-gray-500{color:var(--color-gray-500)}.text-gray-600{color:var(--color-gray-600)}.text-gray-700{color:var(--color-gray-700)}.text-white{color:var(--color-white)}.opacity-60{opacity:.6}.opacity-80{opacity:.8}.opacity-90{opacity:.9}.ring{--tw-ring-shadow:var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color,currentcolor);box-shadow:var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}.backdrop-blur-sm{--tw-backdrop-blur:blur(var(--blur-sm));-webkit-backdrop-filter:var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);backdrop-filter:var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,)}.outline-none{--tw-outline-style:none;outline-style:none}@media (min-width:40rem){.sm\:inline{display:inline}}@media (min-width:48rem){.md\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}}}@property --tw-space-y-reverse{syntax:"*";inherits:false;initial-value:0}@property --tw-border-style{syntax:"*";inherits:false;initial-value:solid}@property --tw-leading{syntax:"*";inherits:false}@property --tw-font-weight{syntax:"*";inherits:false}@property --tw-tracking{syntax:"*";inherits:false}@property --tw-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}@property --tw-shadow-color{syntax:"*";inherits:false}@property --tw-shadow-alpha{syntax:"<percentage>";inherits:false;initial-value:100%}@property --tw-inset-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}@property --tw-inset-shadow-color{syntax:"*";inherits:false}@property --tw-inset-shadow-alpha{syntax:"<percentage>";inherits:false;initial-value:100%}@property --tw-ring-color{syntax:"*";inherits:false}@property --tw-ring-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}@property --tw-inset-ring-color{syntax:"*";inherits:false}@property --tw-inset-ring-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}@property --tw-ring-inset{syntax:"*";inherits:false}@property --tw-ring-offset-width{syntax:"<length>";inherits:false;initial-value:0}@property --tw-ring-offset-color{syntax:"*";inherits:false;initial-value:#fff}@property --tw-ring-offset-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}@property --tw-backdrop-blur{syntax:"*";inherits:false}@property --tw-backdrop-brightness{syntax:"*";inherits:false}@property --tw-backdrop-contrast{syntax:"*";inherits:false}@property --tw-backdrop-grayscale{syntax:"*";inherits:false}@property --tw-backdrop-hue-rotate{syntax:"*";inherits:false}@property --tw-backdrop-invert{syntax:"*";inherits:false}@property --tw-backdrop-opacity{syntax:"*";inherits:false}@property --tw-backdrop-saturate{syntax:"*";inherits:false}@property --tw-backdrop-sepia{syntax:"*";inherits:false}
+</style>
+<style>
+  :root{
+    /* === NEW ELEVA PALETTE (navy + yellow + coral) === */
+    --eleva-violet:#111554;          /* navy primary (kept var name for compat) */
+    --eleva-violet-deep:#050830;     /* darker navy */
+    --eleva-violet-soft:#E6EAF7;     /* soft blue tint */
+    --eleva-blue:#286AC0;            /* royal blue accent */
+    --eleva-blue-soft:#DBE9FA;       /* soft sky for card bg */
+    --eleva-lime:#FDE803;            /* bright yellow (kept var name) */
+    --eleva-lime-soft:#FFF6A3;       /* soft yellow */
+    --eleva-orange:#FF6C3C;          /* coral */
+    --eleva-yellow:#FDB620;          /* amber */
+    --eleva-pink:#D94870;            /* pink accent from palette */
+    /* === TRANSFORMA PALETTE (for embedded video-lessons) === */
+    --transforma-yellow:#FFE502;
+    --transforma-yellow-soft:#FFF9C4;
+    --transforma-cyan:#05C8C8;
+    --transforma-black:#1A1A1A;
+    /* === WHATSAPP === */
+    --wa-bg:#ECE5DD;
+    --wa-green:#075E54;
+    --wa-light:#25D366;
+    --wa-bubble-in:#FFFFFF;
+    --wa-bubble-out:#DCF8C6;
+    --ink:#111554;
+    --ink-soft:#5B6385;
+  }
+  *{-webkit-font-smoothing:antialiased;}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    background:linear-gradient(135deg,#F7F5FF 0%,#FFF 50%,#F0FBE4 100%);
+    min-height:100vh;
+    color:var(--ink);
+  }
+  /* Phone frame */
+  .phone{
+    width:320px;
+    height:650px;
+    border-radius:44px;
+    background:#0f0f0f;
+    padding:12px;
+    box-shadow:0 30px 60px -20px rgba(5,8,48,.35), 0 10px 20px -10px rgba(0,0,0,.2);
+    position:relative;
+  }
+  .phone::before{
+    content:"";
+    position:absolute;
+    top:14px;left:50%;transform:translateX(-50%);
+    width:90px;height:22px;background:#0f0f0f;border-radius:20px;z-index:10;
+  }
+  .phone-screen{
+    width:100%;height:100%;
+    border-radius:32px;overflow:hidden;
+    background:#fff;
+    position:relative;
+    display:flex;flex-direction:column;
+  }
+  .phone-status{
+    height:30px;
+    display:flex;justify-content:space-between;align-items:center;
+    padding:8px 24px 0;
+    font-size:11px;font-weight:600;
+    color:var(--ink);
+    flex-shrink:0;
+  }
+  .phone-content{flex:1;overflow-y:auto;overflow-x:hidden;}
+  .phone-content::-webkit-scrollbar{width:0;}
+
+  /* Phase indicator */
+  .phase-pill{
+    transition:all .4s cubic-bezier(.4,0,.2,1);
+  }
+  .phase-pill.active{
+    background:var(--eleva-violet);
+    color:#fff;
+    box-shadow:0 8px 20px -6px rgba(17,21,84,.5);
+    transform:scale(1.05);
+  }
+  .phase-pill.done{
+    background:var(--eleva-lime);
+    color:var(--ink);
+  }
+  .phase-pill.upcoming{
+    background:#fff;
+    color:var(--ink-soft);
+    border:2px dashed #E5E2F5;
+  }
+  .phase-connector{
+    height:3px;flex:1;background:#E5E2F5;border-radius:2px;transition:all .4s;
+  }
+  .phase-connector.done{background:var(--eleva-lime);}
+  .phase-connector.active{background:linear-gradient(90deg,var(--eleva-lime),var(--eleva-violet));}
+
+  /* WhatsApp chat */
+  .wa-header{
+    background:var(--wa-green);
+    color:#fff;
+    padding:10px 14px;
+    display:flex;align-items:center;gap:10px;
+    flex-shrink:0;
+  }
+  .wa-avatar{
+    width:38px;height:38px;border-radius:50%;
+    background:var(--eleva-violet);
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-weight:700;font-size:16px;
+    border:2px solid rgba(255,255,255,.3);
+  }
+  .wa-body{
+    background:var(--wa-bg);
+    background-image:
+      radial-gradient(circle at 10% 20%, rgba(255,255,255,.3) 0%, transparent 20%),
+      radial-gradient(circle at 80% 60%, rgba(200,180,140,.15) 0%, transparent 30%);
+    flex:1;padding:12px;
+    overflow-y:auto;
+    display:flex;flex-direction:column;gap:8px;
+  }
+  .wa-body::-webkit-scrollbar{width:0;}
+  .wa-bubble{
+    max-width:85%;padding:8px 11px;border-radius:8px;
+    font-size:13px;line-height:1.4;
+    box-shadow:0 1px 1px rgba(0,0,0,.08);
+    animation:bubbleIn .3s ease-out;
+    position:relative;
+    word-wrap:break-word;
+  }
+  .wa-bubble.in{background:var(--wa-bubble-in);border-top-left-radius:0;}
+  .wa-bubble.out{background:var(--wa-bubble-out);align-self:flex-end;border-top-right-radius:0;}
+  .wa-time{font-size:9px;color:#999;text-align:right;margin-top:2px;display:block;}
+  .wa-btn-group{display:flex;flex-direction:column;gap:3px;margin-top:6px;}
+  .wa-quick-btn{
+    background:#fff;
+    border:1px solid #25D366;
+    color:#075E54;
+    padding:7px 10px;border-radius:8px;
+    font-size:12px;font-weight:600;
+    cursor:pointer;text-align:center;
+    transition:all .2s;
+  }
+  .wa-quick-btn:hover{background:#DCF8C6;transform:translateY(-1px);}
+  .wa-quick-btn:disabled{opacity:.4;cursor:not-allowed;}
+  @keyframes bubbleIn{
+    from{opacity:0;transform:translateY(6px) scale(.95);}
+    to{opacity:1;transform:translateY(0) scale(1);}
+  }
+  .typing-dots span{
+    display:inline-block;width:5px;height:5px;border-radius:50%;
+    background:#999;margin:0 1px;
+    animation:typing 1.4s infinite;
+  }
+  .typing-dots span:nth-child(2){animation-delay:.2s;}
+  .typing-dots span:nth-child(3){animation-delay:.4s;}
+  @keyframes typing{
+    0%,60%,100%{opacity:.3;transform:translateY(0);}
+    30%{opacity:1;transform:translateY(-3px);}
+  }
+
+  /* Eleva webapp */
+  .eleva-nav{
+    background:var(--eleva-violet-deep);
+    height:52px;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 16px;flex-shrink:0;
+  }
+  .eleva-logo{
+    font-family:'Inter',sans-serif;
+    font-weight:800;font-size:22px;color:#fff;
+    letter-spacing:-.5px;
+    position:relative;
+  }
+  .eleva-logo-pin{
+    display:inline-block;
+    width:6px;height:10px;
+    background:var(--eleva-orange);
+    border-radius:3px 3px 3px 0;
+    margin-left:-2px;
+    transform:rotate(-10deg);
+    position:relative;top:2px;
+  }
+  .eleva-breadcrumb{
+    padding:10px 16px;
+    font-size:11px;color:var(--ink-soft);
+    background:#fff;
+    border-bottom:1px solid #EBEFF7;
+    display:flex;justify-content:space-between;
+  }
+  .eleva-breadcrumb b{color:var(--ink);}
+  .eleva-hero{
+    background:linear-gradient(135deg,var(--eleva-violet) 0%,var(--eleva-violet-deep) 100%);
+    padding:20px 18px;
+    color:#fff;
+    position:relative;overflow:hidden;
+  }
+  .eleva-hero::before{
+    content:"";position:absolute;top:-30px;right:-30px;
+    width:120px;height:120px;border-radius:50%;
+    background:rgba(212,240,79,.15);
+  }
+  .eleva-hero::after{
+    content:"";position:absolute;bottom:-20px;left:-10px;
+    width:60px;height:60px;border-radius:50%;
+    background:rgba(255,107,61,.15);
+  }
+  .section-card{
+    background:#fff;
+    border:1.5px solid #DDE3F0;
+    border-radius:14px;
+    padding:12px;
+    margin:10px 16px;
+    display:flex;align-items:center;gap:12px;
+    cursor:pointer;
+    transition:all .2s;
+    position:relative;
+  }
+  .section-card:hover{transform:translateY(-2px);box-shadow:0 12px 24px -12px rgba(17,21,84,.3);border-color:var(--eleva-violet);}
+  .section-card .icon{
+    width:44px;height:44px;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;font-size:22px;
+  }
+  .section-card h4{font-weight:700;font-size:13px;margin-bottom:2px;}
+  .section-card p{font-size:11px;color:var(--ink-soft);line-height:1.3;}
+  .section-card .cta{
+    background:var(--eleva-lime);
+    font-size:10px;font-weight:700;
+    padding:3px 8px;border-radius:6px;
+    color:var(--ink);
+    flex-shrink:0;
+  }
+
+  /* Test radio */
+  .test-option{
+    display:flex;align-items:center;gap:10px;
+    padding:11px 14px;
+    border:1.5px solid #DDE3F0;
+    border-radius:10px;
+    margin-bottom:8px;
+    cursor:pointer;
+    transition:all .15s;
+    font-size:12px;
+  }
+  .test-option:hover{border-color:var(--eleva-violet);background:#F5F8FF;}
+  .test-option.selected{
+    border-color:var(--eleva-violet);
+    background:var(--eleva-violet-soft);
+  }
+  .test-option .check{
+    width:18px;height:18px;border-radius:5px;
+    border:2px solid #D4D0F0;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .test-option.selected .check{
+    background:var(--eleva-violet);
+    border-color:var(--eleva-violet);
+    color:#fff;
+  }
+
+  /* Buttons */
+  .btn-primary{
+    background:var(--eleva-violet);
+    color:#fff;
+    padding:10px 18px;
+    border-radius:24px;
+    font-weight:700;font-size:13px;
+    cursor:pointer;
+    transition:all .2s;
+    border:none;
+    display:inline-flex;align-items:center;gap:6px;
+  }
+  .btn-primary:hover{background:var(--eleva-violet-deep);transform:translateY(-1px);box-shadow:0 10px 20px -10px rgba(17,21,84,.6);}
+  .btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+
+  .btn-lime{
+    background:var(--eleva-lime);
+    color:var(--ink);
+    padding:10px 18px;
+    border-radius:24px;
+    font-weight:700;font-size:13px;
+    cursor:pointer;
+    transition:all .2s;
+    border:none;
+    display:inline-flex;align-items:center;gap:6px;
+  }
+  .btn-lime:hover{background:#C4E03F;transform:translateY(-1px);}
+
+  /* Control panel */
+  .control-btn{
+    background:#fff;
+    border:2px solid #DDE3F0;
+    padding:8px 14px;
+    border-radius:10px;
+    font-weight:600;font-size:12px;
+    cursor:pointer;
+    transition:all .2s;
+    color:var(--ink);
+  }
+  .control-btn:hover{border-color:var(--eleva-violet);color:var(--eleva-violet);}
+  .control-btn.primary{background:var(--eleva-violet);color:#fff;border-color:var(--eleva-violet);}
+  .control-btn.primary:hover{background:var(--eleva-violet-deep);border-color:var(--eleva-violet-deep);}
+
+  /* Progress ring (fidelization) */
+  .progress-ring{
+    width:120px;height:120px;
+    border-radius:50%;
+    background:conic-gradient(var(--eleva-violet) 0% 70%, #DDE3F0 70% 100%);
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto;
+    position:relative;
+  }
+  .progress-ring::before{
+    content:"";position:absolute;inset:8px;border-radius:50%;background:#fff;
+  }
+  .progress-ring-inner{position:relative;text-align:center;}
+
+  /* Lesson card */
+  .lesson-card{
+    background:#fff;border:1.5px solid #DDE3F0;
+    border-radius:12px;padding:10px;
+    margin:8px 0;
+    display:flex;gap:10px;align-items:center;
+  }
+  .lesson-thumb{
+    width:52px;height:52px;border-radius:8px;
+    background:linear-gradient(135deg,var(--eleva-violet-soft),var(--eleva-lime-soft));
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;flex-shrink:0;
+  }
+  .lesson-card .tag{
+    display:inline-block;font-size:9px;font-weight:700;
+    padding:2px 7px;border-radius:4px;
+    background:var(--eleva-violet-soft);color:var(--eleva-violet-deep);
+    margin-right:4px;
+  }
+  .lesson-card .tag.video{background:#FFE5DC;color:var(--eleva-orange);}
+  .lesson-card .tag.info{background:#FFF4CC;color:#8A6D00;}
+
+  /* Notification pop */
+  .notif-pop{
+    position:absolute;top:10px;right:10px;
+    background:var(--eleva-lime);
+    color:var(--ink);
+    padding:6px 10px;border-radius:8px;
+    font-size:11px;font-weight:700;
+    box-shadow:0 8px 20px -6px rgba(0,0,0,.2);
+    animation:notifIn .4s;
+    z-index:5;
+  }
+  @keyframes notifIn{
+    from{opacity:0;transform:translateY(-10px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+
+  /* Score bar */
+  .score-bar-wrap{
+    height:10px;background:#DDE3F0;border-radius:5px;overflow:hidden;
+  }
+  .score-bar{
+    height:100%;
+    background:linear-gradient(90deg,var(--eleva-lime),var(--eleva-violet));
+    border-radius:5px;
+    transition:width 1s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* Header polish */
+  .brand-logo{
+    font-weight:800;letter-spacing:-.5px;
+    font-size:34px;color:var(--ink);
+    display:inline-flex;align-items:center;gap:2px;
+  }
+
+  /* Fade transitions for screens */
+  .screen{display:none;animation:fadeIn .35s;}
+  .screen.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+  /* Tooltip / explainer */
+  .explainer{
+    background:#FFF;
+    border-left:4px solid var(--eleva-violet);
+    padding:12px 14px;
+    border-radius:8px;
+    font-size:13px;
+    color:var(--ink);
+    box-shadow:0 8px 20px -10px rgba(17,21,84,.25);
+    line-height:1.5;
+  }
+
+  /* Decorative network dots pattern */
+  .net-pattern{
+    background-image:
+      radial-gradient(circle at 20px 20px, rgba(17,21,84,.1) 1.5px, transparent 1.5px),
+      radial-gradient(circle at 60px 60px, rgba(17,21,84,.08) 1.5px, transparent 1.5px);
+    background-size:80px 80px;
+  }
+
+  @media (max-width: 900px){
+    .phones-wrap{flex-direction:column;align-items:center;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="px-6 py-5 border-b border-[#DDE3F0] bg-white/70 backdrop-blur-sm sticky top-0 z-20">
+  <div class="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-3">
+    <div class="flex items-center gap-3">
+      <span class="brand-logo">
+        eleva<span style="color:var(--eleva-orange);font-size:22px;position:relative;top:-6px;">📍</span>
+      </span>
+      <span class="text-xs font-semibold text-gray-500 bg-gray-100 px-2 py-1 rounded-full">Demo del ecosistema · Fundación Capital</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <button class="control-btn" onclick="resetDemo()">↺ Reiniciar</button>
+      <button class="control-btn primary" onclick="autoPlay()" id="autoBtn">▶ Auto-play</button>
+    </div>
+  </div>
+</header>
+
+<!-- ===== PHASE INDICATOR ===== -->
+<section class="max-w-7xl mx-auto px-6 pt-8 pb-4">
+  <div class="flex items-center gap-2 mb-3">
+    <div class="phase-pill upcoming px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap" data-phase="1">
+      <span class="hidden sm:inline">1. </span>Captación
+    </div>
+    <div class="phase-connector" data-conn="1"></div>
+    <div class="phase-pill upcoming px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap" data-phase="2">
+      <span class="hidden sm:inline">2. </span>Onboarding
+    </div>
+    <div class="phase-connector" data-conn="2"></div>
+    <div class="phase-pill upcoming px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap" data-phase="3">
+      <span class="hidden sm:inline">3. </span>Educación
+    </div>
+    <div class="phase-connector" data-conn="3"></div>
+    <div class="phase-pill upcoming px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap" data-phase="4">
+      <span class="hidden sm:inline">4. </span>Scoring
+    </div>
+    <div class="phase-connector" data-conn="4"></div>
+    <div class="phase-pill upcoming px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap" data-phase="5">
+      <span class="hidden sm:inline">5. </span>Acceso
+    </div>
+  </div>
+  <div class="explainer" id="explainer">
+    <b>👋 Bienvenido al demo.</b> Este simulador recrea el recorrido de una persona real — Francisca, dueña de una mypes en CDMX que fue rechazada por Finsus — a través del ecosistema Eleva: desde el primer contacto por WhatsApp con Con-Héctor hasta la aprobación del crédito. Presiona <b>▶ Auto-play</b> o avanza manualmente con los controles del chat.
+  </div>
+</section>
+
+<!-- ===== MAIN: TWO PHONES ===== -->
+<main class="max-w-7xl mx-auto px-6 py-8">
+  <div class="phones-wrap flex gap-10 justify-center items-start flex-wrap">
+
+    <!-- ================= PHONE 1: CON-HÉCTOR WHATSAPP ================= -->
+    <div class="flex flex-col items-center">
+      <div class="text-center mb-3">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#25D366] text-white text-xs font-bold">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.92 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zM17.39 15.82c-.23.64-1.32 1.22-1.85 1.3-.47.07-1.07.1-1.72-.11-.4-.13-.91-.3-1.57-.58-2.76-1.19-4.56-3.97-4.69-4.15-.14-.18-1.12-1.49-1.12-2.84s.71-2.02.96-2.3c.25-.28.55-.35.73-.35h.53c.17 0 .4-.06.63.48.23.55.79 1.9.86 2.04.07.14.12.3.02.48-.1.18-.15.29-.3.45-.15.16-.31.36-.45.48-.15.13-.3.28-.13.55.18.28.78 1.29 1.68 2.09 1.15 1.03 2.13 1.35 2.41 1.5.28.14.45.12.61-.08.17-.2.7-.82.89-1.1.19-.28.37-.23.63-.14.26.09 1.61.76 1.88.9.28.14.46.21.53.33.07.13.07.73-.16 1.37z"/></svg>
+          Con-Héctor (WhatsApp)
+        </div>
+        <div class="text-[11px] text-gray-500 mt-1">Fases 1–2 · Captación + Onboarding</div>
+      </div>
+
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="phone-status">
+            <span>9:15</span>
+            <span class="flex gap-1 items-center">
+              <span>●●●</span> <span>📶</span> <span>🔋</span>
+            </span>
+          </div>
+          <div class="wa-header">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="white" style="flex-shrink:0"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            <div class="wa-avatar">H</div>
+            <div class="flex-1">
+              <div class="font-semibold text-[13px]">Con-Héctor</div>
+              <div class="text-[10px] opacity-80">en línea · IA de Eleva</div>
+            </div>
+            <div class="flex gap-3 opacity-80">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M20 15.5c-1.25 0-2.45-.2-3.57-.57a1.02 1.02 0 0 0-1.02.24l-2.2 2.2a15.045 15.045 0 0 1-6.59-6.59l2.2-2.21a.96.96 0 0 0 .25-1A11.36 11.36 0 0 1 8.5 4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.5c0-.55-.45-1-1-1z"/></svg>
+            </div>
+          </div>
+          <div class="wa-body" id="waBody">
+            <!-- bubbles injected by JS -->
+          </div>
+          <div style="background:#F0F0F0;padding:8px 12px;display:flex;align-items:center;gap:8px;flex-shrink:0;">
+            <div style="flex:1;background:#fff;border-radius:20px;padding:6px 12px;font-size:12px;color:#999;">Escribe un mensaje...</div>
+            <div style="width:30px;height:30px;border-radius:50%;background:var(--wa-green);display:flex;align-items:center;justify-content:center;color:#fff;">🎤</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= PHONE 2: ELEVA WEBAPP ================= -->
+    <div class="flex flex-col items-center">
+      <div class="text-center mb-3">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-white text-xs font-bold" style="background:var(--eleva-violet)">
+          <span style="font-size:14px">📍</span> Eleva (webapp)
+        </div>
+        <div class="text-[11px] text-gray-500 mt-1">Fases 3–5 · Educación · Scoring · Acceso</div>
+      </div>
+
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="phone-status">
+            <span>9:15</span>
+            <span class="flex gap-1 items-center">
+              <span>●●●</span> <span>📶</span> <span>🔋</span>
+            </span>
+          </div>
+
+          <!-- Locked state before CH sends link -->
+          <div id="elevaLocked" class="flex-1 flex flex-col items-center justify-center text-center px-8 net-pattern">
+            <div class="text-5xl mb-3">🔒</div>
+            <div class="font-bold text-sm mb-2" style="color:var(--ink)">Eleva se activará cuando Con-Héctor envíe el link personalizado</div>
+            <p class="text-xs text-gray-500">Avanza en el chat de WhatsApp para desbloquear la plataforma</p>
+          </div>
+
+          <!-- Eleva app (hidden until unlocked) -->
+          <div id="elevaApp" style="display:none;" class="flex-1 flex flex-col min-h-0">
+            <div class="eleva-nav">
+              <div class="eleva-logo">eleva<span class="eleva-logo-pin"></span></div>
+              <div class="flex gap-3 items-center">
+                <div style="width:22px;height:22px;border-radius:50%;background:var(--eleva-lime);display:flex;align-items:center;justify-content:center;font-size:13px;">♿</div>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+              </div>
+            </div>
+
+            <div class="phone-content" id="elevaContent">
+              <!-- ===== SCREEN: WELCOME (home) ===== -->
+              <div class="screen active" data-screen="home">
+                <div class="eleva-hero">
+                  <div class="text-[10px] opacity-80 mb-1">Tu espacio personal</div>
+                  <h2 class="font-bold text-lg mb-1">¡Hola, Francisca! 👋</h2>
+                  <p class="text-xs opacity-90">Este es tu espacio para crecer, encontrar oportunidades y conectar con tu comunidad.</p>
+                  <button class="mt-3 px-3 py-1.5 rounded-full text-[11px] font-bold" style="background:var(--eleva-lime);color:var(--ink)" onclick="goEleva('test')">▶ Responde el TEST</button>
+                </div>
+
+                <div class="px-4 pt-3 pb-2 text-[11px] text-center text-gray-500 font-semibold">Busca tus temas de interés</div>
+                <div class="mx-4 mb-3 flex items-center gap-2 border-2 border-[#DDE3F0] rounded-full px-3 py-2">
+                  <span style="color:var(--eleva-violet)">🔍</span>
+                  <input class="flex-1 text-[12px] outline-none bg-transparent" placeholder="cómo ahorrar, emprender y más" disabled>
+                  <button class="w-6 h-6 rounded-full flex items-center justify-center text-white" style="background:var(--eleva-violet)">→</button>
+                </div>
+
+                <div class="text-center text-[12px] font-bold mt-2 mb-1" style="color:var(--ink)">Esto es lo que puedes hacer en Eleva</div>
+
+                <div class="section-card" onclick="goEleva('habilidades')">
+                  <div class="icon" style="background:var(--eleva-violet-soft);">📚</div>
+                  <div class="flex-1">
+                    <h4>Mejora tus habilidades</h4>
+                    <p>Contenidos informativos y capacitación por temas.</p>
+                  </div>
+                  <div class="cta">EMPIEZA →</div>
+                </div>
+
+                <div class="section-card" onclick="goEleva('comunidad')">
+                  <div class="icon" style="background:#FFE5DC;">🤝</div>
+                  <div class="flex-1">
+                    <h4>Conecta con tu comunidad</h4>
+                    <p>Publica, contacta y conversa con otras personas.</p>
+                  </div>
+                  <div class="cta" style="background:var(--eleva-violet);color:#fff;">IR →</div>
+                </div>
+
+                <div class="section-card" onclick="goEleva('oportunidades')">
+                  <div class="icon" style="background:#FFF4CC;">🎯</div>
+                  <div class="flex-1">
+                    <h4>Busca oportunidades</h4>
+                    <p>Programas, eventos y ferias cerca de ti.</p>
+                  </div>
+                  <div class="cta" style="background:var(--eleva-orange);color:#fff;">VER →</div>
+                </div>
+
+                <div class="mx-4 my-3 p-3 rounded-xl" style="background:var(--eleva-violet-soft);">
+                  <div class="text-[10px] font-bold mb-1" style="color:var(--eleva-violet-deep);">✨ PERFIL</div>
+                  <div class="text-[11px] font-semibold">Mi progreso y beneficios</div>
+                  <button class="mt-2 w-full text-[11px] font-bold py-1.5 rounded-full" style="background:var(--eleva-violet);color:#fff;" onclick="goEleva('perfil')">Ver mi perfil →</button>
+                </div>
+              </div>
+
+              <!-- ===== SCREEN: TEST ===== -->
+              <div class="screen" data-screen="test">
+                <div class="eleva-breadcrumb">
+                  <span>Inicio &gt; <b>Test Eleva</b></span>
+                  <a onclick="goEleva('home')" class="cursor-pointer text-gray-400">&lt; Atrás</a>
+                </div>
+                <div class="px-4 py-4">
+                  <div class="flex justify-between items-center text-[10px] text-gray-500 mb-2">
+                    <span>Pregunta <b id="testQnum">1</b> de 3</span>
+                    <span><b id="testPct">33</b>% completado</span>
+                  </div>
+                  <div class="score-bar-wrap mb-4"><div class="score-bar" id="testBar" style="width:33%;"></div></div>
+
+                  <div id="testContent">
+                    <!-- Q injected -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- ===== SCREEN: PROFILE RESULT ===== -->
+              <div class="screen" data-screen="perfil">
+                <div class="eleva-breadcrumb">
+                  <span>Inicio &gt; Test &gt; <b>Tus resultados</b></span>
+                  <a onclick="goEleva('home')" class="cursor-pointer text-gray-400">&lt; Atrás</a>
+                </div>
+                <div style="background:linear-gradient(135deg,var(--eleva-violet),var(--eleva-violet-deep));padding:16px;color:#fff;text-align:center;">
+                  <div class="text-[10px] opacity-80">Tus resultados</div>
+                  <div class="text-lg font-bold mt-1">El crédito para tu negocio<br>está en tu futuro 🚀</div>
+                </div>
+                <div class="px-4 py-3">
+                  <p class="text-[12px] leading-relaxed">Francisca, tu perfil muestra que tienes un emprendimiento activo con potencial. Trabajaremos juntas en <b>organizar tus finanzas</b> y <b>formalizar tu negocio</b> para que puedas volver a postular al crédito con más fuerza.</p>
+
+                  <div class="mt-3 p-2.5 rounded-lg border-l-4" style="background:#F0FBE4;border-color:var(--eleva-lime);">
+                    <div class="text-[10px] font-bold" style="color:#4A6A00">FORTALEZA</div>
+                    <div class="text-[12px]">Ventas estables y buena relación con tus clientes.</div>
+                  </div>
+                  <div class="mt-2 p-2.5 rounded-lg border-l-4" style="background:#FFF0ED;border-color:var(--eleva-orange);">
+                    <div class="text-[10px] font-bold" style="color:#AA3D15">OPORTUNIDAD</div>
+                    <div class="text-[12px]">No llevas un registro de ingresos y gastos. Esto bajó tu puntaje.</div>
+                  </div>
+
+                  <div class="mt-4 flex items-center gap-2 mb-2">
+                    <span class="text-[12px]">📝</span>
+                    <span class="text-[12px] font-bold">Tus lecciones sugeridas</span>
+                  </div>
+
+                  <div class="lesson-card">
+                    <div class="lesson-thumb">📊</div>
+                    <div class="flex-1">
+                      <div class="text-[11px] font-bold">Controla tus ingresos y gastos</div>
+                      <div class="mt-1"><span class="tag">Finanzas</span><span class="tag info">5 min</span></div>
+                    </div>
+                  </div>
+                  <div class="lesson-card">
+                    <div class="lesson-thumb">🏷️</div>
+                    <div class="flex-1">
+                      <div class="text-[11px] font-bold">Beneficios de formalizar tu negocio</div>
+                      <div class="mt-1"><span class="tag" style="background:#FFE5DC;color:var(--eleva-orange)">Formalización</span><span class="tag video">Video</span></div>
+                    </div>
+                  </div>
+                  <div class="lesson-card">
+                    <div class="lesson-thumb">💡</div>
+                    <div class="flex-1">
+                      <div class="text-[11px] font-bold">Antes de pedir un crédito debes evaluar...</div>
+                      <div class="mt-1"><span class="tag">Finanzas</span><span class="tag info">Infografía</span></div>
+                    </div>
+                  </div>
+
+                  <button class="btn-primary w-full mt-4 justify-center" onclick="goEleva('leccion')">▶ Empezar primera lección</button>
+                </div>
+              </div>
+
+              <!-- ===== SCREEN: LECCIÓN / HABILIDADES ===== -->
+              <div class="screen" data-screen="leccion">
+                <div class="eleva-breadcrumb">
+                  <span>Mejora tus habilidades &gt; <b>Finanzas</b></span>
+                  <a onclick="goEleva('perfil')" class="cursor-pointer text-gray-400">&lt; Atrás</a>
+                </div>
+                <div style="background:linear-gradient(135deg,#D4F04F,#A8DC2A);padding:20px 16px;text-align:center;">
+                  <div class="text-[10px] font-bold" style="color:#3A4A00">LECCIÓN 1 DE 5</div>
+                  <div class="text-base font-bold mt-1" style="color:var(--ink)">📊 Controla tus ingresos y gastos</div>
+                </div>
+                <div class="px-4 py-4">
+                  <p class="text-[12px] leading-relaxed">Llevar un registro diario de cuánto entra y cuánto sale de tu negocio es el <b>primer paso para saber si realmente estás ganando</b>.</p>
+                  <div class="mt-3 p-3 rounded-xl" style="background:var(--eleva-violet-soft);">
+                    <div class="text-[10px] font-bold mb-2" style="color:var(--eleva-violet-deep);">✏️ EJERCICIO PRÁCTICO</div>
+                    <div class="text-[11px]">Anota tus 5 ventas más grandes de esta semana y los 5 gastos más grandes.</div>
+                  </div>
+                  <div class="mt-3 p-3 rounded-xl border-2 border-dashed border-[#DDE3F0]">
+                    <div class="text-[11px] font-bold mb-2">💡 Tip de Héctor</div>
+                    <div class="text-[11px] text-gray-600">Usa la herramienta de Con-Héctor en WhatsApp para que él te envíe una <b>plantilla simple</b> para llevar tu control.</div>
+                  </div>
+                  <div class="mt-4 flex items-center justify-between">
+                    <div class="text-[11px] text-gray-500">Progreso en esta sección</div>
+                    <div class="text-[11px] font-bold" style="color:var(--eleva-violet)">+50 pts</div>
+                  </div>
+                  <div class="score-bar-wrap mt-1"><div class="score-bar" style="width:40%;"></div></div>
+                  <button class="btn-primary w-full mt-4 justify-center" onclick="completarLeccion()">✓ Marcar como completada</button>
+                </div>
+              </div>
+
+              <!-- ===== SCREEN: MÓDULOS TRANSFORMA ===== -->
+              <div class="screen" data-screen="modulos">
+                <div class="eleva-breadcrumb">
+                  <span>Habilidades &gt; Finanzas &gt; <b>Módulos Transforma</b></span>
+                  <a onclick="goEleva('leccion')" class="cursor-pointer text-gray-400">&lt; Atrás</a>
+                </div>
+                <!-- Transforma yellow header -->
+                <div style="background:var(--transforma-yellow);padding:14px 16px;position:relative;overflow:hidden;">
+                  <div style="position:absolute;top:-20px;left:-20px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.35);"></div>
+                  <div style="position:relative;">
+                    <div style="font-size:9px;font-weight:700;color:#5A5200;letter-spacing:1px;">EN ALIANZA CON</div>
+                    <div style="font-weight:800;font-size:22px;color:var(--transforma-black);letter-spacing:-1px;">
+                      transf<span style="color:var(--transforma-cyan);position:relative;">ⓞ</span>rma
+                    </div>
+                    <div style="font-size:10px;color:#333;margin-top:2px;">¡Súbete a la digitalización!</div>
+                  </div>
+                </div>
+                <div class="px-4 pt-3 pb-2 text-[11px] text-gray-600 text-center">
+                  7 módulos · video-lecciones + guías descargables con <b>certificado</b>
+                </div>
+                <div class="grid grid-cols-2 gap-2 px-4 pb-4">
+                  <div class="rounded-lg overflow-hidden border border-[#DDE3F0] cursor-pointer" onclick="goEleva('videoleccion')">
+                    <div style="aspect-ratio:1;background:linear-gradient(135deg,#FDB620,#FDE803);display:flex;align-items:center;justify-content:center;font-size:28px;">💰</div>
+                    <div class="p-1.5 text-center">
+                      <div class="text-[10px] font-bold">Salud financiera</div>
+                      <div class="text-[9px]" style="color:var(--transforma-cyan);font-weight:700">● RECOMENDADO</div>
+                    </div>
+                  </div>
+                  <div class="rounded-lg overflow-hidden border border-[#DDE3F0]">
+                    <div style="aspect-ratio:1;background:linear-gradient(135deg,#FFE5DC,#FFCFBF);display:flex;align-items:center;justify-content:center;font-size:28px;">📲</div>
+                    <div class="p-1.5 text-center"><div class="text-[10px] font-bold">Pagos digitales</div></div>
+                  </div>
+                  <div class="rounded-lg overflow-hidden border border-[#DDE3F0]">
+                    <div style="aspect-ratio:1;background:linear-gradient(135deg,#DBE9FA,#A9CBF0);display:flex;align-items:center;justify-content:center;font-size:28px;">🛒</div>
+                    <div class="p-1.5 text-center"><div class="text-[10px] font-bold">Ventas en línea</div></div>
+                  </div>
+                  <div class="rounded-lg overflow-hidden border border-[#DDE3F0]">
+                    <div style="aspect-ratio:1;background:linear-gradient(135deg,#FFF9C4,#FDE803);display:flex;align-items:center;justify-content:center;font-size:28px;">🏦</div>
+                    <div class="p-1.5 text-center"><div class="text-[10px] font-bold">Servicios financieros</div></div>
+                  </div>
+                  <div class="rounded-lg overflow-hidden border border-[#DDE3F0]">
+                    <div style="aspect-ratio:1;background:linear-gradient(135deg,#E6F7F7,#A8E8E8);display:flex;align-items:center;justify-content:center;font-size:28px;">⚙️</div>
+                    <div class="p-1.5 text-center"><div class="text-[10px] font-bold">Herramientas digitales</div></div>
+                  </div>
+                  <div class="rounded-lg overflow-hidden border border-[#DDE3F0]">
+                    <div style="aspect-ratio:1;background:linear-gradient(135deg,#FFD5A3,#FF9944);display:flex;align-items:center;justify-content:center;font-size:28px;">🤝</div>
+                    <div class="p-1.5 text-center"><div class="text-[10px] font-bold">Relación con proveedores</div></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ===== SCREEN: VIDEO-LECCIÓN (Transforma embedded) ===== -->
+              <div class="screen" data-screen="videoleccion">
+                <div class="eleva-breadcrumb">
+                  <span>Transforma &gt; Salud financiera &gt; <b>Video-lección</b></span>
+                  <a onclick="goEleva('modulos')" class="cursor-pointer text-gray-400">&lt; Atrás</a>
+                </div>
+                <!-- Transforma yellow band -->
+                <div style="background:var(--transforma-yellow);padding:8px 14px;display:flex;align-items:center;justify-content:space-between;">
+                  <div style="font-weight:800;font-size:14px;color:var(--transforma-black);">transf<span style="color:var(--transforma-cyan);">ⓞ</span>rma</div>
+                  <div style="font-size:9px;font-weight:700;background:var(--transforma-black);color:var(--transforma-yellow);padding:2px 6px;border-radius:4px;">MÓDULO 1/6</div>
+                </div>
+
+                <!-- Video player -->
+                <div style="background:#000;aspect-ratio:16/9;position:relative;overflow:hidden;">
+                  <!-- Simulated scene -->
+                  <div style="position:absolute;inset:0;background:linear-gradient(135deg,#6B4423 0%,#A67B4A 40%,#F4D4A3 100%);"></div>
+                  <div style="position:absolute;bottom:30%;right:15%;width:35%;height:55%;background:radial-gradient(ellipse at center,#FFCDAA 0%,#D49C72 60%,transparent 70%);border-radius:40% 40% 0 0;"></div>
+                  <div style="position:absolute;bottom:15%;left:8%;background:#2B3478;color:#fff;padding:3px 8px;border-radius:3px;font-size:9px;font-weight:700;">🐻 PAN EL MAÑANA</div>
+                  <div style="position:absolute;top:10%;left:30%;font-size:10px;color:#FFF;opacity:.7;">▶ ▶  Reproduciendo</div>
+
+                  <!-- Video controls overlay -->
+                  <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.7));padding:6px 8px 4px;">
+                    <div style="display:flex;align-items:center;gap:6px;color:#FFE502;font-size:10px;font-weight:700;">
+                      <span>▶▶</span>
+                      <span style="color:#fff;">Salud Financiera · Lección 1</span>
+                    </div>
+                    <div style="margin-top:3px;height:3px;background:rgba(255,255,255,.3);border-radius:2px;overflow:hidden;">
+                      <div style="height:100%;width:62%;background:var(--transforma-yellow);"></div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;font-size:8px;color:#fff;margin-top:2px;">
+                      <span>3:42</span><span>6:00</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="p-4">
+                  <div class="text-[10px] font-bold" style="color:var(--transforma-cyan)">SALUD FINANCIERA · LECCIÓN 1</div>
+                  <div class="font-bold text-[14px] mt-1">¿Qué es la salud financiera?</div>
+                  <div class="text-[11px] text-gray-600 mt-1 leading-relaxed">Rosa te explica qué es la salud financiera y qué herramientas pueden ayudarte a alcanzarla para tu negocio.</div>
+
+                  <div class="mt-3 flex items-center gap-2 p-2 rounded-lg" style="background:var(--transforma-yellow-soft)">
+                    <div class="w-7 h-7 rounded-full flex items-center justify-center text-sm" style="background:var(--transforma-cyan);color:#fff;">✓</div>
+                    <div class="flex-1 text-[10px]">
+                      <b>Lección vista al 62%</b> — sigue tu ritmo, se guarda automáticamente.
+                    </div>
+                  </div>
+
+                  <button class="w-full mt-3 py-2 rounded-full font-bold text-[12px]" style="background:var(--transforma-yellow);color:var(--transforma-black);border:2px solid var(--transforma-black);" onclick="terminarVideo()">▶ Ver al 100% y continuar</button>
+                </div>
+              </div>
+
+              <!-- ===== SCREEN: GUÍA DESCARGABLE ===== -->
+              <div class="screen" data-screen="guia">
+                <div class="eleva-breadcrumb">
+                  <span>Transforma &gt; Salud financiera &gt; <b>Material de estudio</b></span>
+                  <a onclick="goEleva('videoleccion')" class="cursor-pointer text-gray-400">&lt; Atrás</a>
+                </div>
+                <div style="background:var(--transforma-yellow);padding:12px 14px;">
+                  <div style="font-weight:800;font-size:14px;color:var(--transforma-black);">transf<span style="color:var(--transforma-cyan);">ⓞ</span>rma</div>
+                </div>
+                <div class="p-4">
+                  <div class="text-[12px] font-bold">📚 Guías descargables</div>
+                  <div class="text-[11px] text-gray-600 mt-1 mb-3">Aplica lo aprendido con estas guías prácticas en lenguaje claro.</div>
+
+                  <div class="space-y-2">
+                    <div class="rounded-xl overflow-hidden border-2" style="border-color:var(--transforma-cyan)">
+                      <div style="background:var(--transforma-cyan);color:#fff;padding:6px 10px;font-size:10px;font-weight:800;letter-spacing:1px;">PDF</div>
+                      <div class="p-3">
+                        <div class="text-[12px] font-bold">Mejora el manejo de tus deudas</div>
+                        <div class="text-[10px] text-gray-500 mt-0.5">6 páginas · Español</div>
+                        <button class="mt-2 px-3 py-1 rounded-md text-[10px] font-bold" style="background:var(--eleva-yellow);color:var(--ink);">⬇ Descargar</button>
+                      </div>
+                    </div>
+                    <div class="rounded-xl overflow-hidden border-2" style="border-color:var(--transforma-cyan)">
+                      <div style="background:var(--transforma-cyan);color:#fff;padding:6px 10px;font-size:10px;font-weight:800;letter-spacing:1px;">PDF</div>
+                      <div class="p-3">
+                        <div class="text-[12px] font-bold">Crea un fondo de emergencia</div>
+                        <div class="text-[10px] text-gray-500 mt-0.5">4 páginas · Español</div>
+                        <button class="mt-2 px-3 py-1 rounded-md text-[10px] font-bold" style="background:var(--eleva-yellow);color:var(--ink);">⬇ Descargar</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button class="btn-primary w-full mt-4 justify-center" onclick="goEleva('certificado')">He estudiado las guías →</button>
+                </div>
+              </div>
+
+              <!-- ===== SCREEN: CERTIFICADO ===== -->
+              <div class="screen" data-screen="certificado">
+                <div class="eleva-breadcrumb">
+                  <span>Transforma &gt; <b>Certificado</b></span>
+                  <a onclick="goEleva('home')" class="cursor-pointer text-gray-400">&lt; Atrás</a>
+                </div>
+                <div style="background:linear-gradient(135deg,var(--eleva-yellow),var(--transforma-yellow));padding:20px 16px;text-align:center;">
+                  <div class="text-4xl mb-1">🏆</div>
+                  <div class="font-bold text-base" style="color:var(--ink)">¡Felicidades, Francisca!</div>
+                  <div class="text-[11px] mt-1" style="color:#5A4700">Completaste el módulo de <b>Salud Financiera</b></div>
+                </div>
+                <div class="p-4">
+                  <!-- Certificate mockup -->
+                  <div class="relative mt-2 p-4 rounded-xl" style="background:#FDFCF5;border:3px double var(--eleva-yellow);">
+                    <div style="position:absolute;top:6px;right:6px;font-size:10px;color:var(--transforma-cyan);font-weight:800;">★ transforma</div>
+                    <div style="text-align:center;padding-top:8px;">
+                      <div class="text-[9px] font-bold tracking-widest" style="color:var(--ink-soft)">CERTIFICADO DE CULMINACIÓN</div>
+                      <div class="font-bold text-[13px] mt-1" style="color:var(--ink)">Francisca Reyes M.</div>
+                      <div class="text-[9px] text-gray-500 mt-0.5">ha completado el módulo</div>
+                      <div class="font-bold text-[12px] mt-1" style="color:var(--transforma-cyan)">SALUD FINANCIERA</div>
+                      <div class="text-[9px] text-gray-500 mt-3">Fundación Capital · Plataforma Transforma</div>
+                      <div class="flex justify-between mt-2 pt-2 border-t border-dashed" style="border-color:var(--transforma-cyan)">
+                        <div class="text-[8px] text-gray-500">Fecha</div>
+                        <div class="text-[8px] text-gray-500">ID TR-SF-0429</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-3 p-2.5 rounded-lg text-center" style="background:var(--eleva-violet-soft)">
+                    <div class="text-[11px]">🎯 <b>+100 puntos</b> a tu aptitud crediticia</div>
+                  </div>
+
+                  <button class="btn-primary w-full mt-3 justify-center" onclick="goEleva('siguiente')">Ver mi siguiente lección →</button>
+                </div>
+              </div>
+
+              <!-- ===== SCREEN: SIGUIENTE LECCIÓN ===== -->
+              <div class="screen" data-screen="siguiente">
+                <div class="eleva-breadcrumb">
+                  <span>Inicio &gt; <b>Ruta de aprendizaje</b></span>
+                  <a onclick="goEleva('home')" class="cursor-pointer text-gray-400">&lt; Atrás</a>
+                </div>
+                <div class="eleva-hero">
+                  <h2 class="font-bold text-base">Tu ruta personalizada</h2>
+                  <p class="text-[11px] opacity-90 mt-1">Según tu perfil, esto es lo que sigue.</p>
+                </div>
+                <div class="p-4">
+                  <div class="flex items-center gap-2 text-[11px] mb-3">
+                    <div class="flex-1 h-2 rounded-full overflow-hidden" style="background:#DDE3F0">
+                      <div style="width:40%;height:100%;background:var(--eleva-yellow);"></div>
+                    </div>
+                    <span class="font-bold">40%</span>
+                  </div>
+
+                  <div class="space-y-2">
+                    <div class="p-2.5 rounded-lg flex items-center gap-2" style="background:#F0FBE4;border-left:4px solid #8AC926">
+                      <div class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white" style="background:#8AC926">✓</div>
+                      <div class="flex-1">
+                        <div class="text-[11px] font-bold">Controla tus ingresos y gastos</div>
+                        <div class="text-[9px] text-gray-500">Completada · +50 pts</div>
+                      </div>
+                    </div>
+                    <div class="p-2.5 rounded-lg flex items-center gap-2" style="background:#F0FBE4;border-left:4px solid #8AC926">
+                      <div class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white" style="background:#8AC926">✓</div>
+                      <div class="flex-1">
+                        <div class="text-[11px] font-bold">Salud Financiera (Transforma) 🎬</div>
+                        <div class="text-[9px] text-gray-500">Video + guías · +100 pts · Certificado 🏆</div>
+                      </div>
+                    </div>
+                    <div class="p-2.5 rounded-lg flex items-center gap-2" style="background:var(--eleva-lime-soft);border-left:4px solid var(--eleva-yellow)">
+                      <div class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold" style="background:var(--eleva-yellow);color:var(--ink)">▶</div>
+                      <div class="flex-1">
+                        <div class="text-[11px] font-bold">Formalización de tu negocio 🏷️</div>
+                        <div class="text-[9px]" style="color:#6D5700">Siguiente · video + práctica</div>
+                      </div>
+                    </div>
+                    <div class="p-2.5 rounded-lg flex items-center gap-2 opacity-60" style="background:#F7F8FC">
+                      <div class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-dashed" style="border-color:#BCC4D4;color:#8891A8">4</div>
+                      <div class="flex-1">
+                        <div class="text-[11px] font-bold">Pagos digitales (Transforma)</div>
+                        <div class="text-[9px] text-gray-500">Bloqueada hasta completar la anterior</div>
+                      </div>
+                    </div>
+                    <div class="p-2.5 rounded-lg flex items-center gap-2 opacity-60" style="background:#F7F8FC">
+                      <div class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-dashed" style="border-color:#BCC4D4;color:#8891A8">5</div>
+                      <div class="flex-1">
+                        <div class="text-[11px] font-bold">Antes de pedir un crédito</div>
+                        <div class="text-[9px] text-gray-500">Infografía + simulador</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button class="btn-primary w-full mt-4 justify-center" onclick="irAScoring()">Ver mi progreso y puntaje →</button>
+                </div>
+              </div>
+
+              <!-- ===== SCREEN: COMUNIDAD ===== -->
+              <div class="screen" data-screen="comunidad">
+                <div class="eleva-breadcrumb">
+                  <span>Inicio &gt; <b>Conecta con tu comunidad</b></span>
+                  <a onclick="goEleva('home')" class="cursor-pointer text-gray-400">&lt; Atrás</a>
+                </div>
+                <div class="eleva-hero"><h2 class="font-bold text-base">Conecta con tu comunidad</h2><p class="text-[11px] opacity-90 mt-1">Publica tus productos, conecta y conversa.</p></div>
+                <div class="p-4">
+                  <div class="p-3 rounded-xl border-2 border-[#DDE3F0] mb-3">
+                    <div class="text-[11px] font-bold mb-1" style="color:var(--eleva-violet-deep)">1 · Publica y Contacta</div>
+                    <div class="text-[11px] text-gray-600 mb-2">Tablero de anuncios para personas independientes y microempresas.</div>
+                    <div class="flex gap-2 flex-wrap">
+                      <div class="text-[10px] px-2 py-1 rounded-full" style="background:var(--eleva-violet-soft);color:var(--eleva-violet-deep)">🧁 Repostería</div>
+                      <div class="text-[10px] px-2 py-1 rounded-full" style="background:#FFF4CC;color:#8A6D00">💇 Servicios</div>
+                      <div class="text-[10px] px-2 py-1 rounded-full" style="background:#FFE5DC;color:var(--eleva-orange)">🛍️ Retail</div>
+                    </div>
+                  </div>
+                  <div class="p-3 rounded-xl" style="background:var(--eleva-lime-soft);">
+                    <div class="text-[11px] font-bold mb-1">2 · Conversa</div>
+                    <div class="text-[11px] text-gray-700 mb-2">Comunidad en Facebook para hablar sobre finanzas, marketing, bienestar y más.</div>
+                    <button class="text-[11px] font-bold px-3 py-1.5 rounded-full text-white" style="background:#1877F2">Únete → </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ===== SCREEN: HABILIDADES HOME ===== -->
+              <div class="screen" data-screen="habilidades">
+                <div class="eleva-breadcrumb">
+                  <span>Inicio &gt; <b>Mejora tus habilidades</b></span>
+                  <a onclick="goEleva('home')" class="cursor-pointer text-gray-400">&lt; Atrás</a>
+                </div>
+                <div class="eleva-hero"><h2 class="font-bold text-base">Mejora tus habilidades</h2><p class="text-[11px] opacity-90 mt-1">Explora múltiples temas y fortalece tu conocimiento.</p></div>
+                <div class="section-card">
+                  <div class="icon" style="background:var(--eleva-violet-soft);">📣</div>
+                  <div class="flex-1">
+                    <h4>Marketing y ventas</h4>
+                    <p>Nuevos formatos y estrategias para vender por internet.</p>
+                  </div>
+                  <div class="cta">INICIA</div>
+                </div>
+                <div class="section-card">
+                  <div class="icon" style="background:#F0FBE4;">💚</div>
+                  <div class="flex-1">
+                    <h4>Bienestar</h4>
+                    <p>Técnicas para mejorar tu vida y balancear tus emociones.</p>
+                  </div>
+                  <div class="cta">EMPIEZA</div>
+                </div>
+                <div class="section-card" onclick="goEleva('leccion')">
+                  <div class="icon" style="background:#FFF4CC;">💰</div>
+                  <div class="flex-1">
+                    <h4>Finanzas</h4>
+                    <p>Organiza deudas, pagos y ahorra más.</p>
+                  </div>
+                  <div class="cta" style="background:var(--eleva-violet);color:#fff;">CONTINÚA</div>
+                </div>
+                <div class="section-card">
+                  <div class="icon" style="background:#FFE5DC;">🚀</div>
+                  <div class="flex-1">
+                    <h4>Desarrollo personal</h4>
+                    <p>Hábitos y habilidades para crecer.</p>
+                  </div>
+                  <div class="cta">EMPIEZA</div>
+                </div>
+              </div>
+
+              <!-- ===== SCREEN: OPORTUNIDADES ===== -->
+              <div class="screen" data-screen="oportunidades">
+                <div class="eleva-breadcrumb">
+                  <span>Inicio &gt; <b>Busca oportunidades</b></span>
+                  <a onclick="goEleva('home')" class="cursor-pointer text-gray-400">&lt; Atrás</a>
+                </div>
+                <div class="eleva-hero"><h2 class="font-bold text-base">Busca oportunidades</h2><p class="text-[11px] opacity-90 mt-1">Programas, eventos y ferias que fortalecen tu perfil.</p></div>
+                <div class="p-4 space-y-2">
+                  <div class="rounded-xl overflow-hidden border border-[#DDE3F0]">
+                    <div style="background:linear-gradient(135deg,#050830,#286AC0);padding:12px;color:#fff;">
+                      <div class="text-[9px] font-bold opacity-80">EVENTO DESTACADO</div>
+                      <div class="text-[12px] font-bold">Feria de mypes CDMX · Octubre 2026</div>
+                      <div class="text-[10px] opacity-80 mt-1">Expo y networking · gratis</div>
+                    </div>
+                    <div class="p-2 flex justify-between items-center">
+                      <span class="text-[10px] text-gray-500">📍 Iztapalapa · 5 oct</span>
+                      <button class="text-[10px] font-bold px-3 py-1 rounded-full" style="background:var(--eleva-lime)">Ver más</button>
+                    </div>
+                  </div>
+                  <div class="rounded-xl overflow-hidden border border-[#DDE3F0]">
+                    <div class="p-2.5">
+                      <div class="text-[10px] font-bold" style="color:var(--eleva-orange)">CAPACITACIÓN</div>
+                      <div class="text-[11px] font-bold">Taller: Formalízate sin miedo</div>
+                      <div class="text-[10px] text-gray-500 mt-1">Online · SAT + Eleva</div>
+                    </div>
+                  </div>
+                  <div class="rounded-xl overflow-hidden border border-[#DDE3F0]">
+                    <div class="p-2.5">
+                      <div class="text-[10px] font-bold" style="color:#4A6A00">PROGRAMA</div>
+                      <div class="text-[11px] font-bold">Crédito preferente mypes · Santander</div>
+                      <div class="text-[10px] text-gray-500 mt-1">Solo perfiles Eleva verificados</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ===== SCREEN: FIDELIZACIÓN / SCORING ===== -->
+              <div class="screen" data-screen="scoring">
+                <div class="eleva-breadcrumb">
+                  <span>Inicio &gt; <b>Mi progreso</b></span>
+                  <a onclick="goEleva('home')" class="cursor-pointer text-gray-400">&lt; Atrás</a>
+                </div>
+                <div class="text-center px-4 pt-4">
+                  <div class="text-[11px] text-gray-500">¡Hola, Francisca!</div>
+                  <div class="text-[11px] font-bold mt-1 px-3 py-1 rounded-full inline-block" style="background:var(--eleva-violet-soft);color:var(--eleva-violet-deep)">Tu objetivo: crédito mypes</div>
+
+                  <div class="progress-ring mt-4">
+                    <div class="progress-ring-inner">
+                      <div class="text-[10px] text-gray-500">Aptitud crediticia</div>
+                      <div class="text-2xl font-bold" style="color:var(--eleva-violet)">70<span class="text-base">/100</span></div>
+                      <div class="text-[9px] font-bold" style="color:#4A6A00">📈 +22 esta semana</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mx-4 mt-4 p-3 rounded-xl" style="background:linear-gradient(135deg,#F0FBE4,#FFF);border:2px solid var(--eleva-lime);">
+                  <div class="text-[11px] font-bold mb-1">🏆 ¡Estás arrasando!</div>
+                  <div class="text-[10px] text-gray-600 mb-2">Estos son los logros que obtuviste esta semana</div>
+                  <div class="text-2xl font-bold" style="color:var(--eleva-violet)">550 <span class="text-sm">puntos</span></div>
+                  <button class="btn-primary mt-2 text-[11px] py-1.5 px-3" onclick="goEleva('acceso')">Canjéalos aquí →</button>
+                </div>
+
+                <div class="px-4 mt-4">
+                  <div class="text-[11px] font-bold mb-2">Tu ruta hacia el crédito</div>
+                  <div class="space-y-1.5">
+                    <div class="flex items-center gap-2 text-[11px]">
+                      <span class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold" style="background:var(--eleva-lime)">✓</span>
+                      <span>Completaste tu test de perfil</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-[11px]">
+                      <span class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold" style="background:var(--eleva-lime)">✓</span>
+                      <span>Primera lección de Finanzas</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-[11px]">
+                      <span class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white" style="background:var(--eleva-violet)">3</span>
+                      <span><b>Lleva un mes de ingresos/gastos</b></span>
+                    </div>
+                    <div class="flex items-center gap-2 text-[11px] text-gray-400">
+                      <span class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-dashed border-gray-300">4</span>
+                      <span>Completar 70% del contenido</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-[11px] text-gray-400">
+                      <span class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-dashed border-gray-300">5</span>
+                      <span>Volver a aplicar al crédito</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="px-4 mt-4 pb-4">
+                  <button class="btn-lime w-full justify-center" onclick="goEleva('acceso')">Estoy lista para aplicar al crédito →</button>
+                </div>
+              </div>
+
+              <!-- ===== SCREEN: ACCESO A CRÉDITO ===== -->
+              <div class="screen" data-screen="acceso">
+                <div class="eleva-breadcrumb">
+                  <span>Inicio &gt; <b>Acceso a crédito</b></span>
+                  <a onclick="goEleva('scoring')" class="cursor-pointer text-gray-400">&lt; Atrás</a>
+                </div>
+                <div style="background:linear-gradient(135deg,var(--eleva-lime),#A8DC2A);padding:24px 16px;text-align:center;">
+                  <div class="text-4xl mb-1">🎉</div>
+                  <div class="font-bold text-base" style="color:var(--ink)">¡Estás lista, Francisca!</div>
+                  <div class="text-[11px] mt-1" style="color:#2A3A00">Tu aptitud crediticia: <b>70/100</b></div>
+                </div>
+                <div class="px-4 py-4">
+                  <p class="text-[12px] leading-relaxed mb-3">Tu perfil ahora muestra las <b>buenas prácticas financieras</b> que los aliados Fintech buscan. Te enviaremos a Finsus como <b>lead de alta calidad</b>.</p>
+
+                  <div class="p-3 rounded-xl border-2" style="border-color:var(--eleva-violet);background:var(--eleva-violet-soft)">
+                    <div class="text-[10px] font-bold" style="color:var(--eleva-violet-deep)">ALIADO FINTECH</div>
+                    <div class="text-[13px] font-bold mt-1">Finsus · Crédito mypes</div>
+                    <div class="text-[11px] text-gray-600 mt-1">Hasta $50,000 MXN · tasa preferente para egresadas Eleva</div>
+                  </div>
+
+                  <button class="btn-primary w-full mt-4 justify-center" onclick="aplicarCredito()">🏦 Aplicar al crédito con Finsus →</button>
+
+                  <div id="creditoAprobado" style="display:none;" class="mt-4 p-3 rounded-xl" style="background:#F0FBE4;border:2px solid var(--eleva-lime)">
+                    <div class="text-[11px] font-bold mb-1">✅ ¡APROBADO!</div>
+                    <div class="text-[11px]">Finsus aprobó tu crédito por <b>$35,000 MXN</b>. Revisa WhatsApp para los siguientes pasos.</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= FOOTER INFO ================= -->
+  <section class="max-w-5xl mx-auto mt-16 pb-12">
+    <h3 class="text-center font-bold text-lg mb-6" style="color:var(--ink)">Anatomía del ecosistema</h3>
+    <div class="grid md:grid-cols-3 gap-4">
+      <div class="p-5 rounded-2xl bg-white border-2 border-[#DDE3F0]">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl mb-3" style="background:var(--eleva-violet-soft)">💬</div>
+        <h4 class="font-bold text-sm mb-1">Con-Héctor (WhatsApp)</h4>
+        <p class="text-xs text-gray-600 leading-relaxed">Primer punto de contacto con IA. Perfila, educa con mensajes cortos y notifica avances. 85% de los trabajadores informales en México tiene WhatsApp.</p>
+      </div>
+      <div class="p-5 rounded-2xl bg-white border-2 border-[#DDE3F0]">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl mb-3" style="background:#F0FBE4">📍</div>
+        <h4 class="font-bold text-sm mb-1">Eleva (webapp)</h4>
+        <p class="text-xs text-gray-600 leading-relaxed">Incubación personalizada con contenido gamificado. Mejora tus habilidades, conecta con tu comunidad, busca oportunidades y construye tu aptitud crediticia.</p>
+      </div>
+      <div class="p-5 rounded-2xl bg-white border-2 border-[#DDE3F0]">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl mb-3" style="background:#FFE5DC">🏦</div>
+        <h4 class="font-bold text-sm mb-1">Aliados Fintech (Finsus, Finvero, Tuiio)</h4>
+        <p class="text-xs text-gray-600 leading-relaxed">Reciben leads de alta calidad incubados por Eleva. CAC de $28 vs $120 de la industria. Francisca vuelve con mejor puntaje.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="border-t border-[#DDE3F0] py-6 text-center text-xs text-gray-500">
+  Demo del ecosistema <b>Eleva</b> · Fundación Capital · Acceso simplificado a oportunidades y servicios
+</footer>
+
+<script>
+/* ========================================================================
+   STATE
+======================================================================== */
+const state = {
+  step: 0,
+  phase: 1,
+  elevaUnlocked: false,
+  testAnswers: {},
+  currentTestQ: 0,
+  testDone: false,
+  autoPlayRunning: false,
+};
+
+/* Flow steps for the WhatsApp chat (Con-Héctor) */
+const chatFlow = [
+  // Phase 1: Captación
+  { type:'bubble-in', text:'Hola 👋, soy Héctor, tu asistente virtual de <b>Eleva</b> — la plataforma de Fundación Capital. Finsus nos pidió acompañarte.', phase:1, explainer:'<b>Fase 1 · Captación.</b> Finsus (aliado Fintech) notifica a Francisca que fue rechazada pero puede mejorar su perfil con Eleva. Con-Héctor hace el primer contacto con un mensaje empático.' },
+  { type:'bubble-in', text:'Sé que recibir un "no" en el crédito <b>duele</b>, y que detrás de tu solicitud hay un negocio que quieres sacar adelante. No estás sola 💛', phase:1 },
+  { type:'bubble-in', text:'Mi trabajo es <b>ayudarte a fortalecer tu perfil</b> para que cuando vuelvas a aplicar, sea un <i>sí</i>. ¿Te cuento cómo lo haremos?', phase:1 },
+  { type:'buttons', options:['Sí, cuéntame 🙂','Después, gracias'], correct:0, phase:1, explainer:'Aquí empieza la <b>conversación enganchadora</b>. Los botones evitan que la persona tenga que escribir — clave para usuarias con baja alfabetización digital.' },
+  { type:'bubble-out', text:'Sí, cuéntame 🙂', phase:1 },
+  // Phase 2: Onboarding
+  { type:'bubble-in', text:'¡Genial! Primero necesito conocerte mejor. Son <b>solo 3 preguntas cortas</b> (2 min).', phase:2, explainer:'<b>Fase 2 · Onboarding.</b> Inicia el test corto que perfila a la persona. Basado en las respuestas, Eleva define el programa de contenidos personalizado.' },
+  { type:'bubble-in', text:'<b>Pregunta 1 de 3:</b><br>¿Cuál es tu principal fuente de ingresos?', options:['Tengo un negocio propio 🏪','Trabajo por cuenta propia','Empleo informal'], correct:0, phase:2 },
+  { type:'bubble-out', text:'Tengo un negocio propio 🏪', phase:2 },
+  { type:'bubble-in', text:'<b>Pregunta 2 de 3:</b><br>¿Llevas un registro de tus ingresos y gastos?', options:['Sí, todos los días','A veces, en un cuaderno','No, lo llevo en la cabeza'], correct:2, phase:2 },
+  { type:'bubble-out', text:'No, lo llevo en la cabeza', phase:2 },
+  { type:'bubble-in', text:'<b>Pregunta 3 de 3:</b><br>¿Tu negocio está formalizado ante el SAT?', options:['Sí, está formalizado','No, pero quiero hacerlo','No sé qué es eso'], correct:1, phase:2 },
+  { type:'bubble-out', text:'No, pero quiero hacerlo', phase:2 },
+  { type:'bubble-in', text:'¡Perfecto, Francisca! 🎯 Ya tengo tu perfil. Identifiqué <b>2 áreas clave</b> para que recuperes tu aptitud crediticia:<br><br>1️⃣ Organizar tus finanzas<br>2️⃣ Formalizar tu negocio', phase:2, explainer:'<b>Clasificación del perfil.</b> La IA analiza las respuestas y define el programa: contenidos específicos de Finanzas y Formalización. El perfil se empalma en todo el ecosistema.' },
+  { type:'bubble-in', text:'Te armé un <b>programa personalizado en Eleva</b> con videos, lecciones cortas y herramientas. Cada cosa que completes suma a tu <b>puntaje de aptitud crediticia</b> 📈', phase:2 },
+  { type:'bubble-in', text:'👉 Abre tu Eleva aquí:<br><b style="color:#286AC0">eleva.fundacioncapital.org/fr-77342</b>', phase:2, action:'unlock', explainer:'<b>Redirección a Eleva.</b> Con-Héctor envía un link personalizado que lleva a la persona directo a su perfil en la webapp, con sesión iniciada y contenidos ya configurados. <b>Observa cómo se activa el celular de la derecha.</b>' },
+  // Phase 3: Educación - triggered by Eleva interaction, but CH keeps sending notifications
+  { type:'bubble-in', text:'¡Genial que entraste a Eleva! 🎉 Empezamos por <i>Controla tus ingresos y gastos</i>. Avísame cuando la termines y te mando una plantilla 🙌', phase:3, explainer:'<b>Fase 3 · Educación.</b> El contenido es cíclico entre CH y Eleva. Héctor envía notificaciones de progreso y porras para incentivar el retorno a la plataforma.' },
+  // Triggered after lesson completion
+];
+
+/* Test questions for Eleva */
+const testQuestions = [
+  {
+    q:'¿Cómo te sientes frente a la tecnología?',
+    opts:['Soy muy digital, uso mi celular y computadora para todo','Sé usar algunas aplicaciones, pero aún tengo por aprender','No es mi fuerte, uso mi teléfono solo para llamar'],
+  },
+  {
+    q:'¿Qué quieres lograr con Eleva?',
+    opts:['Hacer crecer mi negocio 📈','Acceder a un crédito 💳','Aprender finanzas personales 💰','Conectar con otras personas 🤝'],
+  },
+  {
+    q:'¿Cuánto tiempo puedes dedicarle al día?',
+    opts:['Menos de 10 min','Entre 10 y 30 min','Más de 30 min'],
+  },
+];
+
+/* ========================================================================
+   CHAT RENDERING
+======================================================================== */
+function addBubble(type, text){
+  const body = document.getElementById('waBody');
+  const bubble = document.createElement('div');
+  bubble.className = 'wa-bubble ' + (type==='in'?'in':'out');
+  const now = new Date();
+  const time = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  bubble.innerHTML = text + '<span class="wa-time">'+time+' '+ (type==='out'?'✓✓':'') +'</span>';
+  body.appendChild(bubble);
+  body.scrollTop = body.scrollHeight;
+}
+
+function addButtons(options, cb){
+  const body = document.getElementById('waBody');
+  const group = document.createElement('div');
+  group.className = 'wa-btn-group';
+  options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'wa-quick-btn';
+    btn.innerHTML = opt;
+    btn.onclick = () => {
+      Array.from(group.children).forEach(c=>c.disabled=true);
+      cb(i, opt);
+    };
+    group.appendChild(btn);
+  });
+  body.appendChild(group);
+  body.scrollTop = body.scrollHeight;
+}
+
+function addTypingIndicator(){
+  const body = document.getElementById('waBody');
+  const t = document.createElement('div');
+  t.className = 'wa-bubble in';
+  t.id = 'typing';
+  t.innerHTML = '<span class="typing-dots"><span></span><span></span><span></span></span>';
+  body.appendChild(t);
+  body.scrollTop = body.scrollHeight;
+}
+function removeTypingIndicator(){
+  const t = document.getElementById('typing');
+  if(t) t.remove();
+}
+
+/* ========================================================================
+   PHASE INDICATOR
+======================================================================== */
+function setPhase(n){
+  state.phase = n;
+  for(let i=1;i<=5;i++){
+    const pill = document.querySelector(`.phase-pill[data-phase="${i}"]`);
+    pill.classList.remove('active','done','upcoming');
+    if(i<n) pill.classList.add('done');
+    else if(i===n) pill.classList.add('active');
+    else pill.classList.add('upcoming');
+  }
+  for(let i=1;i<=4;i++){
+    const c = document.querySelector(`.phase-connector[data-conn="${i}"]`);
+    c.classList.remove('done','active');
+    if(i<n) c.classList.add('done');
+    else if(i===n-1) c.classList.add('active');
+  }
+}
+
+function setExplainer(html){
+  document.getElementById('explainer').innerHTML = html;
+}
+
+/* ========================================================================
+   ADVANCE CHAT (button-driven)
+======================================================================== */
+function advanceChat(){
+  if(state.step >= chatFlow.length){
+    return;
+  }
+  const s = chatFlow[state.step];
+  if(s.phase) setPhase(s.phase);
+  if(s.explainer) setExplainer(s.explainer);
+
+  if(s.type==='bubble-in'){
+    addTypingIndicator();
+    setTimeout(() => {
+      removeTypingIndicator();
+      addBubble('in', s.text);
+      state.step++;
+      if(s.action==='unlock') unlockEleva();
+      // If next step is buttons or bubble-in, auto-continue
+      const next = chatFlow[state.step];
+      if(next && next.type==='bubble-in'){
+        setTimeout(advanceChat, 700);
+      } else if(next && next.type==='buttons'){
+        setTimeout(renderButtons, 400);
+      }
+    }, 900);
+  } else if(s.type==='bubble-out'){
+    addBubble('out', s.text);
+    state.step++;
+    setTimeout(advanceChat, 500);
+  } else if(s.type==='buttons'){
+    renderButtons();
+  }
+}
+
+function renderButtons(){
+  const s = chatFlow[state.step];
+  if(!s || s.type!=='buttons') return;
+  addButtons(s.options, (i, opt) => {
+    state.step++; // skip past buttons
+    addBubble('out', opt);
+    state.step++; // skip the pre-recorded bubble-out (we already added it)
+    setTimeout(advanceChat, 500);
+  });
+}
+
+/* Special: mixed bubble-in with options */
+function advanceChatSmart(){
+  if(state.step >= chatFlow.length) return;
+  const s = chatFlow[state.step];
+  if(s.phase) setPhase(s.phase);
+  if(s.explainer) setExplainer(s.explainer);
+
+  if(s.type==='bubble-in'){
+    addTypingIndicator();
+    setTimeout(() => {
+      removeTypingIndicator();
+      addBubble('in', s.text);
+      if(s.options){
+        setTimeout(() => {
+          addButtons(s.options, (i, opt) => {
+            state.step++; // past current
+            addBubble('out', opt);
+            state.step++; // past pre-recorded out
+            setTimeout(advanceChatSmart, 600);
+          });
+        }, 300);
+      } else {
+        state.step++;
+        if(s.action==='unlock') unlockEleva();
+        const next = chatFlow[state.step];
+        if(next && (next.type==='bubble-in' || next.type==='bubble-out' || next.type==='buttons')){
+          setTimeout(advanceChatSmart, 800);
+        }
+      }
+    }, 900);
+  } else if(s.type==='bubble-out'){
+    addBubble('out', s.text);
+    state.step++;
+    setTimeout(advanceChatSmart, 500);
+  } else if(s.type==='buttons'){
+    addButtons(s.options, (i, opt) => {
+      state.step++;
+      addBubble('out', opt);
+      state.step++;
+      setTimeout(advanceChatSmart, 600);
+    });
+  }
+}
+
+/* ========================================================================
+   ELEVA UNLOCK
+======================================================================== */
+function unlockEleva(){
+  state.elevaUnlocked = true;
+  document.getElementById('elevaLocked').style.display = 'none';
+  document.getElementById('elevaApp').style.display = 'flex';
+  setPhase(3);
+  setExplainer('<b>Fase 3 · Educación.</b> Francisca aterriza en Eleva con sesión abierta y su perfil pre-cargado. Ahora puede explorar las tres secciones, hacer el test completo de perfilamiento, y empezar las lecciones personalizadas. <b>Presiona "Responde el TEST" en la parte superior</b> para continuar.');
+}
+
+/* ========================================================================
+   ELEVA NAVIGATION
+======================================================================== */
+function goEleva(screenId){
+  document.querySelectorAll('#elevaContent .screen').forEach(s => s.classList.remove('active'));
+  const target = document.querySelector(`#elevaContent .screen[data-screen="${screenId}"]`);
+  if(target){
+    target.classList.add('active');
+    document.getElementById('elevaContent').scrollTop = 0;
+  }
+  if(screenId==='test'){
+    state.currentTestQ = 0;
+    renderTestQuestion();
+    setExplainer('<b>Test de perfilamiento completo (10 preguntas en producción, 3 en el demo).</b> Complementa el perfil captado en Con-Héctor. Define fortalezas, debilidades y contenido recomendado.');
+  } else if(screenId==='perfil'){
+    setExplainer('<b>Perfil + diagnóstico.</b> Después del test, la persona recibe fortalezas identificadas, áreas de oportunidad y lecciones sugeridas basadas en su perfilamiento. Todo el contenido es <b>cíclico</b> — se actualiza conforme avanza.');
+  } else if(screenId==='leccion'){
+    setExplainer('<b>Lección tipo Duolingo.</b> Contenido corto, con ejercicio práctico y tip adicional que vuelve a WhatsApp como herramienta útil. Cada lección suma puntos al perfil.');
+  } else if(screenId==='modulos'){
+    setExplainer('<b>🎬 Transforma embebido en Eleva.</b> Los 7 módulos de Transforma (Salud Financiera, Pagos digitales, Ventas en línea, Servicios financieros, Herramientas digitales, Relación con proveedores, Formalización) con sus <b>video-lecciones + guías descargables + certificados</b> se integran nativamente en la ruta de Eleva. La persona no percibe un cambio de plataforma.');
+  } else if(screenId==='videoleccion'){
+    setExplainer('<b>Video-lección (Transforma).</b> Contenido creado acorde a los perfiles y necesidades de las mypes. Rosa — la tutora en escenarios reales — explica <i>¿Qué es la salud financiera?</i> en 6 minutos. El progreso se guarda automáticamente y se refleja en el perfil y puntaje.');
+  } else if(screenId==='guia'){
+    setExplainer('<b>Material descargable.</b> Cada video viene acompañado de guías prácticas en PDF con lenguaje claro. Francisca puede consultar estas guías offline cuando no tenga internet — detalle crítico para la base de la pirámide en México.');
+  } else if(screenId==='certificado'){
+    setExplainer('<b>🏆 Certificado por módulo.</b> Al completar un módulo (video + guías + ejercicio), Francisca recibe un certificado descargable. Esto <b>refuerza la motivación</b>, suma puntos importantes al scoring, y en producción es descargable como PDF con ID verificable.');
+  } else if(screenId==='siguiente'){
+    setExplainer('<b>Ruta de aprendizaje personalizada.</b> Después de cada módulo, Eleva muestra el progreso total y desbloquea la siguiente lección recomendada según el perfil. La gamificación tipo Duolingo mantiene a la persona enganchada sin abrumarla.');
+  } else if(screenId==='scoring'){
+    setPhase(4);
+    setExplainer('<b>Fase 4 · Scoring.</b> Sistema de gamificación y progreso por niveles. El puntaje de aptitud crediticia sube conforme la persona completa el contenido — las fases 3 y 4 son cíclicas hasta que complete el 70%.');
+  } else if(screenId==='acceso'){
+    setPhase(5);
+    setExplainer('<b>Fase 5 · Acceso a crédito.</b> Francisca completó 70% del contenido y confirmó su interés en re-aplicar. Eleva la devuelve a Finsus como <b>lead de alta calidad</b> — CAC de $28 vs $120 de la industria Fintech.');
+  } else if(screenId==='home' || screenId==='habilidades' || screenId==='comunidad' || screenId==='oportunidades'){
+    setExplainer('<b>Exploración de la plataforma.</b> El inicio de Eleva ofrece 3 espacios: <b>Mejora tus habilidades</b> (contenidos), <b>Conecta con tu comunidad</b> (tablero + Facebook) y <b>Busca oportunidades</b> (programas y eventos).');
+  }
+}
+
+/* ========================================================================
+   TEST
+======================================================================== */
+function renderTestQuestion(){
+  const q = testQuestions[state.currentTestQ];
+  const html = `
+    <div class="text-[10px] font-bold mb-2" style="color:var(--eleva-violet-deep)">PREGUNTA ${state.currentTestQ+1}</div>
+    <div class="font-bold text-[14px] mb-3">${q.q}</div>
+    <div id="testOptions">
+      ${q.opts.map((o,i)=>`
+        <div class="test-option" onclick="selectTestOpt(${i})" data-i="${i}">
+          <div class="check">${''}</div>
+          <div>${o}</div>
+        </div>
+      `).join('')}
+    </div>
+    <button class="btn-primary w-full justify-center mt-4" id="testNextBtn" disabled onclick="nextTestQ()">
+      ${state.currentTestQ < testQuestions.length-1?'Continuar →':'Ver mis resultados →'}
+    </button>
+  `;
+  document.getElementById('testContent').innerHTML = html;
+  const pct = Math.round(((state.currentTestQ)/testQuestions.length)*100 + (100/testQuestions.length));
+  document.getElementById('testQnum').textContent = state.currentTestQ+1;
+  document.getElementById('testPct').textContent = pct;
+  document.getElementById('testBar').style.width = pct+'%';
+}
+
+function selectTestOpt(i){
+  document.querySelectorAll('#testOptions .test-option').forEach(el=>{
+    el.classList.remove('selected');
+    el.querySelector('.check').innerHTML = '';
+  });
+  const el = document.querySelector(`#testOptions .test-option[data-i="${i}"]`);
+  el.classList.add('selected');
+  el.querySelector('.check').innerHTML = '✓';
+  state.testAnswers[state.currentTestQ] = i;
+  document.getElementById('testNextBtn').disabled = false;
+}
+
+function nextTestQ(){
+  if(state.currentTestQ < testQuestions.length-1){
+    state.currentTestQ++;
+    renderTestQuestion();
+  } else {
+    state.testDone = true;
+    goEleva('perfil');
+  }
+}
+
+/* ========================================================================
+   LESSON COMPLETION
+======================================================================== */
+function completarLeccion(){
+  // First lesson done — suggest video-lesson from Transforma
+  addTypingIndicator();
+  setTimeout(()=>{
+    removeTypingIndicator();
+    addBubble('in', '¡Muy bien, Francisca! 🎉 Completaste tu primera lección. <b>+50 puntos</b> 💪');
+    setTimeout(()=>{
+      addBubble('in', 'Te mando la <b>plantilla de control de ingresos/gastos</b> 📎');
+      setTimeout(()=>{
+        addBubble('in', '📎 <b>plantilla_control_mypes.pdf</b><br><span style="font-size:10px;color:#666">PDF · 120 KB</span>');
+        setTimeout(()=>{
+          addBubble('in', 'Ahora te recomiendo ver el video de <b>Salud Financiera</b> en <span style="color:#05C8C8;font-weight:bold">Transforma</span> 🎬 (está integrado en Eleva).');
+          goEleva('modulos');
+        }, 800);
+      }, 700);
+    }, 900);
+  }, 800);
+}
+
+function terminarVideo(){
+  // Fired from video-lesson "Ver al 100% y continuar"
+  addTypingIndicator();
+  setTimeout(()=>{
+    removeTypingIndicator();
+    addBubble('in', '🎬 ¡Terminaste el video de <b>Salud Financiera</b>! Descarga las guías para afianzar lo aprendido 📚');
+    goEleva('guia');
+  }, 700);
+}
+
+function irAScoring(){
+  addTypingIndicator();
+  setTimeout(()=>{
+    removeTypingIndicator();
+    addBubble('in', '🏆 ¡Obtuviste tu primer <b>certificado</b> en Salud Financiera! Tu aptitud crediticia subió a <b>70/100</b> 📈');
+    addBubble('in', 'Sigue con la siguiente lección y en unas semanas aplicamos de nuevo al crédito ✨');
+    goEleva('scoring');
+  }, 700);
+}
+
+function aplicarCredito(){
+  document.getElementById('creditoAprobado').style.display = 'block';
+  addTypingIndicator();
+  setTimeout(()=>{
+    removeTypingIndicator();
+    addBubble('in', '🎊 ¡FRANCISCA! Finsus acaba de <b>aprobar tu crédito por $35,000 MXN</b> 💚');
+    addBubble('in', 'Mereces este momento. Me avisas en qué te va, y seguimos creciendo juntas 💛');
+    setExplainer('<b>🎉 Ciclo completo.</b> Francisca recuperó su aptitud crediticia con contenidos y herramientas de Eleva, y volvió a Finsus como lead incubado de alta calidad. <b>Resultado:</b> crédito aprobado, cambio de comportamiento financiero duradero, y una alianza ganadora para Fintech, Fundación Capital y la usuaria.');
+  }, 900);
+}
+
+/* ========================================================================
+   CONTROLS
+======================================================================== */
+function resetDemo(){
+  state.step = 0;
+  state.phase = 1;
+  state.elevaUnlocked = false;
+  state.testAnswers = {};
+  state.currentTestQ = 0;
+  state.testDone = false;
+  state.autoPlayRunning = false;
+  document.getElementById('waBody').innerHTML = '';
+  document.getElementById('elevaLocked').style.display = 'flex';
+  document.getElementById('elevaApp').style.display = 'none';
+  document.getElementById('creditoAprobado').style.display = 'none';
+  document.querySelectorAll('#elevaContent .screen').forEach(s => s.classList.remove('active'));
+  document.querySelector('#elevaContent .screen[data-screen="home"]').classList.add('active');
+  setPhase(1);
+  setExplainer('<b>👋 Bienvenido al demo.</b> Este simulador recrea el recorrido de una persona real — Francisca, dueña de una mypes en CDMX que fue rechazada por Finsus — a través del ecosistema Eleva: desde el primer contacto por WhatsApp con Con-Héctor hasta la aprobación del crédito. Presiona <b>▶ Auto-play</b> o avanza manualmente con los controles del chat.');
+  // Add initial greeting
+  setTimeout(()=>{
+    const body = document.getElementById('waBody');
+    const notif = document.createElement('div');
+    notif.className = 'wa-bubble in';
+    notif.style.background = '#FFF4CC';
+    notif.style.borderLeft = '3px solid #FFC72C';
+    notif.innerHTML = '<div style="font-size:10px;font-weight:700;color:#8A6D00;margin-bottom:3px;">🔔 Finsus · Aliado Fintech</div><div>Francisca, sabemos que tu solicitud de crédito fue rechazada. No te preocupes — con Con-Héctor y Eleva puedes volver a postular y mejorar tu perfil 💪</div><span class="wa-time">9:15 ✓✓</span>';
+    body.appendChild(notif);
+    const startBtnGroup = document.createElement('div');
+    startBtnGroup.className = 'wa-btn-group';
+    const btn = document.createElement('button');
+    btn.className = 'wa-quick-btn';
+    btn.innerHTML = '▶ Empezar el viaje';
+    btn.onclick = () => { btn.disabled = true; advanceChatSmart(); };
+    startBtnGroup.appendChild(btn);
+    body.appendChild(startBtnGroup);
+  }, 200);
+}
+
+function autoPlay(){
+  if(state.autoPlayRunning){
+    state.autoPlayRunning = false;
+    document.getElementById('autoBtn').innerHTML = '▶ Auto-play';
+    return;
+  }
+  document.getElementById('autoBtn').innerHTML = '⏸ Pausar';
+
+  // If fresh, kick off
+  if(state.step === 0){
+    resetDemo();
+    // Set autoPlayRunning AFTER resetDemo (which resets it to false)
+    setTimeout(()=>{
+      state.autoPlayRunning = true;
+      document.querySelector('#waBody .wa-quick-btn').click();
+      setTimeout(autoLoop, 1500);
+    }, 400);
+  } else {
+    state.autoPlayRunning = true;
+    autoLoop();
+  }
+}
+
+function autoLoop(){
+  if(!state.autoPlayRunning) return;
+
+  // If there are pending WhatsApp chat buttons, auto-click first one
+  if(!state.elevaUnlocked){
+    const btnGroups = document.querySelectorAll('#waBody .wa-btn-group');
+    const lastGroup = btnGroups[btnGroups.length-1];
+    if(lastGroup){
+      const firstBtn = Array.from(lastGroup.querySelectorAll('button')).find(b => !b.disabled);
+      if(firstBtn){
+        setTimeout(()=>{
+          if(state.autoPlayRunning){ firstBtn.click(); autoLoop(); }
+        }, 1400);
+        return;
+      }
+    }
+    // waiting for next bubble
+    setTimeout(autoLoop, 1000);
+    return;
+  }
+
+  // Eleva unlocked — advance through the flow
+  const activeScreen = document.querySelector('#elevaContent .screen.active')?.dataset.screen;
+
+  // If test not done
+  if(!state.testDone){
+    if(activeScreen !== 'test'){
+      setTimeout(()=>{ if(state.autoPlayRunning){ goEleva('test'); autoLoop(); } }, 1200);
+      return;
+    }
+    // Auto-select + continue
+    setTimeout(()=>{
+      if(!state.autoPlayRunning) return;
+      selectTestOpt(Math.floor(Math.random()*testQuestions[state.currentTestQ].opts.length));
+      setTimeout(()=>{ if(state.autoPlayRunning){ nextTestQ(); autoLoop(); } }, 700);
+    }, 1000);
+    return;
+  }
+
+  if(activeScreen === 'perfil'){
+    setTimeout(()=>{ if(state.autoPlayRunning){ goEleva('leccion'); autoLoop(); } }, 2000);
+    return;
+  }
+  if(activeScreen === 'leccion'){
+    // completarLeccion chains: leccion -> CH bubbles -> goEleva('modulos') after ~3200ms
+    setTimeout(()=>{
+      if(state.autoPlayRunning){ completarLeccion(); setTimeout(autoLoop, 3500); }
+    }, 2200);
+    return;
+  }
+  if(activeScreen === 'modulos'){
+    setTimeout(()=>{ if(state.autoPlayRunning){ goEleva('videoleccion'); autoLoop(); } }, 2500);
+    return;
+  }
+  if(activeScreen === 'videoleccion'){
+    // terminarVideo chains: videoleccion -> CH bubble -> goEleva('guia') after ~700ms
+    setTimeout(()=>{
+      if(state.autoPlayRunning){ terminarVideo(); setTimeout(autoLoop, 1200); }
+    }, 2800);
+    return;
+  }
+  if(activeScreen === 'guia'){
+    setTimeout(()=>{ if(state.autoPlayRunning){ goEleva('certificado'); autoLoop(); } }, 2200);
+    return;
+  }
+  if(activeScreen === 'certificado'){
+    setTimeout(()=>{ if(state.autoPlayRunning){ goEleva('siguiente'); autoLoop(); } }, 2500);
+    return;
+  }
+  if(activeScreen === 'siguiente'){
+    // irAScoring chains: siguiente -> CH bubbles -> goEleva('scoring') after ~700ms
+    setTimeout(()=>{
+      if(state.autoPlayRunning){ irAScoring(); setTimeout(autoLoop, 1200); }
+    }, 2500);
+    return;
+  }
+  if(activeScreen === 'scoring'){
+    setTimeout(()=>{ if(state.autoPlayRunning){ goEleva('acceso'); autoLoop(); } }, 2500);
+    return;
+  }
+  if(activeScreen === 'acceso'){
+    setTimeout(()=>{
+      if(state.autoPlayRunning && document.getElementById('creditoAprobado').style.display === 'none'){
+        aplicarCredito();
+      }
+      state.autoPlayRunning = false;
+      document.getElementById('autoBtn').innerHTML = '▶ Auto-play';
+    }, 1800);
+    return;
+  }
+
+  setTimeout(autoLoop, 1200);
+}
+
+/* Init */
+window.addEventListener('DOMContentLoaded', resetDemo);
+</script>
+
+</body>
+</html>
