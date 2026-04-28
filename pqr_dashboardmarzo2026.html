@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Análisis de PQR · El Rancherito · Q1 2026</title>
+<style>
+:root {
+  --bg-page: #FFFFFF;
+  --bg-secondary: #F1EDE5;
+  --bg-card: #FFFFFF;
+  --text-primary: #1A1816;
+  --text-secondary: #6B6358;
+  --text-tertiary: #9C8E7E;
+  --border-tertiary: rgba(26, 24, 22, 0.10);
+  --border-secondary: rgba(26, 24, 22, 0.18);
+  --bg-danger: #FBEAEA;
+  --text-danger: #791F1F;
+  --bar-danger: #A32D2D;
+  --bg-warning: #FAEEDA;
+  --text-warning: #854F0B;
+  --bar-warning: #BA7517;
+  --bg-info: #DCE5EE;
+  --text-info: #0C447C;
+  --bar-info: #185FA5;
+  --text-success: #27500A;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { background: var(--bg-page); color: var(--text-primary); font-family: var(--font-sans); font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+
+.shell { max-width: 1080px; margin: 0 auto; padding: 32px 32px 64px; }
+
+header.head { margin-bottom: 24px; padding-bottom: 18px; border-bottom: 0.5px solid var(--border-tertiary); display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 12px; }
+header.head h1 { font-size: 22px; font-weight: 500; letter-spacing: -0.01em; margin-bottom: 4px; }
+header.head .subtitle { font-size: 13px; color: var(--text-secondary); }
+header.head .meta { font-size: 12px; color: var(--text-tertiary); font-family: var(--font-mono); }
+
+.row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+
+.filters { margin-bottom: 20px; }
+
+select { width: 100%; height: 36px; appearance: none; -webkit-appearance: none; background: var(--bg-card); border: 0.5px solid var(--border-tertiary); border-radius: var(--radius-md); padding: 0 32px 0 14px; font-family: var(--font-sans); font-size: 14px; color: var(--text-primary); cursor: pointer; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%236B6358' stroke-width='1.4' fill='none' stroke-linecap='round'/></svg>"); background-repeat: no-repeat; background-position: right 12px center; transition: border-color 0.15s; }
+select:hover { border-color: var(--border-secondary); }
+select:focus { outline: 2px solid var(--bar-info); outline-offset: -1px; border-color: transparent; }
+
+.kpis { margin-bottom: 28px; }
+.kpi { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 16px 18px; }
+.kpi-label { font-size: 13px; color: var(--text-secondary); }
+.kpi-value { font-size: 28px; font-weight: 500; line-height: 1.15; margin-top: 4px; letter-spacing: -0.01em; }
+.kpi-delta { font-size: 12px; margin-top: 4px; }
+.kpi-delta.up { color: var(--text-danger); }
+.kpi-delta.down { color: var(--text-success); }
+.kpi-delta.muted { color: var(--text-secondary); }
+
+.charts { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+.chart-block { display: flex; flex-direction: column; }
+.tit { font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; font-weight: 500; }
+.chart-canvas-wrap { position: relative; width: 100%; height: 240px; }
+.chart-canvas-wrap.donut { height: 200px; }
+.chart-legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; color: var(--text-secondary); margin-bottom: 10px; min-height: 18px; }
+.chart-legend span.item { display: inline-flex; align-items: center; gap: 5px; }
+.chart-legend .swatch { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+.section { margin-bottom: 28px; }
+.section-tit { font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; font-weight: 500; }
+
+.issues-card { background: var(--bg-card); border: 0.5px solid var(--border-tertiary); border-radius: var(--radius-lg); padding: 8px 20px; }
+table.tbl { width: 100%; border-collapse: collapse; font-size: 14px; table-layout: fixed; }
+table.tbl th { font-size: 13px; font-weight: 500; color: var(--text-secondary); text-align: left; padding: 12px 8px; border-bottom: 0.5px solid var(--border-tertiary); }
+table.tbl td { padding: 12px 8px; border-bottom: 0.5px solid var(--border-tertiary); vertical-align: middle; }
+table.tbl tbody tr:last-child td { border-bottom: none; }
+.cell-name { font-weight: 500; }
+.cell-cat, .cell-sedes { color: var(--text-secondary); }
+.cell-sedes { font-size: 12px; }
+.cell-units { text-align: right; font-variant-numeric: tabular-nums; }
+.cell-impact { text-align: right; }
+
+.pill { display: inline-block; font-size: 11px; padding: 3px 10px; border-radius: var(--radius-md); font-weight: 500; white-space: nowrap; }
+.pill.critico { background: var(--bg-danger); color: var(--text-danger); }
+.pill.alto { background: var(--bg-warning); color: var(--text-warning); }
+.pill.medio { background: var(--bg-info); color: var(--text-info); }
+
+.alerts { display: grid; gap: 8px; }
+.alt { display: flex; gap: 12px; padding: 12px 14px; background: var(--bg-card); border-radius: var(--radius-md); border: 0.5px solid var(--border-tertiary); align-items: stretch; }
+.alt-bar { width: 3px; border-radius: 2px; flex-shrink: 0; }
+.alt.critico .alt-bar { background: var(--bar-danger); }
+.alt.alto .alt-bar { background: var(--bar-warning); }
+.alt.medio .alt-bar { background: var(--bar-info); }
+.alt-body { flex: 1; }
+.alt-meta { font-size: 12px; color: var(--text-secondary); margin-bottom: 2px; }
+.alt-text { font-size: 14px; }
+
+.actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 28px; padding-top: 20px; border-top: 0.5px solid var(--border-tertiary); }
+.btn { background: transparent; border: 0.5px solid var(--border-secondary); color: var(--text-primary); font-family: var(--font-sans); font-size: 13px; padding: 8px 14px; border-radius: var(--radius-md); cursor: pointer; transition: background 0.15s; }
+.btn:hover { background: var(--bg-secondary); }
+.btn:active { transform: scale(0.985); }
+
+footer.foot { margin-top: 40px; padding-top: 16px; border-top: 0.5px solid var(--border-tertiary); font-size: 12px; color: var(--text-tertiary); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+
+@media (max-width: 880px) {
+  .shell { padding: 20px 18px 48px; }
+  .charts { grid-template-columns: 1fr; }
+}
+
+@media print {
+  .filters, .actions { display: none; }
+  .charts, .kpis, .issues-card, .alerts { break-inside: avoid; }
+  body { background: white; }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<header class="head">
+  <div>
+    <h1>Análisis de PQR · El Rancherito</h1>
+    <div class="subtitle">Q1 2026 · Datos consolidados de auditoría y reportes operativos · Cifras estimadas, ajustables</div>
+  </div>
+  <div class="meta">PQR-Q1-2026 · 27.04.2026</div>
+</header>
+
+<div class="row filters">
+  <select id="f-sede" aria-label="Filtrar por sede">
+    <option value="all">Todas las sedes</option>
+    <option value="rionegro">Rionegro</option>
+    <option value="viva">Viva Envigado</option>
+    <option value="palmas">Sede Palmas</option>
+    <option value="guarne">Acopio Guarne</option>
+    <option value="otras">Otras sedes</option>
+  </select>
+  <select id="f-cat" aria-label="Filtrar por categoría">
+    <option value="all">Todas las categorías</option>
+    <option value="res">Res</option>
+    <option value="cerdo">Cerdo</option>
+    <option value="embutidos">Embutidos</option>
+    <option value="huevos">Huevos</option>
+    <option value="otros">Otros</option>
+  </select>
+  <select id="f-imp" aria-label="Filtrar por nivel de impacto">
+    <option value="all">Todos los impactos</option>
+    <option value="critico">Crítico</option>
+    <option value="alto">Alto</option>
+    <option value="medio">Medio</option>
+  </select>
+</div>
+
+<div class="row kpis">
+  <div class="kpi">
+    <div class="kpi-label">Unidades con novedad</div>
+    <div class="kpi-value" id="k-u">—</div>
+    <div class="kpi-delta up">+1.596 vs Q1 2025</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Costo total PQR</div>
+    <div class="kpi-value" id="k-c">—</div>
+    <div class="kpi-delta down">−$9,4M vs Q1 2025</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">% unidades del total</div>
+    <div class="kpi-value" id="k-up">—</div>
+    <div class="kpi-delta muted">según filtros</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">% costo del total</div>
+    <div class="kpi-value" id="k-cp">—</div>
+    <div class="kpi-delta muted">según filtros</div>
+  </div>
+</div>
+
+<div class="charts">
+  <div class="chart-block">
+    <div class="tit">Unidades por sede</div>
+    <div class="chart-canvas-wrap">
+      <canvas id="ch-sede" role="img" aria-label="Gráfico de barras horizontales con unidades de PQR por sede">Unidades de PQR por sede.</canvas>
+    </div>
+  </div>
+  <div class="chart-block">
+    <div class="tit">Costo por categoría</div>
+    <div class="chart-legend" id="lg-cat"></div>
+    <div class="chart-canvas-wrap donut">
+      <canvas id="ch-cat" role="img" aria-label="Gráfico de dona con distribución de costo por categoría">Distribución del costo por categoría.</canvas>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-tit">Novedades recurrentes (filtradas)</div>
+  <div class="issues-card">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th style="width: 34%;">Novedad</th>
+          <th style="width: 14%;">Categoría</th>
+          <th style="width: 26%;">Sedes</th>
+          <th style="width: 12%; text-align: right;">Unidades</th>
+          <th style="width: 14%; text-align: right;">Impacto</th>
+        </tr>
+      </thead>
+      <tbody id="t-iss"><tr><td colspan="5" style="color: var(--text-tertiary); text-align: center; padding: 20px;">Cargando…</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-tit">Alertas operativas activas (auditorías abril 2026)</div>
+  <div class="alerts" id="alerts"></div>
+</div>
+
+<div class="actions">
+  <button class="btn" id="btn-reset">Limpiar filtros</button>
+  <button class="btn" onclick="window.print()">Imprimir / PDF</button>
+</div>
+
+<footer class="foot">
+  <div>Manca · Consultoría en operaciones gastronómicas</div>
+  <div>El Rancherito · PQR Q1 2026 · datos estimados ajustables en código</div>
+</footer>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+(function(){
+  const SEDES = { rionegro:'Rionegro', viva:'Viva Envigado', palmas:'Sede Palmas', guarne:'Acopio Guarne', otras:'Otras sedes' };
+  const CATS = { res:'Res', cerdo:'Cerdo', embutidos:'Embutidos', huevos:'Huevos', otros:'Otros' };
+  const C_SEDE = { rionegro:'#993C1D', viva:'#BA7517', palmas:'#534AB7', guarne:'#0F6E56', otras:'#5F5E5A' };
+  const C_CAT = { res:'#993C1D', cerdo:'#D85A30', embutidos:'#534AB7', huevos:'#BA7517', otros:'#888780' };
+
+  const M = [
+    {sede:'rionegro', cat:'res', u:380, c:5400000},
+    {sede:'rionegro', cat:'cerdo', u:170, c:1900000},
+    {sede:'rionegro', cat:'embutidos', u:600, c:1100000},
+    {sede:'rionegro', cat:'huevos', u:450, c:850000},
+    {sede:'rionegro', cat:'otros', u:50, c:200000},
+    {sede:'viva', cat:'res', u:140, c:3200000},
+    {sede:'viva', cat:'cerdo', u:90, c:1450000},
+    {sede:'viva', cat:'embutidos', u:550, c:1300000},
+    {sede:'viva', cat:'huevos', u:680, c:1050000},
+    {sede:'viva', cat:'otros', u:25, c:200000},
+    {sede:'palmas', cat:'res', u:60, c:1700000},
+    {sede:'palmas', cat:'cerdo', u:55, c:700000},
+    {sede:'palmas', cat:'embutidos', u:200, c:380000},
+    {sede:'palmas', cat:'huevos', u:600, c:720000},
+    {sede:'palmas', cat:'otros', u:20, c:100000},
+    {sede:'guarne', cat:'res', u:20, c:1100000},
+    {sede:'guarne', cat:'cerdo', u:70, c:850000},
+    {sede:'guarne', cat:'embutidos', u:80, c:200000},
+    {sede:'guarne', cat:'huevos', u:200, c:300000},
+    {sede:'guarne', cat:'otros', u:235, c:550000},
+    {sede:'otras', cat:'res', u:30, c:600000},
+    {sede:'otras', cat:'cerdo', u:50, c:1340000},
+    {sede:'otras', cat:'embutidos', u:300, c:660000},
+    {sede:'otras', cat:'huevos', u:430, c:580000},
+    {sede:'otras', cat:'otros', u:15, c:100000},
+  ];
+
+  const I = [
+    {name:'Punta de Anca dura', cat:'res', sedes:['rionegro','palmas'], u:230, imp:'critico'},
+    {name:'Morcilla x 40 g reventada', cat:'embutidos', sedes:['rionegro','viva','palmas'], u:480, imp:'alto'},
+    {name:'Huevo tamaño muy pequeño', cat:'huevos', sedes:['palmas'], u:600, imp:'alto'},
+    {name:'Solomito gramaje x 250 g', cat:'res', sedes:['rionegro','guarne'], u:95, imp:'medio'},
+    {name:'Churrasco gramaje', cat:'res', sedes:['rionegro','guarne'], u:110, imp:'medio'},
+    {name:'Chicharrón x 400 g forma e incisión', cat:'cerdo', sedes:['rionegro','viva','palmas'], u:145, imp:'medio'},
+    {name:'Solomito corte mariposa contra fibra', cat:'res', sedes:['rionegro','viva','palmas'], u:70, imp:'medio'},
+    {name:'Chorizo presentación', cat:'embutidos', sedes:['viva'], u:220, imp:'medio'},
+  ];
+
+  const A = [
+    {sev:'critico', sede:'Cava ALMAFROST', date:'15/04', text:'Canasta de Goulash de res vence el 30/04/2026, gestionar salida prioritaria.'},
+    {sev:'critico', sede:'Cava ALMAFROST', date:'15/04', text:'Cava sin lavar, basura en pisos, pisos, puerta y pared enhielados.'},
+    {sev:'alto', sede:'Cava ALMAFROST', date:'15/04', text:'Riesgo de seguridad por vacío cerca del malacate.'},
+    {sev:'alto', sede:'Acopio Guarne', date:'27/04', text:'Sifones sin rejilla en cocina, coordinar con calidad y mantenimiento.'},
+    {sev:'medio', sede:'Acopio Guarne', date:'27/04', text:'Revisar estado de mesas de proceso y difusores de cavas.'},
+  ];
+
+  const SEV_LABEL = { critico:'Crítico', alto:'Alto', medio:'Medio' };
+  const TU = M.reduce((s,r)=>s+r.u,0);
+  const TC = M.reduce((s,r)=>s+r.c,0);
+  const fmt = n => new Intl.NumberFormat('es-CO').format(Math.round(n));
+  const fmtM = n => '$' + (n/1000000).toFixed(1).replace('.',',') + 'M';
+  const pct = (a,b) => b ? Math.round(a/b*100) + '%' : '—';
+
+  let chS, chC;
+
+  function applyFilters(){
+    const fs = document.getElementById('f-sede').value;
+    const fc = document.getElementById('f-cat').value;
+    const fi = document.getElementById('f-imp').value;
+
+    const mF = M.filter(r => (fs==='all'||r.sede===fs) && (fc==='all'||r.cat===fc));
+    const iF = I.filter(x => (fc==='all'||x.cat===fc) && (fs==='all'||x.sedes.includes(fs)) && (fi==='all'||x.imp===fi));
+
+    const u = mF.reduce((s,r)=>s+r.u,0);
+    const c = mF.reduce((s,r)=>s+r.c,0);
+    document.getElementById('k-u').textContent = fmt(u);
+    document.getElementById('k-c').textContent = fmtM(c);
+    document.getElementById('k-up').textContent = pct(u, TU);
+    document.getElementById('k-cp').textContent = pct(c, TC);
+
+    drawSede(mF);
+    drawCat(mF);
+    drawIssues(iF);
+  }
+
+  function drawSede(rows){
+    const map = {};
+    rows.forEach(r => map[r.sede] = (map[r.sede]||0) + r.u);
+    const keys = Object.keys(SEDES).filter(k => map[k] > 0);
+    const labels = keys.map(k => SEDES[k]);
+    const data = keys.map(k => map[k]);
+    const colors = keys.map(k => C_SEDE[k]);
+
+    if (chS) chS.destroy();
+    chS = new Chart(document.getElementById('ch-sede'), {
+      type:'bar',
+      data:{ labels, datasets:[{ data, backgroundColor:colors, borderRadius:4 }] },
+      options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y',
+        plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:c=>fmt(c.parsed.x)+' und.' }}},
+        scales:{
+          x:{ ticks:{ callback:v=>fmt(v), font:{family:'system-ui', size:11}, color:'#9C8E7E'}, grid:{ color:'rgba(0,0,0,0.06)', drawTicks:false}, border:{display:false}},
+          y:{ ticks:{ font:{family:'system-ui', size:12}, color:'#1A1816'}, grid:{display:false}, border:{display:false}}
+        }
+      }
+    });
+  }
+
+  function drawCat(rows){
+    const map = {};
+    rows.forEach(r => map[r.cat] = (map[r.cat]||0) + r.c);
+    const keys = Object.keys(CATS).filter(k => map[k] > 0);
+    const labels = keys.map(k => CATS[k]);
+    const data = keys.map(k => map[k]);
+    const colors = keys.map(k => C_CAT[k]);
+    const total = data.reduce((a,b)=>a+b,0);
+
+    document.getElementById('lg-cat').innerHTML = keys.map((k,i) =>
+      `<span class="item"><span class="swatch" style="background:${colors[i]};"></span>${labels[i]} ${pct(data[i], total)}</span>`
+    ).join('');
+
+    if (chC) chC.destroy();
+    chC = new Chart(document.getElementById('ch-cat'), {
+      type:'doughnut',
+      data:{ labels, datasets:[{ data, backgroundColor:colors, borderWidth:0 }] },
+      options:{ responsive:true, maintainAspectRatio:false, cutout:'62%',
+        plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:c => c.label + ': ' + fmtM(c.parsed) }}}
+      }
+    });
+  }
+
+  function drawIssues(items){
+    const tbody = document.getElementById('t-iss');
+    if (!items.length){
+      tbody.innerHTML = '<tr><td colspan="5" style="color: var(--text-tertiary); text-align: center; padding: 20px;">Sin novedades para este filtro</td></tr>';
+      return;
+    }
+    items.sort((a,b)=>b.u-a.u);
+    tbody.innerHTML = items.map(it => {
+      const sn = it.sedes.map(x => SEDES[x]).join(', ');
+      return `<tr>
+        <td><span class="cell-name">${it.name}</span></td>
+        <td><span class="cell-cat">${CATS[it.cat]}</span></td>
+        <td><span class="cell-sedes">${sn}</span></td>
+        <td class="cell-units">${fmt(it.u)}</td>
+        <td class="cell-impact"><span class="pill ${it.imp}">${SEV_LABEL[it.imp]}</span></td>
+      </tr>`;
+    }).join('');
+  }
+
+  function drawAlerts(){
+    document.getElementById('alerts').innerHTML = A.map(a => `
+      <div class="alt ${a.sev}">
+        <div class="alt-bar"></div>
+        <div class="alt-body">
+          <div class="alt-meta">${a.sede} · ${a.date}</div>
+          <div class="alt-text">${a.text}</div>
+        </div>
+        <div style="display:flex; align-items:flex-start;"><span class="pill ${a.sev}">${SEV_LABEL[a.sev]}</span></div>
+      </div>
+    `).join('');
+  }
+
+  document.getElementById('f-sede').addEventListener('change', applyFilters);
+  document.getElementById('f-cat').addEventListener('change', applyFilters);
+  document.getElementById('f-imp').addEventListener('change', applyFilters);
+  document.getElementById('btn-reset').addEventListener('click', () => {
+    document.getElementById('f-sede').value = 'all';
+    document.getElementById('f-cat').value = 'all';
+    document.getElementById('f-imp').value = 'all';
+    applyFilters();
+  });
+
+  applyFilters();
+  drawAlerts();
+})();
+</script>
+</body>
+</html>
