@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Viaje Lucho — Colombia — Abril 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#FFFFFF;
+    --ink:#0A0A0A;
+    --soft:#5A5A5A;
+    --mute:#9C9C9C;
+    --line:#0A0A0A;
+    --line-soft:#E5E5E5;
+    --rule:#D4D4D4;
+    --orange:#F97316;
+    --green:#10B981;
+    --blue:#3B82F6;
+    --purple:#A855F7;
+    --pink:#EC4899;
+    --red:#EF4444;
+    --amber:#F59E0B;
+    --teal:#14B8A6;
+    --indigo:#6366F1;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{
+    background:var(--bg);color:var(--ink);
+    font-family:'Manrope',sans-serif;font-weight:500;
+    -webkit-font-smoothing:antialiased;text-rendering:geometricPrecision;
+  }
+  ::selection{background:var(--orange);color:#fff}
+
+  .wrap{max-width:1320px;margin:0 auto;padding:32px 32px 64px}
+
+  /* TOP META BAR */
+  .topbar{
+    display:grid;grid-template-columns:repeat(5,1fr);gap:0;
+    border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);
+    padding:10px 0;margin-bottom:48px;
+    font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);
+  }
+  .topbar > div{padding:0 14px;border-right:1px solid var(--rule)}
+  .topbar > div:last-child{border-right:0}
+  .topbar .lbl{color:var(--mute);display:block;margin-bottom:2px;font-weight:600}
+  .topbar .val{color:var(--ink);font-weight:700}
+
+  /* HERO */
+  .hero{margin-bottom:48px}
+  h1.title{
+    font-weight:800;font-size:clamp(64px,11vw,168px);line-height:.86;
+    letter-spacing:-.045em;color:var(--ink);text-transform:uppercase;
+  }
+  h1.title .row1, h1.title .row2{display:block}
+  h1.title .row2 .acc{color:var(--orange)}
+  h1.title .row2 .em{color:var(--red)}
+
+  .hero-meta{
+    display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;
+    margin-top:32px;padding-top:18px;border-top:1px solid var(--ink);
+  }
+  .hero-meta .col{display:flex;flex-direction:column}
+  .hero-meta .lbl{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);margin-bottom:8px}
+  .hero-meta .val{font-weight:600;font-size:17px;color:var(--ink);line-height:1.35}
+  .hero-meta .grand{
+    font-weight:800;font-size:36px;letter-spacing:-.025em;line-height:1;color:var(--ink);
+  }
+  .hero-meta .grand .unit{font-weight:600;color:var(--mute);font-size:14px;margin-left:6px;letter-spacing:0;text-transform:none}
+  .hero-meta .grand-usd{font-size:14px;color:var(--green);margin-top:6px;font-weight:700;letter-spacing:0;text-transform:none}
+
+  /* SECTION HEAD */
+  .section-head{
+    display:grid;grid-template-columns:64px 1fr auto;gap:16px;align-items:baseline;
+    margin:64px 0 24px;padding-bottom:14px;border-bottom:1px solid var(--ink);
+  }
+  .section-head .num{font-size:13px;font-weight:800;letter-spacing:.08em}
+  .section-head h2{font-weight:700;font-size:32px;letter-spacing:-.025em;color:var(--ink);text-transform:uppercase}
+  .section-head .meta{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);text-align:right}
+
+  /* Section number colors */
+  .num-01{color:var(--orange)}
+  .num-02{color:var(--purple)}
+  .num-03{color:var(--green)}
+  .num-04{color:var(--blue)}
+  .num-05{color:var(--red)}
+
+  /* KPIS */
+  .kpis{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+    border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);
+  }
+  .kpi{
+    padding:24px 24px 28px;border-right:1px solid var(--rule);
+    display:flex;flex-direction:column;justify-content:space-between;min-height:170px;
+  }
+  .kpi:last-child{border-right:0}
+  .kpi-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+  .kpi .lbl{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
+  .kpi .ix{font-size:10px;color:var(--mute);font-weight:700;letter-spacing:.1em}
+  .kpi .num{font-weight:800;font-size:46px;letter-spacing:-.035em;color:var(--ink);line-height:1}
+  .kpi .num-usd{font-size:13px;color:var(--green);margin-top:6px;font-weight:700}
+  .kpi .sub{font-size:12px;color:var(--soft);margin-top:6px;font-weight:600}
+
+  /* KPI accents */
+  .kpi-orange .num{color:var(--orange)}
+  .kpi-purple .num{color:var(--purple)}
+  .kpi-red .num{color:var(--red)}
+  .kpi-blue .num{color:var(--blue)}
+
+  /* CATEGORY MINI CARDS (no border, just rule-bound) */
+  .cat-mini{
+    display:grid;grid-template-columns:repeat(6,1fr);gap:0;margin-top:24px;
+    border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+  }
+  .cat-mini-cell{
+    padding:18px 16px 20px;border-right:1px solid var(--rule);
+    display:flex;flex-direction:column;justify-content:space-between;min-height:120px;
+  }
+  .cat-mini-cell:last-child{border-right:0}
+  .cat-mini-cell .lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);margin-bottom:4px;line-height:1.2}
+  .cat-mini-cell .num{font-weight:800;font-size:24px;letter-spacing:-.025em;line-height:1}
+  .cat-mini-cell .usd{font-size:11px;color:var(--green);margin-top:4px;font-weight:700}
+  .cat-mini-cell .sub{font-size:10.5px;color:var(--mute);margin-top:4px;font-weight:600}
+
+  /* PANELS */
+  .row{display:grid;gap:0}
+  .row.timeline-row{grid-template-columns:1fr}
+  .row.cat-row{grid-template-columns:1fr 1fr}
+  .row.cities-row{grid-template-columns:1fr 1fr}
+
+  .panel{padding:0}
+  .panel.right-divider{border-right:1px solid var(--rule);padding-right:32px}
+  .panel.left-pad{padding-left:32px}
+  .panel-title{
+    font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);
+    margin-bottom:18px;display:flex;justify-content:space-between;
+  }
+  .panel-title .right{color:var(--orange)}
+
+  .chart-box{position:relative;height:340px}
+  .chart-box.short{height:300px}
+
+  /* CATEGORY RANKING */
+  .cat-list{display:flex;flex-direction:column}
+  .cat-row-item{
+    display:grid;grid-template-columns:14px 22px 1fr auto auto;gap:14px;align-items:center;
+    padding:13px 0;border-bottom:1px solid var(--rule);cursor:pointer;transition:padding .12s;
+  }
+  .cat-row-item:hover{padding-left:6px}
+  .cat-row-item .dot{width:10px;height:10px;border-radius:3px}
+  .cat-row-item .ix{font-size:11px;color:var(--mute);font-weight:700;letter-spacing:.05em}
+  .cat-row-item .name{font-weight:600;font-size:14px;letter-spacing:-.005em}
+  .cat-row-item .pct{font-size:11px;font-weight:700;color:var(--soft);min-width:46px;text-align:right;letter-spacing:0}
+  .cat-row-item .val{font-weight:700;font-size:16px;letter-spacing:-.02em;min-width:120px;text-align:right}
+  .cat-row-item .val .usd{display:block;font-size:10.5px;color:var(--green);margin-top:2px;font-weight:700}
+  .cat-row-item.active .name,.cat-row-item.active .val{color:var(--orange)}
+
+  /* CITIES */
+  .cities{display:flex;flex-direction:column;gap:0}
+  .city{padding:18px 0;border-bottom:1px solid var(--rule)}
+  .city:last-child{border-bottom:0}
+  .city-line{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:baseline;margin-bottom:10px}
+  .city-name{display:flex;align-items:baseline;gap:14px}
+  .city-name .ix{font-size:11px;color:var(--mute);font-weight:700;letter-spacing:.05em;width:22px}
+  .city-name .nm{font-weight:700;font-size:22px;letter-spacing:-.02em;text-transform:uppercase}
+  .city-name .reg{font-size:9.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);margin-left:4px}
+  .city-amt{font-weight:700;font-size:22px;letter-spacing:-.025em;text-align:right}
+  .city-amt .usd{font-size:11px;color:var(--green);display:block;margin-top:2px;font-weight:700;letter-spacing:0}
+  .city-amt .small{font-size:10.5px;color:var(--soft);display:block;margin-top:2px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+  .city-bar{height:3px;background:var(--line-soft);position:relative;overflow:hidden}
+  .city-bar .fill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--orange),var(--amber));transition:width .9s cubic-bezier(.2,.8,.2,1)}
+
+  /* TOP 10 */
+  .top-list{display:flex;flex-direction:column}
+  .top-row{
+    display:grid;grid-template-columns:32px 1fr auto;gap:14px;align-items:baseline;
+    padding:13px 0;border-bottom:1px solid var(--rule);
+  }
+  .top-row .rk{font-size:12px;color:var(--mute);font-weight:700;letter-spacing:.04em}
+  .top-row .rk.gold{color:var(--amber)}
+  .top-row .rk.silver{color:var(--soft)}
+  .top-row .rk.bronze{color:var(--orange)}
+  .top-row .desc{font-weight:600;font-size:13.5px;line-height:1.4}
+  .top-row .desc .meta{display:block;font-size:10.5px;color:var(--soft);text-transform:uppercase;letter-spacing:.1em;margin-top:4px;font-weight:600}
+  .top-row .amt{font-weight:700;font-size:17px;letter-spacing:-.02em;text-align:right}
+  .top-row .amt .usd{display:block;font-size:10.5px;color:var(--green);margin-top:2px;font-weight:700;letter-spacing:0}
+
+  /* FILTERS */
+  .filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;align-items:center;padding:14px 0;border-top:1px solid var(--ink);border-bottom:1px solid var(--rule)}
+  .filters .lbl{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin:0 8px 0 0}
+  .chip{
+    font-family:inherit;font-size:11.5px;font-weight:700;letter-spacing:.02em;
+    padding:6px 13px;border:1px solid var(--ink);background:transparent;color:var(--ink);
+    cursor:pointer;transition:all .12s;border-radius:0;text-transform:uppercase;
+  }
+  .chip:hover{background:var(--ink);color:#fff}
+  .chip.active{background:var(--orange);color:#fff;border-color:var(--orange)}
+  .chip[data-region="Bogotá"].active,.chip[data-region="Eje Cafetero"].active{background:var(--green);border-color:var(--green)}
+  .filter-sep{width:1px;height:18px;background:var(--rule);margin:0 10px}
+
+  /* TABLE */
+  .ttbl{width:100%;border-collapse:collapse;font-size:13px}
+  .ttbl thead th{
+    font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--soft);text-align:left;padding:11px 12px;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);
+  }
+  .ttbl thead th.right{text-align:right}
+  .ttbl tbody tr{border-bottom:1px solid var(--rule);transition:background .1s}
+  .ttbl tbody tr:hover{background:#FAFAFA}
+  .ttbl tbody td{padding:13px 12px;vertical-align:top;font-weight:500}
+  .ttbl tbody td.right{text-align:right;font-weight:700;font-size:15px;letter-spacing:-.02em}
+  .ttbl tbody td.right .usd{display:block;font-size:10.5px;color:var(--green);margin-top:2px;font-weight:700;letter-spacing:0}
+  .ttbl .date{font-size:11.5px;color:var(--ink);font-weight:600;white-space:nowrap;letter-spacing:.04em;text-transform:uppercase}
+  .ttbl .desc{font-weight:600;font-size:13px}
+  .ttbl .refline{font-size:10.5px;color:var(--soft);margin-top:4px;font-weight:500;letter-spacing:.04em;text-transform:uppercase}
+  .ttbl .pill{
+    display:inline-block;font-size:10px;font-weight:700;letter-spacing:.1em;
+    text-transform:uppercase;padding:4px 9px;border-radius:0;
+    background:transparent;color:var(--ink);border:1px solid var(--ink);
+  }
+
+  .table-foot{
+    display:grid;grid-template-columns:1fr auto auto;gap:24px;
+    padding:16px 12px;border-top:2px solid var(--ink);align-items:baseline;
+  }
+  .table-foot .lbl{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
+  .table-foot .ct{font-weight:600;font-size:14px;color:var(--ink)}
+  .table-foot .sm{font-weight:800;font-size:24px;letter-spacing:-.025em;color:var(--ink);text-align:right}
+  .table-foot .sm .usd{display:block;font-size:13px;color:var(--green);margin-top:4px;font-weight:700;letter-spacing:0}
+
+  /* COLOPHON */
+  footer{
+    margin-top:80px;padding:14px 0;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);
+    display:grid;grid-template-columns:repeat(4,1fr);
+    font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);
+  }
+  footer > div{padding:0 14px;border-right:1px solid var(--rule)}
+  footer > div:last-child{border-right:0}
+  footer .v{color:var(--ink);display:block;margin-top:2px;font-weight:700}
+  footer .v.green{color:var(--green)}
+
+  /* RESPONSIVE */
+  @media (max-width:900px){
+    .wrap{padding:18px 16px 48px}
+    .topbar{grid-template-columns:1fr 1fr;gap:0}
+    .topbar > div{border-bottom:1px solid var(--rule)}
+    .topbar > div:nth-child(5){grid-column:1/-1}
+    .kpis{grid-template-columns:1fr 1fr}
+    .kpi{border-right:0;border-bottom:1px solid var(--rule)}
+    .kpi:nth-child(odd){border-right:1px solid var(--rule)}
+    .cat-mini{grid-template-columns:1fr 1fr}
+    .cat-mini-cell{border-right:0;border-bottom:1px solid var(--rule)}
+    .cat-mini-cell:nth-child(odd){border-right:1px solid var(--rule)}
+    .row.cat-row,.row.cities-row{grid-template-columns:1fr;gap:24px}
+    .panel.right-divider{border-right:0;padding-right:0;border-bottom:1px solid var(--rule);padding-bottom:24px}
+    .panel.left-pad{padding-left:0}
+    .hero-meta{grid-template-columns:1fr}
+    .section-head{grid-template-columns:48px 1fr;gap:12px}
+    .section-head .meta{grid-column:1/-1;text-align:left;margin-top:6px}
+    .section-head h2{font-size:24px}
+    footer{grid-template-columns:1fr 1fr}
+    footer > div:nth-child(2){border-right:0}
+  }
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .reveal{animation:fade .5s ease both}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- TOP META BAR -->
+  <div class="topbar">
+    <div><span class="lbl">Documento</span><span class="val">Informe Personal</span></div>
+    <div><span class="lbl">Fuente</span><span class="val">Bancolombia</span></div>
+    <div><span class="lbl">Período</span><span class="val">20.04 — 02.05.2026</span></div>
+    <div><span class="lbl">Emisión</span><span class="val">03.05.2026</span></div>
+    <div><span class="lbl">TRM</span><span class="val" id="trm-badge">— COP/USD</span></div>
+  </div>
+
+  <!-- HERO -->
+  <header class="hero">
+    <h1 class="title">
+      <span class="row1">Viaje</span>
+      <span class="row2">Lucho <span class="acc">/</span> <span class="em">Colombia</span></span>
+    </h1>
+    <div class="hero-meta">
+      <div class="col">
+        <span class="lbl">Geografía</span>
+        <span class="val">Bogotá &nbsp;·&nbsp; Eje Cafetero<br>Pereira / Armenia / Salento / Sta. Rosa</span>
+      </div>
+      <div class="col">
+        <span class="lbl">Volumen</span>
+        <span class="val">12 días &nbsp;·&nbsp; 43 movimientos<br>5 ciudades &nbsp;·&nbsp; 11 categorías</span>
+      </div>
+      <div class="col">
+        <span class="lbl">Total ejecutado</span>
+        <span class="grand" id="grand-total">— <span class="unit">COP</span></span>
+        <span class="grand-usd" id="grand-total-usd">—</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- 01 KPIS -->
+  <div class="section-head">
+    <span class="num num-01">01</span>
+    <h2>Indicadores</h2>
+    <span class="meta">Resumen ejecutivo</span>
+  </div>
+  <section class="kpis">
+    <div class="kpi kpi-orange reveal">
+      <div class="kpi-head"><span class="lbl">Promedio diario</span><span class="ix">a</span></div>
+      <div>
+        <div class="num" id="kpi-avg">—</div>
+        <div class="num-usd" id="kpi-avg-usd">—</div>
+        <div class="sub">COP por día activo</div>
+      </div>
+    </div>
+    <div class="kpi kpi-red reveal">
+      <div class="kpi-head"><span class="lbl">Día más alto</span><span class="ix">b</span></div>
+      <div>
+        <div class="num" id="kpi-peak">—</div>
+        <div class="num-usd" id="kpi-peak-usd">—</div>
+        <div class="sub" id="kpi-peak-day">—</div>
+      </div>
+    </div>
+    <div class="kpi kpi-purple reveal">
+      <div class="kpi-head"><span class="lbl">Categoría líder</span><span class="ix">c</span></div>
+      <div>
+        <div class="num" id="kpi-topcat-pct">—</div>
+        <div class="sub" id="kpi-topcat-name">—</div>
+      </div>
+    </div>
+    <div class="kpi kpi-blue reveal">
+      <div class="kpi-head"><span class="lbl">Ticket promedio</span><span class="ix">d</span></div>
+      <div>
+        <div class="num" id="kpi-ticket">—</div>
+        <div class="num-usd" id="kpi-ticket-usd">—</div>
+        <div class="sub">por transacción</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories mini cards - top 6 -->
+  <div class="cat-mini" id="cat-mini-grid"></div>
+
+  <!-- 02 TIMELINE -->
+  <div class="section-head">
+    <span class="num num-02">02</span>
+    <h2>Cronología</h2>
+    <span class="meta">Gasto diario · COP</span>
+  </div>
+  <div class="row timeline-row">
+    <div class="panel">
+      <div class="chart-box"><canvas id="chart-timeline"></canvas></div>
+    </div>
+  </div>
+
+  <!-- 03 CATEGORIES -->
+  <div class="section-head">
+    <span class="num num-03">03</span>
+    <h2>Categorías</h2>
+    <span class="meta">11 grupos · clic para filtrar tabla</span>
+  </div>
+  <div class="row cat-row">
+    <div class="panel right-divider">
+      <div class="panel-title"><span>Distribución</span><span class="right">Donut</span></div>
+      <div class="chart-box short"><canvas id="chart-categories"></canvas></div>
+    </div>
+    <div class="panel left-pad">
+      <div class="panel-title"><span>Ranking</span><span class="right">% sobre total</span></div>
+      <div class="cat-list" id="cat-list"></div>
+    </div>
+  </div>
+
+  <!-- 04 GEOGRAPHY -->
+  <div class="section-head">
+    <span class="num num-04">04</span>
+    <h2>Geografía</h2>
+    <span class="meta">Bogotá ↔ Eje Cafetero</span>
+  </div>
+  <div class="row cities-row">
+    <div class="panel right-divider">
+      <div class="panel-title"><span>Por ciudad</span><span class="right">5 destinos</span></div>
+      <div class="cities" id="cities-map"></div>
+    </div>
+    <div class="panel left-pad">
+      <div class="panel-title"><span>Top 10 movimientos</span><span class="right">Mayor a menor</span></div>
+      <div class="top-list" id="top-list"></div>
+    </div>
+  </div>
+
+  <!-- 05 TABLE -->
+  <div class="section-head">
+    <span class="num num-05">05</span>
+    <h2>Movimientos</h2>
+    <span class="meta">Detalle filtrable · descripción textual</span>
+  </div>
+  <div class="panel">
+    <div class="filters">
+      <span class="lbl">Categoría</span>
+      <div id="cat-filters" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+      <span class="filter-sep"></span>
+      <span class="lbl">Región</span>
+      <div id="region-filters" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+    </div>
+    <table class="ttbl">
+      <thead><tr>
+        <th>Fecha</th><th>Descripción</th><th>Categoría</th><th>Ciudad</th><th class="right">Valor (COP)</th>
+      </tr></thead>
+      <tbody id="ttbl-body"></tbody>
+    </table>
+    <div class="table-foot">
+      <span class="lbl">Selección actual</span>
+      <span class="ct" id="tbl-count">— mov.</span>
+      <span class="sm" id="tbl-sum">— COP</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const TRM = 3637.51;
+const DATA = [{"fecha": "2026-04-20", "descripcion": "AVIANCA SA  pereira PASAJE", "referencia": "", "categoria": "Vuelos", "icono": "✈️", "ciudad": "Bogotá", "region": "Bogotá", "valor": 786300.0}, {"fecha": "2026-04-20", "descripcion": "DENTIX FINANCIAL SER", "referencia": "", "categoria": "Salud", "icono": "🦷", "ciudad": "Bogotá", "region": "Bogotá", "valor": 6118750.0}, {"fecha": "2026-04-21", "descripcion": "COMPRA EN  FONDO ROTA PASAPORTE", "referencia": "", "categoria": "Trámites", "icono": "📜", "ciudad": "Bogotá", "region": "Bogotá", "valor": 195600.0}, {"fecha": "2026-04-23", "descripcion": "COMPRA BOLSO Y BILLETERA LUZ", "referencia": "", "categoria": "Regalos Luz", "icono": "🎁", "ciudad": "Bogotá", "region": "Bogotá", "valor": 445000.0}, {"fecha": "2026-04-23", "descripcion": "COMPRA EN  OBLEAS LA", "referencia": "", "categoria": "Restaurantes y Cafés", "icono": "🍽️", "ciudad": "Bogotá", "region": "Bogotá", "valor": 8900.0}, {"fecha": "2026-04-23", "descripcion": "COMPRA EN  FARMATODO", "referencia": "", "categoria": "Salud", "icono": "🦷", "ciudad": "Bogotá", "region": "Bogotá", "valor": 31100.0}, {"fecha": "2026-04-23", "descripcion": "COMPRA EN  LA PANADERIA LA UNIVERSAL", "referencia": "", "categoria": "Restaurantes y Cafés", "icono": "🍽️", "ciudad": "Bogotá", "region": "Bogotá", "valor": 77600.0}, {"fecha": "2026-04-23", "descripcion": "RETIRO CAJERO  EXITO MODELIA", "referencia": "EXITO MODELIA", "categoria": "Cajero", "icono": "💵", "ciudad": "Bogotá", "region": "Bogotá", "valor": 300000.0}, {"fecha": "2026-04-23", "descripcion": "COMPRA CHAQUETA Y RUANA LUZ", "referencia": "", "categoria": "Regalos Luz", "icono": "🎁", "ciudad": "Bogotá", "region": "Bogotá", "valor": 930000.0}, {"fecha": "2026-04-24", "descripcion": "RETIRO CAJERO  AEROPUERTO MATE", "referencia": "AEROPUERTO MATECAÑA 1", "categoria": "Cajero", "icono": "💵", "ciudad": "Pereira", "region": "Eje Cafetero", "valor": 300000.0}, {"fecha": "2026-04-24", "descripcion": "COMPRA EN  PACHO DROG", "referencia": "", "categoria": "Salud", "icono": "🦷", "ciudad": "Pereira", "region": "Eje Cafetero", "valor": 65050.0}, {"fecha": "2026-04-24", "descripcion": "COMPRA EN  UMAMI CERRITOS MAL", "referencia": "", "categoria": "Restaurantes y Cafés", "icono": "🍽️", "ciudad": "Pereira", "region": "Eje Cafetero", "valor": 171800.0}, {"fecha": "2026-04-24", "descripcion": "HELADERIA PEREIRA 4", "referencia": "", "categoria": "Restaurantes y Cafés", "icono": "🍽️", "ciudad": "Pereira", "region": "Eje Cafetero", "valor": 56000.0}, {"fecha": "2026-04-24", "descripcion": "COMPRA EN  PASTELERIA SANTA EL", "referencia": "", "categoria": "Restaurantes y Cafés", "icono": "🍽️", "ciudad": "Pereira", "region": "Eje Cafetero", "valor": 28300.0}, {"fecha": "2026-04-24", "descripcion": "COMPRA EN  BBOLD*Crackling Pereira", "referencia": "", "categoria": "Restaurantes y Cafés", "icono": "🍽️", "ciudad": "Pereira", "region": "Eje Cafetero", "valor": 15000.0}, {"fecha": "2026-04-25", "descripcion": "COMPRA EN  BOLD*Bizarro Armenia", "referencia": "", "categoria": "Restaurantes y Cafés", "icono": "🍽️", "ciudad": "Armenia", "region": "Eje Cafetero", "valor": 60000.0}, {"fecha": "2026-04-25", "descripcion": "COMPRA EN  BOLD SA*AUTO SER", "referencia": "", "categoria": "Restaurantes y Cafés", "icono": "🍽️", "ciudad": "Armenia", "region": "Eje Cafetero", "valor": 74000.0}, {"fecha": "2026-04-25", "descripcion": "COMPRA EN  DISTRIPANALES", "referencia": "", "categoria": "Restaurantes y Cafés", "icono": "🍽️", "ciudad": "Armenia", "region": "Eje Cafetero", "valor": 67100.0}, {"fecha": "2026-04-25", "descripcion": "COMPRA EN  TRANSPORTE ARMENIA", "referencia": "", "categoria": "Transporte", "icono": "🚕", "ciudad": "Armenia", "region": "Eje Cafetero", "valor": 43500.0}, {"fecha": "2026-04-25", "descripcion": "RETIRO CAJERO  ATM MUNICIPIO D", "referencia": "ATM MUNICIPIO DE SALENTO2", "categoria": "Cajero", "icono": "💵", "ciudad": "Salento", "region": "Eje Cafetero", "valor": 300000.0}, {"fecha": "2026-04-26", "descripcion": "COMPRA EN  LA COLECTA", "referencia": "", "categoria": "Restaurantes y Cafés", "icono": "🍽️", "ciudad": "Santa Rosa de Cabal", "region": "Eje Cafetero", "valor": 175760.0}, {"fecha": "2026-04-26", "descripcion": "COMPRA EN  CAFE QUIND", "referencia": "", "categoria": "Restaurantes y Cafés", "icono": "🍽️", "ciudad": "Santa Rosa de Cabal", "region": "Eje Cafetero", "valor": 20400.0}, {"fecha": "2026-04-26", "descripcion": "RETIRO CAJERO  ATM SANTA ROSA", "referencia": "ATM SANTA ROSA DE CABAL 1", "categoria": "Cajero", "icono": "💵", "ciudad": "Santa Rosa de Cabal", "region": "Eje Cafetero", "valor": 300000.0}, {"fecha": "2026-04-26", "descripcion": "COMPRA EN  BOLD*Almendras Cafe ", "referencia": "", "categoria": "Restaurantes y Cafés", "icono": "🍽️", "ciudad": "Santa Rosa de Cabal", "region": "Eje Cafetero", "valor": 60000.0}, {"fecha": "2026-04-27", "descripcion": "TRANSFERENCIA COMPRA DE LIBRAS DE CAFÉ ARMENIA", "referencia": "06975758247", "categoria": "Café Souvenir", "icono": "☕", "ciudad": "Armenia", "region": "Eje Cafetero", "valor": 303000.0}, {"fecha": "2026-04-27", "descripcion": "RETIRO CAJERO  AUTOSERV C.C LA", "referencia": "AUTOSERV C.C LA GRAN ESTACION2", "categoria": "Cajero", "icono": "💵", "ciudad": "Bogotá", "region": "Bogotá", "valor": 100000.0}, {"fecha": "2026-04-27", "descripcion": "COMPRA EN  DROGUERIA CRUZ VERDE", "referencia": "", "categoria": "Salud", "icono": "🦷", "ciudad": "Bogotá", "region": "Bogotá", "valor": 276825.0}, {"fecha": "2026-04-27", "descripcion": "COMPRA EN  STARBUCKS", "referencia": "", "categoria": "Restaurantes y Cafés", "icono": "🍽️", "ciudad": "Bogotá", "region": "Bogotá", "valor": 25000.0}, {"fecha": "2026-04-27", "descripcion": "COMPRA EN  STARBUCKS", "referencia": "", "categoria": "Restaurantes y Cafés", "icono": "🍽️", "ciudad": "Bogotá", "region": "Bogotá", "valor": 41900.0}, {"fecha": "2026-04-27", "descripcion": "COMPRA EN  JUAN VALDE", "referencia": "", "categoria": "Restaurantes y Cafés", "icono": "🍽️", "ciudad": "Bogotá", "region": "Bogotá", "valor": 18800.0}, {"fecha": "2026-04-28", "descripcion": "COMPRA EN  INVERSIONE VELASCO", "referencia": "", "categoria": "Compras Personales", "icono": "🛍️", "ciudad": "Bogotá", "region": "Bogotá", "valor": 790000.0}, {"fecha": "2026-04-29", "descripcion": "RETIRO CAJERO  ATM HALL AUTO G", "referencia": "ATM HALL AUTO GRAN ESTACION 2", "categoria": "Cajero", "icono": "💵", "ciudad": "Bogotá", "region": "Bogotá", "valor": 300000.0}, {"fecha": "2026-04-29", "descripcion": "TRANSFERENCIAS A NEQUI COMPRA GAFAS FORMULADAS", "referencia": "", "categoria": "Salud", "icono": "🦷", "ciudad": "Bogotá", "region": "Bogotá", "valor": 780000.0}, {"fecha": "2026-04-29", "descripcion": "COMPRA EN  RESTAURANT DIMAR GRAN ESTACION", "referencia": "", "categoria": "Restaurantes y Cafés", "icono": "🍽️", "ciudad": "Bogotá", "region": "Bogotá", "valor": 146000.0}, {"fecha": "2026-04-29", "descripcion": "COMPRA EN  DROGUERIA CRUZ VERDE", "referencia": "", "categoria": "Salud", "icono": "🦷", "ciudad": "Bogotá", "region": "Bogotá", "valor": 121800.0}, {"fecha": "2026-04-30", "descripcion": "COMPRA EN  CARACOL ROJO", "referencia": "", "categoria": "Restaurantes y Cafés", "icono": "🍽️", "ciudad": "Bogotá", "region": "Bogotá", "valor": 66000.0}, {"fecha": "2026-04-30", "descripcion": "COMPRA EN  MR ASAO CEDRITOS", "referencia": "", "categoria": "Restaurantes y Cafés", "icono": "🍽️", "ciudad": "Bogotá", "region": "Bogotá", "valor": 134000.0}, {"fecha": "2026-04-30", "descripcion": "COMPRA EN  BOLD*Dana sport ", "referencia": "", "categoria": "Restaurantes y Cafés", "icono": "🍽️", "ciudad": "Bogotá", "region": "Bogotá", "valor": 160000.0}, {"fecha": "2026-05-01", "descripcion": "RETIRO CAJERO  HALLTITAN3", "referencia": "HALLTITAN3", "categoria": "Cajero", "icono": "💵", "ciudad": "Bogotá", "region": "Bogotá", "valor": 300000.0}, {"fecha": "2026-05-01", "descripcion": "COMPRA EN  PANAMERICA CAJAS LAMINAS", "referencia": "", "categoria": "Oficina / Material", "icono": "📦", "ciudad": "Bogotá", "region": "Bogotá", "valor": 1560500.0}, {"fecha": "2026-05-02", "descripcion": "TRANSFERENCIAS A NEQUI COPAS MUNDIAL", "referencia": "", "categoria": "Mundial 2026", "icono": "⚽", "ciudad": "Bogotá", "region": "Bogotá", "valor": 660000.0}, {"fecha": "2026-05-02", "descripcion": "TRANSFERENCIAS A NEQUI COMPRA ALBUNES MUNDIAL", "referencia": "", "categoria": "Mundial 2026", "icono": "⚽", "ciudad": "Bogotá", "region": "Bogotá", "valor": 320000.0}, {"fecha": "2026-05-02", "descripcion": "COMPRA EN  ARTURO CAL", "referencia": "", "categoria": "Compras Personales", "icono": "🛍️", "ciudad": "Bogotá", "region": "Bogotá", "valor": 341964.0}];
+
+const fmt = n => new Intl.NumberFormat('es-CO').format(Math.round(n));
+const fmtShort = n => {
+  if(n>=1e6) return '$' + (n/1e6).toFixed(1).replace(/\.0$/,'') + 'M';
+  if(n>=1e3) return '$' + Math.round(n/1e3) + 'k';
+  return '$' + Math.round(n);
+};
+const fmtUSD = n => 'US$ ' + new Intl.NumberFormat('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n/TRM);
+const fmtUSDshort = n => {
+  const v = n/TRM;
+  if(v>=1000) return 'US$ '+(v/1000).toFixed(1).replace(/\.0$/,'')+'k';
+  return 'US$ '+v.toFixed(0);
+};
+const fmtCOP = n => fmt(n)+' COP';
+const fmtDate = s => {
+  const d = new Date(s+'T00:00:00');
+  const m = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  return d.getDate().toString().padStart(2,'0')+' '+m[d.getMonth()];
+};
+const fmtDateLong = s => {
+  const d = new Date(s+'T00:00:00');
+  const dow = ['DOM','LUN','MAR','MIÉ','JUE','VIE','SÁB'];
+  return dow[d.getDay()]+' '+fmtDate(s).toUpperCase();
+};
+
+document.getElementById('trm-badge').textContent = '$'+fmt(TRM)+' /USD';
+
+// Color palette per category (matches El Rancherito vibe)
+const CAT_COLOR = {
+  'Salud':'#EF4444','Cajero':'#F59E0B','Oficina / Material':'#6366F1','Restaurantes y Cafés':'#F97316',
+  'Regalos Luz':'#EC4899','Compras Personales':'#14B8A6','Mundial 2026':'#10B981','Vuelos':'#3B82F6',
+  'Café Souvenir':'#A855F7','Trámites':'#F97316','Transporte':'#F59E0B'
+};
+
+const total = DATA.reduce((a,b)=>a+b.valor,0);
+const days = [...new Set(DATA.map(d=>d.fecha))].sort();
+
+document.getElementById('grand-total').innerHTML = fmt(total)+' <span class="unit">COP</span>';
+document.getElementById('grand-total-usd').textContent = '≈ '+fmtUSD(total);
+
+// KPIs
+const dailySums = {};
+DATA.forEach(d=>{ dailySums[d.fecha]=(dailySums[d.fecha]||0)+d.valor });
+const peakDay = Object.entries(dailySums).sort((a,b)=>b[1]-a[1])[0];
+document.getElementById('kpi-avg').textContent = fmtShort(total/days.length);
+document.getElementById('kpi-avg-usd').textContent = '≈ '+fmtUSDshort(total/days.length);
+document.getElementById('kpi-peak').textContent = fmtShort(peakDay[1]);
+document.getElementById('kpi-peak-usd').textContent = '≈ '+fmtUSDshort(peakDay[1]);
+document.getElementById('kpi-peak-day').textContent = fmtDateLong(peakDay[0]);
+
+const catSums = {};
+DATA.forEach(d=>{ catSums[d.categoria]=(catSums[d.categoria]||0)+d.valor });
+const topCat = Object.entries(catSums).sort((a,b)=>b[1]-a[1])[0];
+document.getElementById('kpi-topcat-pct').textContent = ((topCat[1]/total)*100).toFixed(0)+'%';
+document.getElementById('kpi-topcat-name').textContent = topCat[0];
+document.getElementById('kpi-ticket').textContent = fmtShort(total/DATA.length);
+document.getElementById('kpi-ticket-usd').textContent = '≈ '+fmtUSDshort(total/DATA.length);
+
+// Top-6 categories as mini-cells
+const catSorted = Object.entries(catSums).sort((a,b)=>b[1]-a[1]);
+const catMini = document.getElementById('cat-mini-grid');
+catSorted.slice(0,6).forEach(([cat,sum])=>{
+  const color = CAT_COLOR[cat] || '#F97316';
+  const pct = ((sum/total)*100).toFixed(1);
+  const cnt = DATA.filter(d=>d.categoria===cat).length;
+  const cell = document.createElement('div');
+  cell.className = 'cat-mini-cell';
+  cell.innerHTML = '<div class="lbl">'+cat+'</div>'
+    + '<div><div class="num" style="color:'+color+'">$'+fmt(sum)+'</div>'
+    + '<div class="usd">'+fmtUSD(sum)+'</div>'
+    + '<div class="sub">'+pct+'% · '+cnt+' MOV</div></div>';
+  catMini.appendChild(cell);
+});
+
+// CHART DEFAULTS
+Chart.defaults.font.family = "'Manrope',sans-serif";
+Chart.defaults.font.weight = '600';
+Chart.defaults.color = '#5A5A5A';
+
+// TIMELINE
+const tlCtx = document.getElementById('chart-timeline').getContext('2d');
+new Chart(tlCtx,{
+  type:'bar',
+  data:{labels:days.map(fmtDate),datasets:[{
+    data:days.map(d=>dailySums[d]),
+    backgroundColor:'#F97316',
+    hoverBackgroundColor:'#EA580C',
+    borderWidth:0,borderRadius:4,maxBarThickness:38,categoryPercentage:.8,barPercentage:.92
+  }]},
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{
+      backgroundColor:'#0A0A0A',padding:11,cornerRadius:0,
+      titleFont:{family:"'Manrope',sans-serif",size:11,weight:'700'},
+      bodyFont:{family:"'Manrope',sans-serif",size:13,weight:'600'},
+      callbacks:{label:c=>fmtCOP(c.parsed.y),afterLabel:c=>fmtUSD(c.parsed.y)}
+    }},
+    scales:{
+      x:{grid:{display:false},border:{color:'#0A0A0A',width:1},
+         ticks:{font:{size:10.5,weight:'600'},color:'#5A5A5A'}},
+      y:{grid:{color:'#E5E5E5',drawBorder:false},border:{display:false},
+         ticks:{font:{size:10.5,weight:'600'},color:'#5A5A5A',callback:v=>fmtShort(v)}}
+    }
+  }
+});
+
+// CATEGORY DONUT - multicolor per palette
+new Chart(document.getElementById('chart-categories'),{
+  type:'doughnut',
+  data:{
+    labels:catSorted.map(c=>c[0]),
+    datasets:[{
+      data:catSorted.map(c=>c[1]),
+      backgroundColor:catSorted.map(c=>CAT_COLOR[c[0]]||'#F97316'),
+      borderColor:'#FFFFFF',borderWidth:3
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,cutout:'62%',
+    plugins:{
+      legend:{display:false},
+      tooltip:{
+        backgroundColor:'#0A0A0A',padding:11,cornerRadius:0,
+        titleFont:{family:"'Manrope',sans-serif",size:11,weight:'700'},
+        bodyFont:{family:"'Manrope',sans-serif",size:13,weight:'600'},
+        callbacks:{label:c=>fmtCOP(c.parsed)+' · '+((c.parsed/total)*100).toFixed(1)+'%',afterLabel:c=>fmtUSD(c.parsed)}
+      }
+    }
+  }
+});
+
+// CATEGORY RANKING
+const catList = document.getElementById('cat-list');
+catSorted.forEach(([cat,sum],i)=>{
+  const color = CAT_COLOR[cat] || '#F97316';
+  const pct = ((sum/total)*100).toFixed(1);
+  const row = document.createElement('div');
+  row.className='cat-row-item';
+  row.dataset.cat=cat;
+  row.innerHTML = '<div class="dot" style="background:'+color+'"></div>'
+    + '<div class="ix">'+(i+1).toString().padStart(2,'0')+'</div>'
+    + '<div class="name">'+cat+'</div>'
+    + '<div class="pct">'+pct+'%</div>'
+    + '<div class="val">$'+fmt(sum)+'<span class="usd">'+fmtUSD(sum)+'</span></div>';
+  row.addEventListener('click',()=>{
+    activeCat = activeCat===cat?'all':cat;
+    renderTable();
+    syncCatFilters();
+    document.getElementById('ttbl-body').scrollIntoView({behavior:'smooth',block:'start'});
+  });
+  catList.appendChild(row);
+});
+
+// CITIES
+const citySums = {};
+DATA.forEach(d=>{ citySums[d.ciudad]=(citySums[d.ciudad]||0)+d.valor });
+const cityRegion = {};
+DATA.forEach(d=>{ cityRegion[d.ciudad]=d.region });
+const citySorted = Object.entries(citySums).sort((a,b)=>b[1]-a[1]);
+const maxCity = citySorted[0][1];
+const cmap = document.getElementById('cities-map');
+citySorted.forEach(([c,sum],i)=>{
+  const w = (sum/maxCity*100).toFixed(1);
+  const el = document.createElement('div');
+  el.className='city';
+  el.innerHTML = '<div class="city-line">'
+    + '<div class="city-name"><span class="ix">'+(i+1).toString().padStart(2,'0')+'</span>'
+    +   '<span class="nm">'+c+'</span>'
+    +   '<span class="reg">'+cityRegion[c]+'</span></div>'
+    + '<div class="city-amt">$'+fmt(sum)
+    +   '<span class="usd">'+fmtUSD(sum)+'</span>'
+    +   '<span class="small">'+((sum/total)*100).toFixed(1)+'% · '+DATA.filter(d=>d.ciudad===c).length+' MOV</span></div>'
+    + '</div>'
+    + '<div class="city-bar"><div class="fill" style="width:0"></div></div>';
+  cmap.appendChild(el);
+  setTimeout(()=>el.querySelector('.fill').style.width=w+'%',150);
+});
+
+// TOP 10
+const topItems = [...DATA].sort((a,b)=>b.valor-a.valor).slice(0,10);
+const topList = document.getElementById('top-list');
+topItems.forEach((t,i)=>{
+  const el = document.createElement('div');
+  el.className='top-row';
+  const ref = t.referencia ? ' · ref: '+t.referencia : '';
+  const rkCls = i===0?'gold':i===1?'silver':i===2?'bronze':'';
+  el.innerHTML='<div class="rk '+rkCls+'">'+(i+1).toString().padStart(2,'0')+'</div>'
+    +'<div class="desc">'+t.descripcion
+    +'<span class="meta">'+fmtDate(t.fecha)+' · '+t.ciudad+' · '+t.categoria+ref+'</span></div>'
+    +'<div class="amt">$'+fmt(t.valor)+'<span class="usd">'+fmtUSD(t.valor)+'</span></div>';
+  topList.appendChild(el);
+});
+
+// FILTERS
+let activeCat='all', activeRegion='all';
+const cats = ['all',...catSorted.map(c=>c[0])];
+const regions = ['all','Bogotá','Eje Cafetero'];
+const catFiltersEl = document.getElementById('cat-filters');
+const regionFiltersEl = document.getElementById('region-filters');
+
+cats.forEach(c=>{
+  const b = document.createElement('button');
+  b.className = 'chip'+(c==='all'?' active':'');
+  b.textContent = c==='all'?'Todas':c;
+  b.dataset.cat=c;
+  b.onclick=()=>{activeCat=c;syncCatFilters();renderTable();};
+  catFiltersEl.appendChild(b);
+});
+regions.forEach(r=>{
+  const b = document.createElement('button');
+  b.className = 'chip'+(r==='all'?' active':'');
+  b.textContent = r==='all'?'Todas':r;
+  b.dataset.region=r;
+  b.onclick=()=>{activeRegion=r;syncRegionFilters();renderTable();};
+  regionFiltersEl.appendChild(b);
+});
+
+function syncCatFilters(){
+  document.querySelectorAll('#cat-filters .chip').forEach(el=>{
+    el.classList.toggle('active', el.dataset.cat===activeCat);
+  });
+  document.querySelectorAll('.cat-row-item').forEach(el=>{
+    el.classList.toggle('active', el.dataset.cat===activeCat);
+  });
+}
+function syncRegionFilters(){
+  document.querySelectorAll('#region-filters .chip').forEach(el=>{
+    el.classList.toggle('active', el.dataset.region===activeRegion);
+  });
+}
+
+function renderTable(){
+  const tbody = document.getElementById('ttbl-body');
+  tbody.innerHTML='';
+  const filtered = DATA.filter(d=>{
+    if(activeCat!=='all' && d.categoria!==activeCat) return false;
+    if(activeRegion!=='all' && d.region!==activeRegion) return false;
+    return true;
+  }).sort((a,b)=>b.valor-a.valor);
+  filtered.forEach(d=>{
+    const tr = document.createElement('tr');
+    const refLine = d.referencia ? '<div class="refline">REF · '+d.referencia+'</div>' : '';
+    tr.innerHTML = '<td class="date">'+fmtDate(d.fecha)+'</td>'
+      +'<td class="desc">'+d.descripcion+refLine+'</td>'
+      +'<td><span class="pill">'+d.categoria+'</span></td>'
+      +'<td>'+d.ciudad+'</td>'
+      +'<td class="right">$'+fmt(d.valor)+'<span class="usd">'+fmtUSD(d.valor)+'</span></td>';
+    tbody.appendChild(tr);
+  });
+  const fSum = filtered.reduce((a,b)=>a+b.valor,0);
+  document.getElementById('tbl-count').textContent = filtered.length+' mov.';
+  document.getElementById('tbl-sum').innerHTML = '$'+fmt(fSum)+' COP'+'<span class="usd">≈ '+fmtUSD(fSum)+'</span>';
+}
+renderTable();
+</script>
+</body>
+</html>
