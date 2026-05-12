@@ -1,0 +1,981 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>UPO Catering · App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..900,0..100&family=Manrope:wght@300..800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --teal:#1F3A3D; --teal-2:#264a4d; --teal-3:#16292b; --teal-soft:#dfe7e5;
+    --copper:#B86F2C; --copper-soft:#f1dfc7;
+    --olive:#6b7339; --olive-soft:#e6e7d2;
+    --rust:#a0432a; --rust-soft:#f0d8cd;
+    --cream:#FAF6EF; --cream-2:#f3ecde;
+    --paper:#ffffff;
+    --ink:#1a2426; --ink-2:#3e4c4e; --ink-3:#6f7c7e; --ink-4:#9aa3a4;
+    --rule:#dcd5c4; --rule-2:#eee6d4;
+    --serif:'Fraunces','Iowan Old Style',Georgia,serif;
+    --sans:'Manrope',system-ui,-apple-system,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+    --shadow-md:0 1px 0 rgba(31,58,61,.04),0 8px 22px -10px rgba(31,58,61,.18);
+    --shadow-lg:0 30px 60px -25px rgba(31,58,61,.25), 0 12px 24px -12px rgba(31,58,61,.1);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;height:100%}
+  body{
+    font-family:var(--sans);color:var(--ink);
+    background:
+      radial-gradient(1100px 600px at -10% -10%, rgba(184,111,44,.10), transparent 60%),
+      radial-gradient(900px 500px at 110% 110%, rgba(31,58,61,.10), transparent 60%),
+      var(--cream);
+    font-size:14.5px;line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    overflow:hidden;
+  }
+  button{font-family:inherit}
+
+  /* ===================== APP SHELL ===================== */
+  .app{
+    display:grid;
+    grid-template-columns: 264px 1fr;
+    grid-template-rows: 100vh;
+    max-width:1480px; margin:0 auto;
+    height:100vh;
+    padding: 18px;
+    gap: 18px;
+  }
+
+  /* ============ SIDEBAR ============ */
+  .sidebar{
+    background:var(--paper);
+    border:1px solid var(--rule);
+    border-radius:18px;
+    box-shadow: var(--shadow-md);
+    display:flex; flex-direction:column;
+    overflow:hidden;
+    position:relative;
+  }
+  .sb-brand{
+    padding: 22px 22px 18px;
+    border-bottom:1px solid var(--rule-2);
+    display:flex; align-items:center; gap:12px;
+  }
+  .sb-mark{
+    width:38px; height:38px; border-radius:10px;
+    background:var(--teal); color:var(--cream);
+    display:grid; place-items:center;
+    font-family:var(--serif); font-size:20px; font-weight:600;
+    letter-spacing:-0.02em;
+  }
+  .sb-name{font-family:var(--serif); font-size:18px; font-weight:500; line-height:1.05; letter-spacing:-0.01em}
+  .sb-sub{font-size:10.5px; color:var(--ink-3); letter-spacing:.14em; text-transform:uppercase; font-weight:600; margin-top:2px}
+
+  .sb-section-title{
+    padding: 18px 22px 8px;
+    font-size:10.5px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--ink-3); font-weight:700;
+  }
+
+  .sb-nav{padding: 0 12px; display:flex; flex-direction:column; gap:2px}
+  .nav-item{
+    appearance:none; border:0; background:transparent;
+    text-align:left; cursor:pointer;
+    padding: 11px 12px;
+    border-radius:10px;
+    display:flex; align-items:center; gap:12px;
+    font-size:14px; color:var(--ink-2); font-weight:500;
+    width:100%;
+    transition: background .15s, color .15s;
+    position:relative;
+  }
+  .nav-item:hover{background:var(--cream-2); color:var(--ink)}
+  .nav-item.active{background:var(--teal); color:var(--cream)}
+  .nav-item.active .nav-num{background:rgba(255,255,255,.15); color:var(--cream)}
+  .nav-item.active .nav-arrow{opacity:1; transform:translateX(0)}
+  .nav-num{
+    width:26px; height:26px; border-radius:7px;
+    background:var(--cream-2); color:var(--ink-3);
+    display:grid; place-items:center;
+    font-family:var(--mono); font-size:11px; font-weight:600;
+    flex-shrink:0;
+    transition: background .15s, color .15s;
+  }
+  .nav-label{flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .nav-arrow{
+    opacity:0; transform:translateX(-4px);
+    transition: opacity .15s, transform .15s;
+    font-size:13px;
+  }
+
+  .sb-spacer{flex:1}
+
+  .sb-meta{
+    margin: 14px 12px;
+    padding: 14px;
+    background: linear-gradient(180deg, var(--cream), var(--paper));
+    border:1px solid var(--rule-2);
+    border-radius:12px;
+  }
+  .sb-meta .label{font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); font-weight:700; margin-bottom:6px}
+  .sb-meta .pm{font-family:var(--serif); font-size:16px; font-weight:480; color:var(--teal); letter-spacing:-0.01em}
+  .sb-meta .org{font-size:11.5px; color:var(--ink-3); margin-top:2px}
+
+  .sb-footer{
+    padding: 14px 22px;
+    border-top:1px solid var(--rule-2);
+    font-family:var(--mono); font-size:10.5px;
+    color:var(--ink-3); letter-spacing:.04em;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+
+  /* ============ STAGE ============ */
+  .stage{
+    background:var(--paper);
+    border:1px solid var(--rule);
+    border-radius:18px;
+    box-shadow: var(--shadow-lg);
+    overflow:hidden;
+    position:relative;
+    display:flex; flex-direction:column;
+    min-width:0;
+  }
+
+  /* topbar */
+  .topbar{
+    flex-shrink:0;
+    padding: 16px 28px;
+    border-bottom:1px solid var(--rule-2);
+    display:flex; align-items:center; gap:18px;
+    background: linear-gradient(180deg, var(--paper), rgba(250,246,239,.6));
+  }
+  .crumbs{
+    display:flex; align-items:center; gap:8px;
+    font-size:11.5px; color:var(--ink-3);
+    letter-spacing:.1em; text-transform:uppercase; font-weight:600;
+  }
+  .crumbs .sep{color:var(--ink-4)}
+  .crumbs strong{color:var(--ink); font-weight:700}
+  .topbar-right{margin-left:auto; display:flex; gap:10px; align-items:center}
+  .pill{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:11.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+    padding:6px 12px; border-radius:999px;
+    background:var(--copper-soft); color:var(--copper);
+  }
+  .pill .dot{width:6px; height:6px; border-radius:50%; background:currentColor}
+  .icon-btn{
+    width:34px; height:34px; border-radius:10px;
+    border:1px solid var(--rule);
+    background:var(--paper); color:var(--ink-2);
+    display:grid; place-items:center; cursor:pointer;
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .icon-btn:hover{background:var(--cream-2); color:var(--ink); border-color:var(--ink-3)}
+  .icon-btn svg{width:14px; height:14px}
+
+  /* screen wrapper */
+  .screens{flex:1; position:relative; overflow:hidden}
+  .screen{
+    position:absolute; inset:0;
+    overflow-y:auto;
+    overflow-x:hidden;
+    opacity:0;
+    transform: translateY(8px);
+    transition: opacity .35s ease, transform .4s cubic-bezier(.4,0,.2,1);
+    pointer-events:none;
+  }
+  .screen.active{opacity:1; transform:translateY(0); pointer-events:auto}
+  .screen-inner{padding: 36px 44px 44px; max-width:980px; margin:0 auto}
+
+  /* nice scrollbar */
+  .screen::-webkit-scrollbar{width:10px}
+  .screen::-webkit-scrollbar-track{background:transparent}
+  .screen::-webkit-scrollbar-thumb{background:var(--rule); border-radius:99px; border:2px solid var(--paper)}
+
+  /* ===================== HEADERS ===================== */
+  .screen-head{margin-bottom:30px}
+  .screen-eyebrow{
+    font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--accent, var(--teal)); font-weight:700;
+    margin-bottom:14px;
+    display:inline-flex; align-items:center; gap:10px;
+  }
+  .screen-eyebrow .num{
+    font-family:var(--mono); font-size:10.5px;
+    padding:3px 9px; border-radius:5px;
+    background: var(--accent-soft, var(--teal-soft));
+    color:var(--accent, var(--teal));
+    letter-spacing:.1em; font-weight:700;
+  }
+  .screen-title{
+    font-family:var(--serif);
+    font-size: clamp(34px, 4.4vw, 50px);
+    line-height:1.02; letter-spacing:-0.025em;
+    color:var(--teal); margin:0 0 14px;
+    font-weight:380;
+    text-wrap:balance;
+    font-variation-settings:"opsz" 144,"SOFT" 30;
+  }
+  .screen-title em{
+    font-style:italic; color:var(--accent, var(--copper));
+    font-weight:300;
+    font-variation-settings:"opsz" 144,"SOFT" 80;
+  }
+  .screen-lede{font-size:17px; color:var(--ink-2); max-width:62ch; margin:0}
+
+  /* per-screen accent */
+  #s-home{--accent:var(--teal); --accent-soft:var(--teal-soft)}
+  #s-1{--accent:var(--teal); --accent-soft:var(--teal-soft)}
+  #s-2{--accent:var(--copper); --accent-soft:var(--copper-soft)}
+  #s-3{--accent:var(--olive); --accent-soft:var(--olive-soft)}
+  #s-4{--accent:var(--rust); --accent-soft:var(--rust-soft)}
+
+  /* ===================== HOME / DASHBOARD ===================== */
+  .hero-card{
+    background: linear-gradient(155deg, var(--teal) 0%, var(--teal-3) 100%);
+    color:var(--cream);
+    border-radius:18px;
+    padding: 36px 40px;
+    margin-bottom:24px;
+    position:relative; overflow:hidden;
+  }
+  .hero-card::after{
+    content:""; position:absolute; inset:0;
+    background:
+      radial-gradient(600px 240px at 110% -10%, rgba(184,111,44,.45), transparent 60%),
+      radial-gradient(500px 280px at -10% 120%, rgba(107,115,57,.30), transparent 60%);
+    pointer-events:none;
+  }
+  .hero-card .h-eyebrow{
+    font-size:11px; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--copper-soft); font-weight:700; margin-bottom:14px;
+  }
+  .hero-card h1{
+    font-family:var(--serif); font-weight:380;
+    font-size: clamp(30px, 3.6vw, 44px); line-height:1.04; letter-spacing:-0.025em;
+    margin:0 0 18px; max-width:22ch; text-wrap:balance;
+    font-variation-settings:"opsz" 144,"SOFT" 30;
+  }
+  .hero-card h1 em{font-style:italic; color:#f5dab8; font-weight:300; font-variation-settings:"opsz" 144,"SOFT" 80}
+  .hero-card .h-lede{font-size:15px; color:rgba(250,246,239,.85); max-width:60ch; margin:0 0 22px}
+
+  .traj{
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+    padding: 14px 18px;
+    background: rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:12px;
+    backdrop-filter: blur(6px);
+  }
+  .traj-step{display:flex; align-items:baseline; gap:8px; font-family:var(--serif); font-size:22px; font-weight:450}
+  .traj-step b{font-weight:600}
+  .traj-step span{font-family:var(--sans); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:rgba(250,246,239,.7); font-weight:700}
+  .traj-arrow{color:#f5dab8; font-family:var(--serif); font-size:22px}
+
+  /* dashboard tiles */
+  .tiles{
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap:14px;
+  }
+  .tile{
+    appearance:none; border:0; cursor:pointer;
+    text-align:left; font-family:inherit; color:inherit;
+    background: var(--paper);
+    border:1px solid var(--rule);
+    border-radius:14px;
+    padding: 22px 22px;
+    display:flex; flex-direction:column; gap:6px;
+    transition: transform .2s, box-shadow .2s, border-color .2s;
+    position:relative; overflow:hidden;
+  }
+  .tile:hover{transform:translateY(-2px); box-shadow:var(--shadow-md); border-color:var(--ink-4)}
+  .tile-accent{position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--accent, var(--teal))}
+  .tile.t1{--accent:var(--teal)}
+  .tile.t2{--accent:var(--copper)}
+  .tile.t3{--accent:var(--olive)}
+  .tile.t4{--accent:var(--rust)}
+  .tile-num{
+    font-family:var(--mono); font-size:11px;
+    color:var(--ink-3); letter-spacing:.1em;
+    margin-bottom:8px;
+  }
+  .tile-title{
+    font-family:var(--serif); font-size:21px; font-weight:480;
+    line-height:1.15; letter-spacing:-0.015em;
+    color:var(--teal); margin:0 0 6px;
+  }
+  .tile-desc{font-size:13px; color:var(--ink-2); line-height:1.45; margin:0; max-width:38ch}
+  .tile-foot{
+    margin-top:auto; padding-top:14px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--mono); font-size:10.5px; color:var(--ink-3); letter-spacing:.06em;
+  }
+  .tile-arrow{
+    width:26px; height:26px; border-radius:50%;
+    background: var(--accent, var(--teal)); color:var(--paper);
+    display:grid; place-items:center;
+    transition: transform .2s;
+  }
+  .tile:hover .tile-arrow{transform:translateX(2px)}
+  .tile-arrow svg{width:11px; height:11px}
+
+  /* ===================== SCREEN 1 — CARDS ===================== */
+  .vision-grid{
+    display:grid; grid-template-columns: repeat(3, 1fr); gap:14px;
+    margin-top:8px;
+  }
+  .v-card{
+    background:var(--paper); border:1px solid var(--rule);
+    border-radius:14px; padding:22px; position:relative;
+  }
+  .v-card-num{
+    width:30px; height:30px; border-radius:50%;
+    background: var(--teal-soft); color:var(--teal);
+    display:grid; place-items:center;
+    font-family:var(--serif); font-weight:600; font-size:14px;
+    margin-bottom:14px;
+  }
+  .v-card h3{
+    font-family:var(--serif); font-size:19px; font-weight:480;
+    color:var(--teal); letter-spacing:-0.01em; line-height:1.18;
+    margin:0 0 10px;
+  }
+  .v-card p{margin:0 0 10px; font-size:13.5px; color:var(--ink-2); line-height:1.5}
+  .v-card p:last-child{margin:0}
+  .tag-row{display:flex; flex-wrap:wrap; gap:6px; margin-top:10px}
+  .tag{
+    display:inline-block;
+    font-family:var(--mono); font-size:10px;
+    padding:3px 8px; border-radius:999px;
+    background:var(--cream-2); color:var(--ink-2);
+    border:1px solid var(--rule-2);
+    letter-spacing:.04em;
+  }
+  .callout{
+    margin-top:14px;
+    padding:12px 14px;
+    background:var(--cream); border:1px solid var(--rule-2);
+    border-left:3px solid var(--accent, var(--teal));
+    border-radius:8px;
+    font-size:13px; color:var(--ink-2);
+  }
+  .callout-label{
+    font-size:10px; letter-spacing:.16em; text-transform:uppercase;
+    color: var(--accent, var(--teal)); font-weight:700; margin-bottom:4px;
+  }
+
+  /* ===================== SCREEN 2 — DUAL ===================== */
+  .dual{
+    display:grid; grid-template-columns:1fr 1fr; gap:18px;
+    margin-top:8px;
+  }
+  .dual-side{
+    background:var(--paper); border:1px solid var(--rule);
+    border-radius:14px; padding: 22px;
+  }
+  .dual-side h3{
+    margin:0 0 4px; font-family:var(--serif); font-size:20px; font-weight:480;
+    color:var(--teal); letter-spacing:-0.01em;
+    display:flex; align-items:center; gap:10px;
+  }
+  .dual-tag{
+    font-family:var(--mono); font-size:10px;
+    padding:3px 9px; border-radius:5px;
+    letter-spacing:.12em; text-transform:uppercase; font-weight:600;
+  }
+  .pros .dual-tag{background:var(--teal-soft); color:var(--teal)}
+  .cons .dual-tag{background:var(--rust-soft); color:var(--rust)}
+  .dual-side .sub{font-size:12.5px; color:var(--ink-3); margin:4px 0 16px}
+
+  .pc-item{
+    padding:14px 0;
+    border-top:1px solid var(--rule-2);
+  }
+  .pc-item:first-of-type{border-top:0}
+  .pc-head{display:flex; gap:10px; align-items:flex-start}
+  .pc-num{
+    flex-shrink:0;
+    font-family:var(--mono); font-size:10px; font-weight:700;
+    width:22px; height:22px; border-radius:5px;
+    display:grid; place-items:center;
+    background:var(--cream-2); color:var(--ink-3);
+    margin-top:2px;
+  }
+  .pros .pc-num{background:var(--teal-soft); color:var(--teal)}
+  .cons .pc-num{background:var(--rust-soft); color:var(--rust)}
+  .pc-title{
+    flex:1; font-family:var(--serif); font-size:16.5px; font-weight:480;
+    color:var(--teal); letter-spacing:-0.01em; line-height:1.25;
+    margin:0;
+  }
+  .cons .pc-title{color:var(--rust)}
+  .pc-body{font-size:13.5px; color:var(--ink-2); margin:8px 0 0; padding-left:32px; line-height:1.5}
+
+  /* ===================== SCREEN 3 — TIMELINE ===================== */
+  .roadmap{
+    margin-top:8px;
+    display:grid; gap:14px;
+  }
+  .phase{
+    background:var(--paper); border:1px solid var(--rule);
+    border-radius:14px; padding:22px 24px;
+    display:grid; grid-template-columns: 110px 1fr auto; gap:24px; align-items:center;
+    position:relative; overflow:hidden;
+  }
+  .phase::before{
+    content:""; position:absolute; left:0; top:0; bottom:0; width:3px;
+    background:var(--olive); opacity:.85;
+  }
+  .phase-num{
+    font-family:var(--serif); font-size:46px; font-weight:380; color:var(--olive);
+    line-height:1; letter-spacing:-0.04em;
+    font-variation-settings:"opsz" 144;
+  }
+  .phase-num small{
+    display:block; font-family:var(--sans); font-size:10px; color:var(--ink-3);
+    letter-spacing:.16em; text-transform:uppercase; font-weight:700; margin-top:6px;
+  }
+  .phase-body h3{
+    margin:0 0 4px;
+    font-family:var(--serif); font-size:21px; font-weight:480;
+    color:var(--teal); letter-spacing:-0.015em;
+  }
+  .phase-body .when{
+    font-family:var(--mono); font-size:10.5px;
+    color:var(--olive); font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+    margin-bottom:8px;
+  }
+  .phase-body p{margin:0; font-size:13.5px; color:var(--ink-2); line-height:1.5; max-width:55ch}
+  .phase-status{
+    font-family:var(--mono); font-size:10px; letter-spacing:.12em;
+    padding:5px 11px; border-radius:5px;
+    background:var(--cream-2); color:var(--ink-3);
+    text-transform:uppercase; font-weight:700;
+  }
+  .phase.active .phase-status{background:var(--olive-soft); color:var(--olive)}
+  .phase.future .phase-num{color:var(--ink-4); opacity:.5}
+  .phase.future .phase-num small{color:var(--ink-4)}
+
+  /* ===================== SCREEN 4 — ACTION GRID ===================== */
+  .actions-grid{
+    display:grid; grid-template-columns:repeat(2, 1fr); gap:14px;
+    margin-top:8px;
+  }
+  .action{
+    background:var(--paper); border:1px solid var(--rule);
+    border-radius:14px; padding:22px;
+    position:relative; overflow:hidden;
+  }
+  .action-letter{
+    position:absolute; right:18px; top:14px;
+    font-family:var(--serif); font-size:54px; font-weight:380;
+    color:var(--rust-soft); letter-spacing:-0.04em; line-height:1;
+    pointer-events:none;
+    font-variation-settings:"opsz" 144;
+  }
+  .action h3{
+    margin:0 0 12px; padding-right:50px;
+    font-family:var(--serif); font-size:18px; font-weight:480;
+    color:var(--teal); letter-spacing:-0.01em; line-height:1.2;
+  }
+  .ba{
+    display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;
+  }
+  .ba .col{
+    padding:10px 12px; border-radius:8px;
+    background:var(--cream); border:1px solid var(--rule-2);
+    font-size:12.5px; color:var(--ink-2); line-height:1.45;
+  }
+  .ba .col.now .label{color:var(--ink-3)}
+  .ba .col.proposed{background:var(--paper); border-color:var(--rust-soft)}
+  .ba .col.proposed .label{color:var(--rust)}
+  .ba .col .label{
+    font-size:9.5px; letter-spacing:.14em; text-transform:uppercase;
+    font-weight:700; margin-bottom:4px;
+  }
+  .action ul{margin:6px 0 0; padding-left:18px; font-size:13px; color:var(--ink-2)}
+  .action ul li{margin-bottom:5px}
+  .action .callout{margin-top:10px; font-size:12.5px}
+  .action.full{grid-column:1 / -1}
+  .action.full h3{font-size:20px}
+
+  .role{
+    margin-top:14px;
+    padding:18px;
+    background: linear-gradient(180deg, var(--cream), var(--paper));
+    border:1px solid var(--rule-2);
+    border-radius:12px;
+  }
+  .role h4{
+    margin:0 0 10px; font-family:var(--serif); font-size:17px;
+    color:var(--teal); font-weight:480;
+  }
+  .role .role-meta{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px}
+  .role ul{margin-top:6px}
+
+  /* responsive */
+  @media (max-width: 1100px){
+    .vision-grid{grid-template-columns:1fr 1fr}
+    .actions-grid{grid-template-columns:1fr}
+    .action.full{grid-column:auto}
+  }
+  @media (max-width: 880px){
+    body{overflow:auto}
+    .app{grid-template-columns:1fr; grid-template-rows:auto 1fr; height:auto; min-height:100vh}
+    .sidebar{height:auto; position:relative}
+    .sb-spacer{display:none}
+    .sb-meta{display:none}
+    .sb-footer{display:none}
+    .sb-section-title{display:none}
+    .sb-nav{flex-direction:row; overflow-x:auto; padding:10px 12px 16px}
+    .nav-item{flex-shrink:0; padding:8px 14px}
+    .nav-label{font-size:13px}
+    .stage{height:calc(100vh - 200px)}
+    .screen-inner{padding:24px}
+    .vision-grid{grid-template-columns:1fr}
+    .dual{grid-template-columns:1fr}
+    .tiles{grid-template-columns:1fr}
+    .phase{grid-template-columns:80px 1fr; gap:14px}
+    .phase-status{grid-column:2; justify-self:start}
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ============= SIDEBAR ============= -->
+  <aside class="sidebar">
+    <div class="sb-brand">
+      <div class="sb-mark">M</div>
+      <div>
+        <div class="sb-name">Manka</div>
+        <div class="sb-sub">Consulting</div>
+      </div>
+    </div>
+
+    <div class="sb-section-title">Concept Map</div>
+    <nav class="sb-nav" id="nav">
+      <button class="nav-item active" data-screen="home">
+        <span class="nav-num">◇</span>
+        <span class="nav-label">Overview</span>
+        <span class="nav-arrow">→</span>
+      </button>
+      <button class="nav-item" data-screen="1">
+        <span class="nav-num">01</span>
+        <span class="nav-label">Vision</span>
+        <span class="nav-arrow">→</span>
+      </button>
+      <button class="nav-item" data-screen="2">
+        <span class="nav-num">02</span>
+        <span class="nav-label">Pros &amp; Cons</span>
+        <span class="nav-arrow">→</span>
+      </button>
+      <button class="nav-item" data-screen="3">
+        <span class="nav-num">03</span>
+        <span class="nav-label">Roadmap</span>
+        <span class="nav-arrow">→</span>
+      </button>
+      <button class="nav-item" data-screen="4">
+        <span class="nav-num">04</span>
+        <span class="nav-label">Action Plan</span>
+        <span class="nav-arrow">→</span>
+      </button>
+    </nav>
+
+    <div class="sb-spacer"></div>
+
+    <div class="sb-meta">
+      <div class="label">Project Manager</div>
+      <div class="pm">Diana Diaz</div>
+      <div class="org">UPO · Office of Early Learning</div>
+    </div>
+
+    <div class="sb-footer">
+      <span>v1.0</span>
+      <span>MAY 2026</span>
+    </div>
+  </aside>
+
+  <!-- ============= STAGE ============= -->
+  <main class="stage">
+
+    <!-- topbar -->
+    <header class="topbar">
+      <div class="crumbs" id="crumbs">
+        <span>UPO</span>
+        <span class="sep">/</span>
+        <strong id="crumb-current">Overview</strong>
+      </div>
+      <div class="topbar-right">
+        <span class="pill"><span class="dot"></span>Active engagement</span>
+        <button class="icon-btn" id="prev" title="Previous">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M10 3l-5 5 5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="icon-btn" id="next" title="Next">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="screens" id="screens">
+
+      <!-- ========== HOME ========== -->
+      <section class="screen active" id="s-home" data-screen="home">
+        <div class="screen-inner">
+
+          <div class="hero-card">
+            <div class="h-eyebrow">UPO · Office of Early Learning</div>
+            <h1>Transition to an <em>In-House Catering Model</em></h1>
+            <p class="h-lede">Social enterprise with UPO-owned production and distribution serving its child care centers in Washington D.C. Phased <strong style="color:var(--cream)">Out-In</strong> roadmap focused on compliance, quality, and educational mission.</p>
+
+            <div class="traj">
+              <div class="traj-step"><b>11</b><span>Today</span></div>
+              <div class="traj-arrow">→</div>
+              <div class="traj-step"><b>12</b><span>2027</span></div>
+              <div class="traj-arrow">→</div>
+              <div class="traj-step"><b>14</b><span>2028</span></div>
+            </div>
+          </div>
+
+          <div class="tiles">
+            <button class="tile t1" data-go="1">
+              <span class="tile-accent"></span>
+              <div class="tile-num">01 — VISION</div>
+              <h3 class="tile-title">From passive recipient to operator</h3>
+              <p class="tile-desc">Why <em style="font-style:italic">Out-In</em>: build the centers first, then the kitchen.</p>
+              <div class="tile-foot"><span>3 KEY IDEAS</span><span class="tile-arrow"><svg viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            </button>
+
+            <button class="tile t2" data-go="2">
+              <span class="tile-accent"></span>
+              <div class="tile-num">02 — EVALUATION</div>
+              <h3 class="tile-title">Pros &amp; Cons of going in-house</h3>
+              <p class="tile-desc">Four reasons to do it. Four risks the roadmap must mitigate.</p>
+              <div class="tile-foot"><span>4 + 4 ITEMS</span><span class="tile-arrow"><svg viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            </button>
+
+            <button class="tile t3" data-go="3">
+              <span class="tile-accent"></span>
+              <div class="tile-num">03 — ROADMAP</div>
+              <h3 class="tile-title">Four phases to full independence</h3>
+              <p class="tile-desc">From operational readiness to phasing out Jeffrey's Catering.</p>
+              <div class="tile-foot"><span>4 PHASES</span><span class="tile-arrow"><svg viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            </button>
+
+            <button class="tile t4" data-go="4">
+              <span class="tile-accent"></span>
+              <div class="tile-num">04 — ACTION PLAN</div>
+              <h3 class="tile-title">Six workstreams to ready 11 centers</h3>
+              <p class="tile-desc">Concrete A–F initiatives without infrastructure CapEx.</p>
+              <div class="tile-foot"><span>6 INITIATIVES</span><span class="tile-arrow"><svg viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ========== SCREEN 1 ========== -->
+      <section class="screen" id="s-1" data-screen="1">
+        <div class="screen-inner">
+          <div class="screen-head">
+            <div class="screen-eyebrow"><span class="num">01</span>Executive Vision</div>
+            <h1 class="screen-title">From passive recipient to operator: the logic of <em>Out-In</em></h1>
+            <p class="screen-lede">Move from an outsourced model to in-house production and distribution, building operational capacity in the 11 centers before jumping to UPO's own central kitchen.</p>
+          </div>
+
+          <div class="vision-grid">
+
+            <div class="v-card">
+              <div class="v-card-num">a</div>
+              <h3>Starting point — UPO only receives and reheats</h3>
+              <p>Today UPO is the endpoint of a chain it does not control: it receives meals from Jeffrey's Catering and reheats them on site. <strong>No control over recipes, seasonal adjustments, or cold chain</strong>.</p>
+              <p>This passive position caps service quality, regulatory traceability, and UPO's ability to integrate food with its educational mission.</p>
+              <div class="tag-row">
+                <span class="tag">Outsourced</span>
+                <span class="tag">No chain control</span>
+                <span class="tag">No traceability</span>
+              </div>
+            </div>
+
+            <div class="v-card">
+              <div class="v-card-num">b</div>
+              <h3><em style="font-style:italic">Out-In</em> approach — centers first, kitchen second</h3>
+              <p>Build operational capacity in the <strong>11 receiving centers</strong> before jumping to large-scale in-house production. Standardize intake, sanitation, transport, and compliance at the points where food arrives and is served.</p>
+              <div class="callout">
+                <div class="callout-label">Why Out-In</div>
+                Reduces implementation risk, creates the regulatory foundation for the future central kitchen, and decouples infrastructure investment from culture and process work.
+              </div>
+            </div>
+
+            <div class="v-card">
+              <div class="v-card-num">c</div>
+              <h3>Destination — social enterprise with central kitchen</h3>
+              <p>A <strong>UPO-operated central kitchen</strong> that, at maturity, serves not only its own centers but other D.C. organizations — schools, community programs, after-school sites.</p>
+              <p>The <strong>social enterprise</strong> component is central: third-party revenue partially funds operations, reducing grant dependence.</p>
+              <div class="tag-row">
+                <span class="tag">Social enterprise</span>
+                <span class="tag">Third-party</span>
+                <span class="tag">Revenue diversification</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== SCREEN 2 ========== -->
+      <section class="screen" id="s-2" data-screen="2">
+        <div class="screen-inner">
+          <div class="screen-head">
+            <div class="screen-eyebrow"><span class="num">02</span>Model Evaluation</div>
+            <h1 class="screen-title">Executive balance: <em>advantages vs. risks</em></h1>
+            <p class="screen-lede">Four reasons to bring catering in-house and four risks the roadmap must explicitly mitigate.</p>
+          </div>
+
+          <div class="dual">
+            <div class="dual-side pros">
+              <h3>Advantages <span class="dual-tag">Pros</span></h3>
+              <p class="sub">Why in-house unlocks value UPO cannot get from a contract.</p>
+
+              <div class="pc-item">
+                <div class="pc-head"><div class="pc-num">01</div><h4 class="pc-title">Full quality control</h4></div>
+                <p class="pc-body">UPO sets recipes, makes seasonal adjustments with local product, and maintains verifiable control over the <strong>cold chain</strong> end-to-end.</p>
+              </div>
+              <div class="pc-item">
+                <div class="pc-head"><div class="pc-num">02</div><h4 class="pc-title">Mission alignment &amp; integration</h4></div>
+                <p class="pc-body">Food becomes part of the educational value and creates real opportunities for UPO's culinary students — internships, employment, mentorship.</p>
+              </div>
+              <div class="pc-item">
+                <div class="pc-head"><div class="pc-num">03</div><h4 class="pc-title">Scalability with growth</h4></div>
+                <p class="pc-body">Capacity scales by planned increments: <strong>12 centers in 2027</strong>, <strong>14 in 2028</strong>. An external contract scales by renegotiation.</p>
+              </div>
+              <div class="pc-item">
+                <div class="pc-head"><div class="pc-num">04</div><h4 class="pc-title">Revenue · social enterprise</h4></div>
+                <p class="pc-body">Once stable, the kitchen sells to other D.C. organizations and generates revenue that <strong>reduces grant dependence</strong>.</p>
+              </div>
+            </div>
+
+            <div class="dual-side cons">
+              <h3>Risks <span class="dual-tag">Cons</span></h3>
+              <p class="sub">What this roadmap must mitigate from day one.</p>
+
+              <div class="pc-item">
+                <div class="pc-head"><div class="pc-num">01</div><h4 class="pc-title">Significant CapEx</h4></div>
+                <p class="pc-body">Commercial kitchen equipment, specialized hires, distribution logistics, certifications. The roadmap must <strong>stage</strong> the investment.</p>
+              </div>
+              <div class="pc-item">
+                <div class="pc-head"><div class="pc-num">02</div><h4 class="pc-title">Zero margin for error</h4></div>
+                <p class="pc-body">Any failure directly impacts children's meals. The design must include redundancies, contingency plans, and a backup vendor.</p>
+              </div>
+              <div class="pc-item">
+                <div class="pc-head"><div class="pc-num">03</div><h4 class="pc-title">Regulatory load</h4></div>
+                <p class="pc-body">UPO assumes full compliance with <strong>DC Health, USDA, CACFP</strong>: logs, labeling, allergens, age portions, cold chain, audits.</p>
+              </div>
+              <div class="pc-item">
+                <div class="pc-head"><div class="pc-num">04</div><h4 class="pc-title">Distraction from core mission</h4></div>
+                <p class="pc-body">Food service must have its own chain of command and not cannibalize UPO's educational team.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== SCREEN 3 ========== -->
+      <section class="screen" id="s-3" data-screen="3">
+        <div class="screen-inner">
+          <div class="screen-head">
+            <div class="screen-eyebrow"><span class="num">03</span>Roadmap</div>
+            <h1 class="screen-title">Four phases: from readiness to <em>full independence</em></h1>
+            <p class="screen-lede">Sequential timeline. Each phase unlocks the next; their critical paths do not run in parallel.</p>
+          </div>
+
+          <div class="roadmap">
+
+            <div class="phase active">
+              <div class="phase-num">01<small>Phase</small></div>
+              <div class="phase-body">
+                <div class="when">Today → October 2026</div>
+                <h3>Operational Readiness <em style="font-style:italic">Out-In</em></h3>
+                <p>Optimize the 11 satellite centers without infrastructure CapEx. Foundation of intake, sanitation, equipment, logistics, and compliance — plus hire of the CACFP Manager.</p>
+              </div>
+              <div class="phase-status">In progress</div>
+            </div>
+
+            <div class="phase future">
+              <div class="phase-num">02<small>Phase</small></div>
+              <div class="phase-body">
+                <div class="when">Oct 2026 → Mid 2027</div>
+                <h3>Pilot · In-house breakfast</h3>
+                <p>UPO produces breakfast at Frederick Douglass. Once stable, absorbs a nearby center (Anacostia or Ballou) for the first logistics stress-test. Exit: ≥ 8 weeks stable + clean compliance.</p>
+              </div>
+              <div class="phase-status">Next</div>
+            </div>
+
+            <div class="phase future">
+              <div class="phase-num">03<small>Phase</small></div>
+              <div class="phase-body">
+                <div class="when">Mid 2027 →</div>
+                <h3>Facility build-out</h3>
+                <p>Binary decision driven by Phase 02 data: owned 500 sq. ft. space vs. leased commercial commissary. Equipment sized to measured volume + headroom for centers 12–13.</p>
+              </div>
+              <div class="phase-status">Planned</div>
+            </div>
+
+            <div class="phase future">
+              <div class="phase-num">04<small>Phase</small></div>
+              <div class="phase-body">
+                <div class="when">Long-term</div>
+                <h3>Full independence</h3>
+                <p>Complete phase-out of Jeffrey's. UPO operates with its own central kitchen and begins the social-enterprise component with D.C. schools and community programs.</p>
+              </div>
+              <div class="phase-status">Future</div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== SCREEN 4 ========== -->
+      <section class="screen" id="s-4" data-screen="4">
+        <div class="screen-inner">
+          <div class="screen-head">
+            <div class="screen-eyebrow"><span class="num">04</span>Action Plan · Phase 1</div>
+            <h1 class="screen-title">Six workstreams to ready the <em>11 centers</em></h1>
+            <p class="screen-lede">Concrete initiatives, executable without infrastructure CapEx. Each one protects the financial model or builds regulatory ground.</p>
+          </div>
+
+          <div class="actions-grid">
+
+            <div class="action">
+              <div class="action-letter">A</div>
+              <h3>Modernize and automate the intake process</h3>
+              <div class="ba">
+                <div class="col now"><div class="label">Today</div>Friday MS Forms → Monday Excel compile. Amazon milks on a separate, disconnected flow.</div>
+                <div class="col proposed"><div class="label">Proposed</div>Single unified form. <strong>Power Automate</strong> generates two POs automatically on Friday.</div>
+              </div>
+              <div class="callout"><div class="callout-label">Value</div>Clean forecasting from day one. When UPO cooks in-house, demand data is already projectable.</div>
+            </div>
+
+            <div class="action">
+              <div class="action-letter">B</div>
+              <h3>Waste traceability and menu optimization</h3>
+              <div class="ba">
+                <div class="col now"><div class="label">Today</div>Rejected components go to trash; UPO still pays. No structured feedback or recipe adjustment.</div>
+                <div class="col proposed"><div class="label">Proposed</div>Weekly feedback loop. Contractually require recipe adjustments based on data.</div>
+              </div>
+              <div class="callout"><div class="callout-label">Value</div>Protects the <strong>$4.60 / lunch · CACFP free tier</strong> model and builds the historical record for an internal menu kids actually eat.</div>
+            </div>
+
+            <div class="action">
+              <div class="action-letter">C</div>
+              <h3>Food-safety equipment</h3>
+              <ul>
+                <li><strong>Thermometers.</strong> Digital probe units + alcohol wipes; ambient thermometers in all cold storage.</li>
+                <li><strong>Tables &amp; utensils.</strong> Commercial stainless steel; portion scoops for age-standardized servings.</li>
+                <li><strong>Refrigeration.</strong> Replace household units with commercial foodservice equipment.</li>
+              </ul>
+              <div class="callout"><div class="callout-label">Value</div>Closes typical DC Health inspection findings before they happen. Equipment baseline meets ServSafe.</div>
+            </div>
+
+            <div class="action">
+              <div class="action-letter">D</div>
+              <h3>Receiving and transport logistics</h3>
+              <div class="ba">
+                <div class="col now"><div class="label">Today</div>Burned foam Cambros stored on the floor with cardboard inserts. Severe cross-contamination risk.</div>
+                <div class="col proposed"><div class="label">Proposed</div>Easy-to-clean commercial containers. Prohibit cardboard and floor storage. Documented protocol.</div>
+              </div>
+              <div class="callout"><div class="callout-label">Value</div>Eliminates a visible regulatory risk and sets the transport standard the central kitchen will use.</div>
+            </div>
+
+            <div class="action">
+              <div class="action-letter">E</div>
+              <h3>Sanitation where infrastructure is missing</h3>
+              <div class="ba">
+                <div class="col now"><div class="label">Today</div>Several locations lack 3-compartment sinks. Sanitation improvised or skipped.</div>
+                <div class="col proposed"><div class="label">Proposed</div>Red sanitation buckets + chlorine test kits. Target <strong>50–100 ppm</strong>, verifiable.</div>
+              </div>
+              <div class="callout"><div class="callout-label">Value</div>Low-cost interim that meets compliance until proper infrastructure exists — without pausing operations.</div>
+            </div>
+
+            <div class="action full">
+              <div class="action-letter">F</div>
+              <h3>Immediate hire — CACFP Food Service Program Manager</h3>
+              <div class="callout"><div class="callout-label">Key decision</div><strong>Do NOT hire an Executive Chef yet.</strong> UPO needs a compliance manager, not a chef.</div>
+              <div class="role">
+                <h4>Role profile</h4>
+                <div class="role-meta">
+                  <span class="tag">Bilingual EN/ES</span>
+                  <span class="tag">ServSafe Manager</span>
+                  <span class="tag">Formal CACFP training</span>
+                </div>
+                <ul style="margin:6px 0 0; padding-left:18px; font-size:13px; color:var(--ink-2)">
+                  <li>Single point of contact with Jeffrey's Catering.</li>
+                  <li>Weekly rotating audits across the 11 centers: <strong>cold chain, age portions, allergens, milk labeling</strong>.</li>
+                  <li>Owns regulatory documentation: logs, headcounts, allergens, CACFP reporting.</li>
+                  <li>Recurring staff training — onboarding and quarterly refresh.</li>
+                </ul>
+              </div>
+              <div class="callout" style="margin-top:14px"><div class="callout-label">Value</div>Builds the entire regulatory base the future central kitchen will inherit. Highest-leverage human investment in Phase 1.</div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  const screens = document.querySelectorAll('.screen');
+  const navItems = document.querySelectorAll('.nav-item');
+  const tiles = document.querySelectorAll('[data-go]');
+  const crumb = document.getElementById('crumb-current');
+  const order = ['home','1','2','3','4'];
+  const labels = {home:'Overview','1':'Vision','2':'Pros & Cons','3':'Roadmap','4':'Action Plan'};
+
+  function go(target){
+    if(!order.includes(target)) return;
+    screens.forEach(s => s.classList.toggle('active', s.dataset.screen === target));
+    navItems.forEach(n => n.classList.toggle('active', n.dataset.screen === target));
+    crumb.textContent = labels[target];
+    // scroll to top inside screen
+    const active = document.querySelector('.screen.active');
+    if(active) active.scrollTo({top:0, behavior:'instant'});
+    history.replaceState(null,'','#'+target);
+  }
+
+  navItems.forEach(n => n.addEventListener('click', () => go(n.dataset.screen)));
+  tiles.forEach(t => t.addEventListener('click', () => go(t.dataset.go)));
+
+  document.getElementById('prev').addEventListener('click', () => {
+    const cur = document.querySelector('.screen.active').dataset.screen;
+    const i = order.indexOf(cur);
+    go(order[(i - 1 + order.length) % order.length]);
+  });
+  document.getElementById('next').addEventListener('click', () => {
+    const cur = document.querySelector('.screen.active').dataset.screen;
+    const i = order.indexOf(cur);
+    go(order[(i + 1) % order.length]);
+  });
+
+  document.addEventListener('keydown', e => {
+    if(e.target.matches('input,textarea')) return;
+    if(e.key === 'ArrowLeft') document.getElementById('prev').click();
+    if(e.key === 'ArrowRight') document.getElementById('next').click();
+  });
+
+  const hash = location.hash.replace('#','');
+  if(hash) go(hash);
+})();
+</script>
+
+</body>
+</html>
