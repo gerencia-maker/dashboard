@@ -6,10 +6,8 @@
   <title>Investment Memo · Propuesta de Distribución de Inversión</title>
   <meta name="description" content="Memo ejecutivo interactivo: distribución de inversión, escenarios PERT, benchmarks de mercado, marco de riesgo y proyección a 10 años.">
 
-  <!-- Favicon inline (dot dorado sobre navy) -->
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230A0E1A'/%3E%3Ccircle cx='32' cy='32' r='14' fill='%23C9A961'/%3E%3C/svg%3E">
 
-  <!-- React 18 + Recharts + Babel Standalone (todo desde CDN) -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
@@ -18,7 +16,6 @@
 
   <style>
     html, body { margin: 0; padding: 0; background: #0A0E1A; }
-    /* Loading state */
     #loading {
       position: fixed; inset: 0;
       display: flex; flex-direction: column;
@@ -26,6 +23,7 @@
       background: #0A0E1A; color: #C9A961;
       font-family: Georgia, serif; font-style: italic;
       transition: opacity 0.5s ease;
+      z-index: 9999;
     }
     #loading.hidden { opacity: 0; pointer-events: none; }
     .loading-pulse {
@@ -46,18 +44,26 @@
     <div style="letter-spacing: 0.1em; font-size: 13px;">Cargando Investment Memo</div>
   </div>
 
+  <script>
+    // Fallback de emergencia: si en 15s no cargó, muestra el error
+    setTimeout(function() {
+      var loading = document.getElementById('loading');
+      var root = document.getElementById('root');
+      if (loading && !loading.classList.contains('hidden') && (!root || root.children.length === 0)) {
+        loading.innerHTML = '<div style="max-width:420px;padding:32px;text-align:center;font-family:Georgia,serif"><div style="color:#EF4444;font-size:14px;margin-bottom:16px;letter-spacing:0.15em;font-style:normal">ERROR DE CARGA</div><div style="color:#F5F2EA;font-size:14px;line-height:1.7;margin-bottom:16px">El memo no pudo compilar. Abre la consola del navegador (F12 &rarr; Console) para ver el error exacto.</div><div style="color:#9CA3B7;font-size:12px;line-height:1.6;font-style:normal">Posibles causas: bloqueo de CDN, error de sintaxis, extension del navegador interfiriendo.</div></div>';
+      }
+    }, 15000);
+  </script>
+
   <div id="root"></div>
 
-  <script type="text/babel" data-presets="env,react">
+  <script type="text/babel" data-presets="react">
     const { useState, useEffect, useMemo, useRef } = React;
     const {
       PieChart, Pie, Cell, ResponsiveContainer, Tooltip,
       LineChart, Line, XAxis, YAxis, CartesianGrid, ReferenceLine
     } = Recharts;
 
-    // ============================================================
-    // DATOS BASE
-    // ============================================================
     const FECHA_PROPUESTA = "Mayo 2026";
     const TITULAR = "Luz Arango";
 
@@ -76,42 +82,46 @@
       { id: "pert", label: "PERT" }
     ];
 
-    // ============================================================
-    // HELPERS
-    // ============================================================
-    const fmtMoney = (v) => `$${Math.round(v).toLocaleString('en-US')}`;
-    const fmtPct = (v) => `${(v * 100).toFixed(1)}%`;
-    const fmtPct2 = (v) => `${(v * 100).toFixed(2)}%`;
-    const fmtPP = (v) => `${v >= 0 ? '+' : ''}${(v * 100).toFixed(2)}pp`;
+    const fmtMoney = function(v) { return "$" + Math.round(v).toLocaleString('en-US'); };
+    const fmtPct = function(v) { return (v * 100).toFixed(1) + "%"; };
+    const fmtPct2 = function(v) { return (v * 100).toFixed(2) + "%"; };
+    const fmtPP = function(v) { return (v >= 0 ? '+' : '') + (v * 100).toFixed(2) + "pp"; };
 
-    const riskColor = (r) => {
+    const riskColor = function(r) {
       if (r === "Bajo") return { bg: "rgba(16,185,129,0.12)", border: "#10B981", text: "#10B981" };
       if (r === "Medio") return { bg: "rgba(74,123,166,0.18)", border: "#4A7BA6", text: "#8FAFCC" };
       if (r === "Alto") return { bg: "rgba(245,158,11,0.15)", border: "#F59E0B", text: "#F59E0B" };
       return { bg: "rgba(156,163,183,0.1)", border: "#9CA3B7", text: "#9CA3B7" };
     };
 
-    const posturaColor = (p) => {
+    const posturaColor = function(p) {
       if (p === "CONSERVADOR") return "#10B981";
       if (p === "ALINEADO") return "#8FAFCC";
       if (p === "AGRESIVO") return "#EF4444";
       return "#9CA3B7";
     };
 
-    // ============================================================
-    // ANIMATED NUMBER
-    // ============================================================
-    const AnimatedNumber = ({ value, formatter, duration = 500 }) => {
-      const [display, setDisplay] = useState(value);
+    const getEscenarioLabel = function(id) {
+      const found = ESCENARIOS.find(function(e) { return e.id === id; });
+      return found ? found.label : '';
+    };
+
+    const AnimatedNumber = function(props) {
+      const value = props.value;
+      const formatter = props.formatter;
+      const duration = props.duration || 500;
+      const stateArr = useState(value);
+      const display = stateArr[0];
+      const setDisplay = stateArr[1];
       const prevValueRef = useRef(value);
       const frameRef = useRef(null);
 
-      useEffect(() => {
+      useEffect(function() {
         const startValue = prevValueRef.current;
         const endValue = value;
         if (startValue === endValue) return;
         const startTime = performance.now();
-        const animate = (currentTime) => {
+        const animate = function(currentTime) {
           const elapsed = currentTime - startTime;
           const progress = Math.min(elapsed / duration, 1);
           const eased = 1 - Math.pow(1 - progress, 3);
@@ -121,87 +131,121 @@
           else prevValueRef.current = endValue;
         };
         frameRef.current = requestAnimationFrame(animate);
-        return () => cancelAnimationFrame(frameRef.current);
+        return function() { cancelAnimationFrame(frameRef.current); };
       }, [value, duration]);
 
       return formatter(display);
     };
 
-    // ============================================================
-    // SUB-COMPONENTS
-    // ============================================================
-    const SectionLabel = ({ children, num }) => (
-      <div className="section-label">
-        <span className="section-num">{num}</span>
-        <span className="section-divider" />
-        <span className="section-text">{children}</span>
-      </div>
-    );
-
-    const RiskPill = ({ riesgo }) => {
-      const c = riskColor(riesgo);
-      return <span className="risk-pill" style={{ background: c.bg, borderColor: c.border, color: c.text }}>{riesgo.toUpperCase()}</span>;
+    const SectionLabel = function(props) {
+      return (
+        <div className="section-label">
+          <span className="section-num">{props.num}</span>
+          <span className="section-divider" />
+          <span className="section-text">{props.children}</span>
+        </div>
+      );
     };
 
-    // ============================================================
-    // MAIN APP
-    // ============================================================
-    const InvestmentDashboard = () => {
-      const [monto, setMonto] = useState(10000);
-      const [montoInput, setMontoInput] = useState("10,000");
-      const [escenario, setEscenario] = useState("pert");
-      const [stressVC, setStressVC] = useState(false);
-      const [hoveredCat, setHoveredCat] = useState(null);
-      const [visibleCats, setVisibleCats] = useState(CATEGORIAS_BASE.map(c => c.id));
-      const [activeSection, setActiveSection] = useState("portada");
-      const [mounted, setMounted] = useState(false);
-      const [controlsCollapsed, setControlsCollapsed] = useState(false);
+    const RiskPill = function(props) {
+      const c = riskColor(props.riesgo);
+      return <span className="risk-pill" style={{ background: c.bg, borderColor: c.border, color: c.text }}>{props.riesgo.toUpperCase()}</span>;
+    };
 
-      useEffect(() => { setMounted(true); }, []);
+    const InvestmentDashboard = function() {
+      const montoState = useState(10000);
+      const monto = montoState[0];
+      const setMonto = montoState[1];
 
-      const data = useMemo(() => {
-        const cats = CATEGORIAS_BASE.map(c => {
+      const montoInputState = useState("10,000");
+      const montoInput = montoInputState[0];
+      const setMontoInput = montoInputState[1];
+
+      const escenarioState = useState("pert");
+      const escenario = escenarioState[0];
+      const setEscenario = escenarioState[1];
+
+      const stressVCState = useState(false);
+      const stressVC = stressVCState[0];
+      const setStressVC = stressVCState[1];
+
+      const hoveredCatState = useState(null);
+      const hoveredCat = hoveredCatState[0];
+      const setHoveredCat = hoveredCatState[1];
+
+      const visibleCatsState = useState(CATEGORIAS_BASE.map(function(c) { return c.id; }));
+      const visibleCats = visibleCatsState[0];
+      const setVisibleCats = visibleCatsState[1];
+
+      const activeSectionState = useState("portada");
+      const activeSection = activeSectionState[0];
+      const setActiveSection = activeSectionState[1];
+
+      const mountedState = useState(false);
+      const mounted = mountedState[0];
+      const setMounted = mountedState[1];
+
+      const controlsCollapsedState = useState(false);
+      const controlsCollapsed = controlsCollapsedState[0];
+      const setControlsCollapsed = controlsCollapsedState[1];
+
+      useEffect(function() { setMounted(true); }, []);
+
+      const data = useMemo(function() {
+        const cats = CATEGORIAS_BASE.map(function(c) {
           const retornoEfectivo = stressVC && c.id === "vc" ? -1.0 : c[escenario];
           const montoCat = monto * c.pct;
           const retornoDolares = montoCat * retornoEfectivo;
           const valorFinal1a = montoCat + retornoDolares;
           const valor10a = montoCat * Math.pow(1 + retornoEfectivo, 10);
-          return { ...c, monto: montoCat, retornoEfectivo, retornoDolares, valorFinal1a, valor10a };
+          return Object.assign({}, c, {
+            monto: montoCat,
+            retornoEfectivo: retornoEfectivo,
+            retornoDolares: retornoDolares,
+            valorFinal1a: valorFinal1a,
+            valor10a: valor10a
+          });
         });
 
-        const consPort = cats.reduce((a, c) => a + c.pct * c.cons, 0);
-        const basePort = cats.reduce((a, c) => a + c.pct * c.base, 0);
-        const optiPort = cats.reduce((a, c) => a + c.pct * c.opti, 0);
-        const pertPort = cats.reduce((a, c) => a + c.pct * c.pert, 0);
-        const retornoActivo = cats.reduce((a, c) => a + c.pct * c.retornoEfectivo, 0);
-        const multiplicador10a = cats.reduce((a, c) => a + c.pct * Math.pow(1 + c.retornoEfectivo, 10), 0);
+        const consPort = cats.reduce(function(a, c) { return a + c.pct * c.cons; }, 0);
+        const basePort = cats.reduce(function(a, c) { return a + c.pct * c.base; }, 0);
+        const optiPort = cats.reduce(function(a, c) { return a + c.pct * c.opti; }, 0);
+        const pertPort = cats.reduce(function(a, c) { return a + c.pct * c.pert; }, 0);
+        const retornoActivo = cats.reduce(function(a, c) { return a + c.pct * c.retornoEfectivo; }, 0);
+        const multiplicador10a = cats.reduce(function(a, c) { return a + c.pct * Math.pow(1 + c.retornoEfectivo, 10); }, 0);
         const valorFinal10a = monto * multiplicador10a;
-        const retornoDolaresTotal = cats.reduce((a, c) => a + c.retornoDolares, 0);
+        const retornoDolaresTotal = cats.reduce(function(a, c) { return a + c.retornoDolares; }, 0);
 
-        const benchPromedio = cats.reduce((a, c) => a + c.benchmark, 0) / cats.length;
+        const benchPromedio = cats.reduce(function(a, c) { return a + c.benchmark; }, 0) / cats.length;
         const diffVsMercado = retornoActivo - benchPromedio;
         const postura = diffVsMercado < -0.03 ? "CONSERVADOR" : (diffVsMercado > 0.03 ? "AGRESIVO" : "ALINEADO");
 
-        const riesgoBajo = cats.filter(c => c.riesgo === "Bajo").reduce((a, c) => a + c.pct, 0);
-        const riesgoMedio = cats.filter(c => c.riesgo === "Medio").reduce((a, c) => a + c.pct, 0);
-        const riesgoAlto = cats.filter(c => c.riesgo === "Alto").reduce((a, c) => a + c.pct, 0);
+        const riesgoBajo = cats.filter(function(c) { return c.riesgo === "Bajo"; }).reduce(function(a, c) { return a + c.pct; }, 0);
+        const riesgoMedio = cats.filter(function(c) { return c.riesgo === "Medio"; }).reduce(function(a, c) { return a + c.pct; }, 0);
+        const riesgoAlto = cats.filter(function(c) { return c.riesgo === "Alto"; }).reduce(function(a, c) { return a + c.pct; }, 0);
         const scorePonderado = riesgoBajo * 1 + riesgoMedio * 2 + riesgoAlto * 3;
         const perfilRiesgo = scorePonderado < 1.5 ? "DEFENSIVO" : (scorePonderado > 2.5 ? "AGRESIVO" : "BALANCEADO");
 
         const cortoIds = ["cdt", "cash"];
         const medioIds = ["rv"];
         const largoIds = ["vc", "ep"];
-        const liquidoCorto = cats.filter(c => cortoIds.includes(c.id)).reduce((a, c) => a + c.pct, 0);
-        const liquidoMedio = cats.filter(c => medioIds.includes(c.id)).reduce((a, c) => a + c.pct, 0);
-        const liquidoLargo = cats.filter(c => largoIds.includes(c.id)).reduce((a, c) => a + c.pct, 0);
+        const liquidoCorto = cats.filter(function(c) { return cortoIds.indexOf(c.id) >= 0; }).reduce(function(a, c) { return a + c.pct; }, 0);
+        const liquidoMedio = cats.filter(function(c) { return medioIds.indexOf(c.id) >= 0; }).reduce(function(a, c) { return a + c.pct; }, 0);
+        const liquidoLargo = cats.filter(function(c) { return largoIds.indexOf(c.id) >= 0; }).reduce(function(a, c) { return a + c.pct; }, 0);
 
-        const evolucion = Array.from({ length: 11 }, (_, year) => ({
-          año: year,
-          valor: cats.reduce((a, c) => a + c.monto * Math.pow(1 + c.retornoEfectivo, year), 0),
-          ...Object.fromEntries(cats.map(c => [c.id, c.monto * Math.pow(1 + c.retornoEfectivo, year)]))
-        }));
+        const evolucion = [];
+        for (let year = 0; year <= 10; year++) {
+          const row = {
+            año: year,
+            valor: cats.reduce(function(a, c) { return a + c.monto * Math.pow(1 + c.retornoEfectivo, year); }, 0)
+          };
+          cats.forEach(function(c) {
+            row[c.id] = c.monto * Math.pow(1 + c.retornoEfectivo, year);
+          });
+          evolucion.push(row);
+        }
 
-        return { cats, consPort, basePort, optiPort, pertPort, retornoActivo, multiplicador10a, valorFinal10a, retornoDolaresTotal, benchPromedio, diffVsMercado, postura, riesgoBajo, riesgoMedio, riesgoAlto, scorePonderado, perfilRiesgo, liquidoCorto, liquidoMedio, liquidoLargo, evolucion };
+        return { cats: cats, consPort: consPort, basePort: basePort, optiPort: optiPort, pertPort: pertPort, retornoActivo: retornoActivo, multiplicador10a: multiplicador10a, valorFinal10a: valorFinal10a, retornoDolaresTotal: retornoDolaresTotal, benchPromedio: benchPromedio, diffVsMercado: diffVsMercado, postura: postura, riesgoBajo: riesgoBajo, riesgoMedio: riesgoMedio, riesgoAlto: riesgoAlto, scorePonderado: scorePonderado, perfilRiesgo: perfilRiesgo, liquidoCorto: liquidoCorto, liquidoMedio: liquidoMedio, liquidoLargo: liquidoLargo, evolucion: evolucion };
       }, [monto, escenario, stressVC]);
 
       const navSections = [
@@ -213,27 +257,40 @@
         { id: "tesis", label: "Tesis" }, { id: "riesgos", label: "Riesgos" }
       ];
 
-      const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      const montoPresets = [1000, 10000, 50000, 100000, 500000, 1000000];
-      const toggleCatVisibility = (id) => setVisibleCats(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+      const scrollTo = function(id) {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      };
 
-      const handleMontoInputChange = (e) => {
+      const montoPresets = [1000, 10000, 50000, 100000, 500000, 1000000];
+
+      const toggleCatVisibility = function(id) {
+        setVisibleCats(function(prev) {
+          return prev.indexOf(id) >= 0 ? prev.filter(function(x) { return x !== id; }) : prev.concat([id]);
+        });
+      };
+
+      const handleMontoInputChange = function(e) {
         const raw = e.target.value.replace(/[^0-9]/g, '');
         setMontoInput(e.target.value);
         if (raw === '') setMonto(0);
         else setMonto(Math.min(Number(raw), 100000000));
       };
-      const handleMontoInputBlur = () => setMontoInput(monto.toLocaleString('en-US'));
-      const handleMontoInputFocus = (e) => e.target.select();
 
-      useEffect(() => {
-        if (document.activeElement?.id !== 'monto-input') {
+      const handleMontoInputBlur = function() {
+        setMontoInput(monto.toLocaleString('en-US'));
+      };
+
+      const handleMontoInputFocus = function(e) { e.target.select(); };
+
+      useEffect(function() {
+        if (!document.activeElement || document.activeElement.id !== 'monto-input') {
           setMontoInput(monto.toLocaleString('en-US'));
         }
       }, [monto]);
 
       return (
-        <div className={`app-root ${mounted ? 'mounted' : ''}`}>
+        <div className={"app-root " + (mounted ? 'mounted' : '')}>
           <style>{`
             @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
             :root { --bg-base: #0A0E1A; --bg-surface: #131A2C; --bg-elev: #1A2238; --bg-elev2: #232D47; --text-primary: #F5F2EA; --text-secondary: #9CA3B7; --text-tertiary: #6B7280; --border-subtle: rgba(245,242,234,0.08); --border-strong: rgba(245,242,234,0.16); --accent-gold: #C9A961; --accent-gold-dim: #8C7644; --accent-amber: #F59E0B; --accent-green: #10B981; --accent-red: #EF4444; --accent-blue: #4A7BA6; --accent-blue-light: #8FAFCC; --font-display: 'Fraunces', Georgia, serif; --font-body: 'IBM Plex Sans', system-ui, sans-serif; --font-mono: 'IBM Plex Mono', monospace; }
@@ -400,8 +457,6 @@
             .disclaimer-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 16px; }
             .disclaimer-text { font-family: var(--font-body); font-size: 12px; line-height: 1.7; color: var(--text-secondary); font-weight: 300; }
             .footer { margin-top: 80px; padding: 32px 0; border-top: 1px solid var(--border-subtle); text-align: center; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-tertiary); }
-
-            /* ===== TIMELINE / GANTT ===== */
             .timeline-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border-subtle); border: 1px solid var(--border-subtle); margin-bottom: 32px; }
             .timeline-summary-item { background: var(--bg-base); padding: 24px 28px; }
             .timeline-summary-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 10px; }
@@ -421,8 +476,6 @@
             .gantt-bar { position: absolute; top: 50%; transform: translateY(-50%); height: 32px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.05em; color: white; text-transform: uppercase; box-shadow: 0 1px 3px rgba(0,0,0,0.3); z-index: 2; padding: 0 12px; transition: filter 0.2s ease; }
             .gantt-bar:hover { filter: brightness(1.15); }
             .gantt-divider { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--border-subtle); z-index: 1; }
-
-            /* Acumulado por mes */
             .acumulado-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 1px; background: var(--border-subtle); border: 1px solid var(--border-subtle); margin-bottom: 48px; }
             .acumulado-cell { background: var(--bg-base); padding: 18px 14px; text-align: center; }
             .acumulado-mes { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; color: var(--text-secondary); margin-bottom: 8px; }
@@ -430,8 +483,6 @@
             .acumulado-pct { font-family: var(--font-mono); font-size: 10px; color: var(--text-tertiary); margin-top: 6px; }
             .acumulado-bar { height: 3px; background: var(--bg-elev); margin-top: 10px; position: relative; border-radius: 2px; overflow: hidden; }
             .acumulado-bar-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--accent-gold); border-radius: 2px; transition: width 0.4s ease; }
-
-            /* Meses detalle */
             .meses-detalle { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
             .mes-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); padding: 20px; transition: border-color 0.2s ease; }
             .mes-card:hover { border-color: var(--border-strong); }
@@ -443,19 +494,6 @@
             .hito-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
             .hito-cat { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-tertiary); font-weight: 600; margin-bottom: 3px; }
             .hito-accion { font-family: var(--font-body); font-size: 12px; color: var(--text-primary); line-height: 1.45; font-weight: 300; }
-            @media (max-width: 1024px) {
-              .meses-detalle { grid-template-columns: repeat(2, 1fr); }
-              .acumulado-grid { grid-template-columns: repeat(4, 1fr); }
-              .timeline-summary { grid-template-columns: repeat(2, 1fr); }
-              .gantt-row { grid-template-columns: 1fr; }
-              .gantt-label { border-bottom: 1px solid var(--border-subtle); }
-            }
-            @media (max-width: 640px) {
-              .meses-detalle { grid-template-columns: 1fr; }
-              .acumulado-grid { grid-template-columns: repeat(2, 1fr); }
-              .timeline-summary { grid-template-columns: 1fr; }
-            }
-
             .custom-tooltip { background: var(--bg-elev2); border: 1px solid var(--border-strong); padding: 12px 16px; font-family: var(--font-mono); font-size: 12px; }
             .tt-label { color: var(--text-primary); font-weight: 600; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--border-subtle); }
             .tt-row { display: flex; align-items: center; gap: 8px; padding: 2px 0; }
@@ -473,6 +511,10 @@
               .score-banner { grid-template-columns: 1fr; gap: 24px; }
               .liquidez-mecanismos { grid-template-columns: 1fr; }
               .control-inner { grid-template-columns: 1fr; gap: 20px; }
+              .meses-detalle { grid-template-columns: repeat(2, 1fr); }
+              .acumulado-grid { grid-template-columns: repeat(4, 1fr); }
+              .timeline-summary { grid-template-columns: repeat(2, 1fr); }
+              .gantt-row { grid-template-columns: 1fr; }
             }
             @media (max-width: 640px) {
               .container { padding: 0 20px; }
@@ -480,6 +522,9 @@
               .kpi-grid, .hero-identity { grid-template-columns: 1fr; }
               .hero-title { font-size: 42px; }
               .escenario-pct { font-size: 56px; }
+              .meses-detalle { grid-template-columns: 1fr; }
+              .acumulado-grid { grid-template-columns: repeat(2, 1fr); }
+              .timeline-summary { grid-template-columns: 1fr; }
             }
           `}</style>
 
@@ -487,17 +532,19 @@
             <div className="nav-inner">
               <div className="nav-brand">Investment <span className="ampersand">·</span> Memo</div>
               <div className="nav-links">
-                {navSections.map(s => (
-                  <button key={s.id} className={`nav-link ${activeSection === s.id ? 'active' : ''}`} onClick={() => { setActiveSection(s.id); scrollTo(s.id); }}>{s.label}</button>
-                ))}
+                {navSections.map(function(s) {
+                  return (
+                    <button key={s.id} className={"nav-link " + (activeSection === s.id ? 'active' : '')} onClick={function() { setActiveSection(s.id); scrollTo(s.id); }}>{s.label}</button>
+                  );
+                })}
               </div>
-              <button className="control-toggle-btn" onClick={() => setControlsCollapsed(!controlsCollapsed)}>
+              <button className="control-toggle-btn" onClick={function() { setControlsCollapsed(!controlsCollapsed); }}>
                 {controlsCollapsed ? '↓ MOSTRAR CONTROLES' : '↑ OCULTAR CONTROLES'}
               </button>
             </div>
           </nav>
 
-          <div className={`control-panel ${controlsCollapsed ? 'collapsed' : ''}`}>
+          <div className={"control-panel " + (controlsCollapsed ? 'collapsed' : '')}>
             <div className="control-inner">
               <div className="control-group">
                 <div className="control-label"><span>Monto Total a Invertir</span></div>
@@ -506,11 +553,11 @@
                   <input id="monto-input" type="text" inputMode="numeric" className="monto-input" value={montoInput} onChange={handleMontoInputChange} onFocus={handleMontoInputFocus} onBlur={handleMontoInputBlur} placeholder="0" />
                 </div>
                 <div className="monto-slider-wrapper">
-                  <input type="range" className="monto-slider" min={1000} max={1000000} step={1000} value={Math.min(Math.max(monto, 1000), 1000000)} onChange={(e) => setMonto(Number(e.target.value))} />
+                  <input type="range" className="monto-slider" min={1000} max={1000000} step={1000} value={Math.min(Math.max(monto, 1000), 1000000)} onChange={function(e) { setMonto(Number(e.target.value)); }} />
                   <div className="monto-presets">
-                    {montoPresets.map(m => (
-                      <button key={m} className={`monto-preset ${monto === m ? 'active' : ''}`} onClick={() => setMonto(m)}>{fmtMoney(m)}</button>
-                    ))}
+                    {montoPresets.map(function(m) {
+                      return <button key={m} className={"monto-preset " + (monto === m ? 'active' : '')} onClick={function() { setMonto(m); }}>{fmtMoney(m)}</button>;
+                    })}
                   </div>
                 </div>
               </div>
@@ -519,17 +566,17 @@
                 <div className="control-label">
                   <span>Escenario de Retorno</span>
                   <span className="control-value" style={{ fontSize: 14, fontStyle: 'normal', fontFamily: 'var(--font-mono)', letterSpacing: '0.1em' }}>
-                    {ESCENARIOS.find(e => e.id === escenario)?.label.toUpperCase()}
+                    {getEscenarioLabel(escenario).toUpperCase()}
                   </span>
                 </div>
                 <div className="escenario-selector">
-                  {ESCENARIOS.map(e => (
-                    <button key={e.id} className={`escenario-btn ${escenario === e.id ? 'active' : ''}`} onClick={() => setEscenario(e.id)}>{e.label}</button>
-                  ))}
+                  {ESCENARIOS.map(function(e) {
+                    return <button key={e.id} className={"escenario-btn " + (escenario === e.id ? 'active' : '')} onClick={function() { setEscenario(e.id); }}>{e.label}</button>;
+                  })}
                 </div>
               </div>
 
-              <div className={`stress-toggle ${stressVC ? 'active' : ''}`} onClick={() => setStressVC(!stressVC)}>
+              <div className={"stress-toggle " + (stressVC ? 'active' : '')} onClick={function() { setStressVC(!stressVC); }}>
                 <div className="stress-toggle-switch"></div>
                 <div>
                   <div className="stress-toggle-label" style={{ marginBottom: 2 }}>Stress Test</div>
@@ -571,13 +618,13 @@
               <SectionLabel num="01">Métricas Clave del Portafolio</SectionLabel>
               <div className="kpi-grid">
                 <div className="kpi-block">
-                  <div className="kpi-label">Retorno {ESCENARIOS.find(e => e.id === escenario)?.label}</div>
+                  <div className="kpi-label">Retorno {getEscenarioLabel(escenario)}</div>
                   <div className="kpi-value"><AnimatedNumber value={data.retornoActivo} formatter={fmtPct2} /></div>
                   <div className="kpi-sub">ANUALIZADO</div>
                 </div>
                 <div className="kpi-block">
                   <div className="kpi-label">Multiplicador a 10 Años</div>
-                  <div className="kpi-value" style={{ color: 'var(--accent-gold)' }}><AnimatedNumber value={data.multiplicador10a} formatter={v => `${v.toFixed(2)}×`} /></div>
+                  <div className="kpi-value" style={{ color: 'var(--accent-gold)' }}><AnimatedNumber value={data.multiplicador10a} formatter={function(v) { return v.toFixed(2) + "×"; }} /></div>
                   <div className="kpi-sub">VALOR INICIAL × X</div>
                 </div>
                 <div className="kpi-block">
@@ -596,20 +643,22 @@
             <section id="escenarios" className="section">
               <SectionLabel num="02">Tres Escenarios de Retorno · Click para Cambiar</SectionLabel>
               <div className="escenarios-grid">
-                {[{ id: "cons", label: "Conservador", val: data.consPort }, { id: "base", label: "Base", val: data.basePort }, { id: "opti", label: "Optimista", val: data.optiPort }].map(s => (
-                  <div key={s.id} className={`escenario-card ${escenario === s.id ? 'active' : ''}`} onClick={() => setEscenario(s.id)}>
-                    <div className="escenario-tag">
-                      <span>{s.label}</span>
-                      {escenario === s.id && <span className="escenario-active-dot" />}
+                {[{ id: "cons", label: "Conservador", val: data.consPort }, { id: "base", label: "Base", val: data.basePort }, { id: "opti", label: "Optimista", val: data.optiPort }].map(function(s) {
+                  return (
+                    <div key={s.id} className={"escenario-card " + (escenario === s.id ? 'active' : '')} onClick={function() { setEscenario(s.id); }}>
+                      <div className="escenario-tag">
+                        <span>{s.label}</span>
+                        {escenario === s.id && <span className="escenario-active-dot" />}
+                      </div>
+                      <div className="escenario-pct"><AnimatedNumber value={s.val} formatter={fmtPct2} /></div>
+                      <div className="escenario-anual">RETORNO ANUAL PONDERADO</div>
+                      <div className="escenario-final">
+                        <div className="escenario-final-label">Valor a 10 años</div>
+                        <div className="escenario-final-value"><AnimatedNumber value={monto * Math.pow(1 + s.val, 10)} formatter={fmtMoney} /></div>
+                      </div>
                     </div>
-                    <div className="escenario-pct"><AnimatedNumber value={s.val} formatter={fmtPct2} /></div>
-                    <div className="escenario-anual">RETORNO ANUAL PONDERADO</div>
-                    <div className="escenario-final">
-                      <div className="escenario-final-label">Valor a 10 años</div>
-                      <div className="escenario-final-value"><AnimatedNumber value={monto * Math.pow(1 + s.val, 10)} formatter={fmtMoney} /></div>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </section>
 
@@ -619,14 +668,14 @@
                 <div className="pie-wrapper">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
-                      <Pie data={data.cats.map(c => ({ name: c.nombre, value: c.pct, monto: c.monto, color: c.color, id: c.id }))} cx="50%" cy="50%" innerRadius="55%" outerRadius="85%" paddingAngle={2} dataKey="value" stroke="#13192B" strokeWidth={3} onMouseEnter={(_, idx) => setHoveredCat(data.cats[idx].id)} onMouseLeave={() => setHoveredCat(null)}>
-                        {data.cats.map((entry, i) => (
-                          <Cell key={i} fill={entry.color} opacity={hoveredCat && hoveredCat !== entry.id ? 0.35 : 1} style={{ transition: 'opacity 0.2s ease' }} />
-                        ))}
+                      <Pie data={data.cats.map(function(c) { return { name: c.nombre, value: c.pct, monto: c.monto, color: c.color, id: c.id }; })} cx="50%" cy="50%" innerRadius="55%" outerRadius="85%" paddingAngle={2} dataKey="value" stroke="#13192B" strokeWidth={3} onMouseEnter={function(_, idx) { setHoveredCat(data.cats[idx].id); }} onMouseLeave={function() { setHoveredCat(null); }}>
+                        {data.cats.map(function(entry, i) {
+                          return <Cell key={i} fill={entry.color} opacity={hoveredCat && hoveredCat !== entry.id ? 0.35 : 1} style={{ transition: 'opacity 0.2s ease' }} />;
+                        })}
                       </Pie>
-                      <Tooltip content={({ active, payload }) => {
-                        if (!active || !payload || !payload.length) return null;
-                        const d = payload[0].payload;
+                      <Tooltip content={function(p) {
+                        if (!p.active || !p.payload || !p.payload.length) return null;
+                        const d = p.payload[0].payload;
                         return (
                           <div className="custom-tooltip">
                             <div className="tt-label">{d.name}</div>
@@ -645,17 +694,19 @@
                 <table className="composicion-table">
                   <thead><tr><th>Categoría</th><th className="center">%</th><th className="right">Monto</th><th className="center">Riesgo</th></tr></thead>
                   <tbody>
-                    {data.cats.map(c => (
-                      <tr key={c.id} className={`row-cat ${hoveredCat === c.id ? 'hovered' : ''}`} onMouseEnter={() => setHoveredCat(c.id)} onMouseLeave={() => setHoveredCat(null)}>
-                        <td>
-                          <div className="cat-name" style={{ color: c.color }}>● <span style={{ color: 'var(--text-primary)', marginLeft: 6 }}>{c.nombre}</span></div>
-                          <div className="cat-sub" style={{ marginLeft: 22 }}>{c.subtitulo}</div>
-                        </td>
-                        <td className="pct-cell">{fmtPct(c.pct)}</td>
-                        <td className="num-cell"><AnimatedNumber value={c.monto} formatter={fmtMoney} /></td>
-                        <td style={{ textAlign: 'center' }}><RiskPill riesgo={c.riesgo} /></td>
-                      </tr>
-                    ))}
+                    {data.cats.map(function(c) {
+                      return (
+                        <tr key={c.id} className={"row-cat " + (hoveredCat === c.id ? 'hovered' : '')} onMouseEnter={function() { setHoveredCat(c.id); }} onMouseLeave={function() { setHoveredCat(null); }}>
+                          <td>
+                            <div className="cat-name" style={{ color: c.color }}>● <span style={{ color: 'var(--text-primary)', marginLeft: 6 }}>{c.nombre}</span></div>
+                            <div className="cat-sub" style={{ marginLeft: 22 }}>{c.subtitulo}</div>
+                          </td>
+                          <td className="pct-cell">{fmtPct(c.pct)}</td>
+                          <td className="num-cell"><AnimatedNumber value={c.monto} formatter={fmtMoney} /></td>
+                          <td style={{ textAlign: 'center' }}><RiskPill riesgo={c.riesgo} /></td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -695,7 +746,7 @@
               <div className="score-banner">
                 <div>
                   <div className="score-item-label">Score Ponderado</div>
-                  <div className="score-item-value" style={{ color: 'var(--accent-gold)' }}><AnimatedNumber value={data.scorePonderado} formatter={v => v.toFixed(2)} /></div>
+                  <div className="score-item-value" style={{ color: 'var(--accent-gold)' }}><AnimatedNumber value={data.scorePonderado} formatter={function(v) { return v.toFixed(2); }} /></div>
                   <div className="score-item-sub">Escala 1.00 (defensivo) — 3.00 (agresivo)</div>
                 </div>
                 <div>
@@ -731,7 +782,7 @@
                   <div style={{ textAlign: 'right' }}>Diferencia</div>
                   <div style={{ textAlign: 'right' }}>Postura</div>
                 </div>
-                {data.cats.map(c => {
+                {data.cats.map(function(c) {
                   const diff = c.retornoEfectivo - c.benchmark;
                   const postura = diff < -0.03 ? "CONSERVADOR" : (diff > 0.03 ? "AGRESIVO" : "ALINEADO");
                   const maxVal = Math.max(c.benchmark, Math.max(0.01, c.retornoEfectivo)) * 1.15;
@@ -741,14 +792,14 @@
                         <div style={{ fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 500, color: 'var(--text-primary)', marginBottom: 6 }}>{c.nombre}</div>
                         <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-tertiary)', letterSpacing: '0.04em', marginBottom: 8 }}>{c.benchmarkLabel}</div>
                         <div className="bench-bar">
-                          <div className="bench-bar-pert" style={{ width: `${Math.max(0, (c.retornoEfectivo / maxVal) * 100)}%`, background: c.retornoEfectivo < 0 ? 'var(--accent-red)' : 'var(--accent-gold)' }} />
-                          <div className="bench-bar-bench" style={{ left: `${(c.benchmark / maxVal) * 100}%` }} />
+                          <div className="bench-bar-pert" style={{ width: Math.max(0, (c.retornoEfectivo / maxVal) * 100) + "%", background: c.retornoEfectivo < 0 ? 'var(--accent-red)' : 'var(--accent-gold)' }} />
+                          <div className="bench-bar-bench" style={{ left: ((c.benchmark / maxVal) * 100) + "%" }} />
                         </div>
                       </div>
                       <div style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: 15, color: 'var(--accent-blue-light)', fontWeight: 500 }}>{fmtPct2(c.benchmark)}</div>
                       <div style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: 15, color: c.retornoEfectivo < 0 ? 'var(--accent-red)' : 'var(--accent-gold)', fontWeight: 600 }}>{fmtPct2(c.retornoEfectivo)}</div>
                       <div style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: 13, color: diff < 0 ? 'var(--accent-green)' : 'var(--accent-red)' }}>{fmtPP(diff)}</div>
-                      <div style={{ textAlign: 'right' }}><span className={`postura-badge postura-${postura}`}>{postura}</span></div>
+                      <div style={{ textAlign: 'right' }}><span className={"postura-badge postura-" + postura}>{postura}</span></div>
                     </div>
                   );
                 })}
@@ -760,9 +811,9 @@
               <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 48, alignItems: 'center', marginBottom: 24 }}>
                 <div>
                   <div className="liquidez-bar">
-                    <div className="liquidez-segment" style={{ background: 'var(--accent-green)', width: `${data.liquidoCorto * 100}%` }}><span>≤1a</span><span>{fmtPct(data.liquidoCorto)}</span></div>
-                    <div className="liquidez-segment" style={{ background: 'var(--accent-blue-light)', width: `${data.liquidoMedio * 100}%`, color: '#0A0E1A' }}><span>1-2a</span><span>{fmtPct(data.liquidoMedio)}</span></div>
-                    <div className="liquidez-segment" style={{ background: 'var(--accent-amber)', width: `${data.liquidoLargo * 100}%`, color: '#0A0E1A' }}><span>&gt;2a</span><span>{fmtPct(data.liquidoLargo)}</span></div>
+                    <div className="liquidez-segment" style={{ background: 'var(--accent-green)', width: (data.liquidoCorto * 100) + "%" }}><span>≤1a</span><span>{fmtPct(data.liquidoCorto)}</span></div>
+                    <div className="liquidez-segment" style={{ background: 'var(--accent-blue-light)', width: (data.liquidoMedio * 100) + "%", color: '#0A0E1A' }}><span>1-2a</span><span>{fmtPct(data.liquidoMedio)}</span></div>
+                    <div className="liquidez-segment" style={{ background: 'var(--accent-amber)', width: (data.liquidoLargo * 100) + "%", color: '#0A0E1A' }}><span>&gt;2a</span><span>{fmtPct(data.liquidoLargo)}</span></div>
                   </div>
                 </div>
                 <div>
@@ -773,16 +824,18 @@
               </div>
               <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--text-secondary)', margin: '32px 0 20px' }}>Mecanismos de salida por categoría</div>
               <div className="liquidez-mecanismos">
-                {data.cats.map(c => (
-                  <div key={c.id} className="mecanismo-card">
-                    <div className="mecanismo-pct">{fmtPct(c.pct)}</div>
-                    <div>
-                      <div className="mecanismo-cat">{c.nombre}</div>
-                      <div className="mecanismo-mec">{c.mecanismo}</div>
-                      <div className="mecanismo-plazo">{c.plazo.toUpperCase()}</div>
+                {data.cats.map(function(c) {
+                  return (
+                    <div key={c.id} className="mecanismo-card">
+                      <div className="mecanismo-pct">{fmtPct(c.pct)}</div>
+                      <div>
+                        <div className="mecanismo-cat">{c.nombre}</div>
+                        <div className="mecanismo-mec">{c.mecanismo}</div>
+                        <div className="mecanismo-plazo">{c.plazo.toUpperCase()}</div>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </section>
 
@@ -797,50 +850,54 @@
                 <div className="kpi-block">
                   <div className="kpi-label">Año 5</div>
                   <div className="kpi-value" style={{ color: 'var(--accent-gold)' }}><AnimatedNumber value={data.evolucion[5].valor} formatter={fmtMoney} /></div>
-                  <div className="kpi-sub">+<AnimatedNumber value={(data.evolucion[5].valor / data.evolucion[0].valor - 1) * 100} formatter={v => v.toFixed(1)} />% ACUMULADO</div>
+                  <div className="kpi-sub">+<AnimatedNumber value={(data.evolucion[5].valor / data.evolucion[0].valor - 1) * 100} formatter={function(v) { return v.toFixed(1); }} />% ACUMULADO</div>
                 </div>
                 <div className="kpi-block">
                   <div className="kpi-label">Año 10</div>
                   <div className="kpi-value" style={{ color: 'var(--accent-gold)' }}><AnimatedNumber value={data.evolucion[10].valor} formatter={fmtMoney} /></div>
-                  <div className="kpi-sub">MULTIPLICADOR <AnimatedNumber value={data.multiplicador10a} formatter={v => `${v.toFixed(2)}×`} /></div>
+                  <div className="kpi-sub">MULTIPLICADOR <AnimatedNumber value={data.multiplicador10a} formatter={function(v) { return v.toFixed(2) + "×"; }} /></div>
                 </div>
               </div>
               <div className="chart-wrapper">
                 <ResponsiveContainer width="100%" height={420}>
                   <LineChart data={data.evolucion} margin={{ top: 20, right: 24, left: 0, bottom: 0 }}>
                     <CartesianGrid stroke="rgba(245,242,234,0.06)" strokeDasharray="0" vertical={false} />
-                    <XAxis dataKey="año" stroke="#6B7280" tick={{ fill: '#9CA3B7', fontSize: 11, fontFamily: 'IBM Plex Mono' }} axisLine={{ stroke: 'rgba(245,242,234,0.16)' }} tickLine={false} label={{ value: 'Año', position: 'insideBottom', offset: -8, fill: '#6B7280', fontSize: 10, fontFamily: 'IBM Plex Mono', letterSpacing: '0.18em' }} />
-                    <YAxis stroke="#6B7280" tick={{ fill: '#9CA3B7', fontSize: 11, fontFamily: 'IBM Plex Mono' }} axisLine={false} tickLine={false} tickFormatter={v => `$${(v / 1000).toFixed(0)}k`} />
-                    <Tooltip content={({ active, payload, label }) => {
-                      if (!active || !payload || !payload.length) return null;
+                    <XAxis dataKey="año" stroke="#6B7280" tick={{ fill: '#9CA3B7', fontSize: 11, fontFamily: 'IBM Plex Mono' }} axisLine={{ stroke: 'rgba(245,242,234,0.16)' }} tickLine={false} />
+                    <YAxis stroke="#6B7280" tick={{ fill: '#9CA3B7', fontSize: 11, fontFamily: 'IBM Plex Mono' }} axisLine={false} tickLine={false} tickFormatter={function(v) { return "$" + (v / 1000).toFixed(0) + "k"; }} />
+                    <Tooltip content={function(p) {
+                      if (!p.active || !p.payload || !p.payload.length) return null;
                       return (
                         <div className="custom-tooltip">
-                          <div className="tt-label">Año {label}</div>
-                          {payload.map((p, i) => (
-                            <div key={i} className="tt-row">
-                              <span className="tt-dot" style={{ background: p.color }} />
-                              <span className="tt-name">{p.name}:</span>
-                              <span className="tt-val">{fmtMoney(p.value)}</span>
-                            </div>
-                          ))}
+                          <div className="tt-label">Año {p.label}</div>
+                          {p.payload.map(function(pl, i) {
+                            return (
+                              <div key={i} className="tt-row">
+                                <span className="tt-dot" style={{ background: pl.color }} />
+                                <span className="tt-name">{pl.name}:</span>
+                                <span className="tt-val">{fmtMoney(pl.value)}</span>
+                              </div>
+                            );
+                          })}
                         </div>
                       );
                     }} cursor={{ stroke: '#C9A961', strokeDasharray: '3 3' }} />
                     <Line type="monotone" dataKey="valor" name="TOTAL" stroke="#C9A961" strokeWidth={3} dot={false} activeDot={{ r: 6, fill: '#C9A961', stroke: '#0A0E1A', strokeWidth: 2 }} />
-                    {data.cats.filter(c => visibleCats.includes(c.id)).map(c => (
-                      <Line key={c.id} type="monotone" dataKey={c.id} name={c.nombre} stroke={c.color} strokeWidth={1.5} strokeDasharray="4 4" dot={false} activeDot={{ r: 4, fill: c.color }} />
-                    ))}
+                    {data.cats.filter(function(c) { return visibleCats.indexOf(c.id) >= 0; }).map(function(c) {
+                      return <Line key={c.id} type="monotone" dataKey={c.id} name={c.nombre} stroke={c.color} strokeWidth={1.5} strokeDasharray="4 4" dot={false} activeDot={{ r: 4, fill: c.color }} />;
+                    })}
                     <ReferenceLine y={monto} stroke="#9CA3B7" strokeDasharray="3 3" strokeOpacity={0.4} />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
               <div className="cat-toggles">
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--text-secondary)', alignSelf: 'center', marginRight: 8 }}>VER POR CATEGORÍA:</div>
-                {data.cats.map(c => (
-                  <button key={c.id} className={`cat-toggle ${visibleCats.includes(c.id) ? 'active' : 'inactive'}`} onClick={() => toggleCatVisibility(c.id)}>
-                    <span className="cat-toggle-dot" style={{ background: c.color }} />{c.nombre}
-                  </button>
-                ))}
+                {data.cats.map(function(c) {
+                  return (
+                    <button key={c.id} className={"cat-toggle " + (visibleCats.indexOf(c.id) >= 0 ? 'active' : 'inactive')} onClick={function() { toggleCatVisibility(c.id); }}>
+                      <span className="cat-toggle-dot" style={{ background: c.color }} />{c.nombre}
+                    </button>
+                  );
+                })}
               </div>
             </section>
 
@@ -850,21 +907,23 @@
                 <table className="detalle-table">
                   <thead><tr><th>Categoría</th><th className="center">%</th><th className="right">Monto</th><th className="center">Riesgo</th><th className="center">Retorno</th><th className="right">Retorno $</th><th className="right">Valor Final 1a</th><th className="right">Valor 10a</th></tr></thead>
                   <tbody>
-                    {data.cats.map(c => (
-                      <tr key={c.id}>
-                        <td>
-                          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 500, color: c.color }}>● <span style={{ color: 'var(--text-primary)', marginLeft: 4 }}>{c.nombre}</span></div>
-                          <div style={{ fontSize: 11, color: 'var(--text-tertiary)', marginLeft: 14, marginTop: 2 }}>{c.subtitulo}</div>
-                        </td>
-                        <td style={{ textAlign: 'center', fontFamily: 'var(--font-mono)', color: 'var(--accent-gold)', fontWeight: 600 }}>{fmtPct(c.pct)}</td>
-                        <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)' }}><AnimatedNumber value={c.monto} formatter={fmtMoney} /></td>
-                        <td style={{ textAlign: 'center' }}><RiskPill riesgo={c.riesgo} /></td>
-                        <td style={{ textAlign: 'center', fontFamily: 'var(--font-mono)', color: c.retornoEfectivo < 0 ? 'var(--accent-red)' : 'var(--accent-gold)', fontWeight: 600 }}>{fmtPct2(c.retornoEfectivo)}</td>
-                        <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', color: c.retornoDolares < 0 ? 'var(--accent-red)' : 'var(--text-primary)' }}><AnimatedNumber value={c.retornoDolares} formatter={fmtMoney} /></td>
-                        <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)' }}><AnimatedNumber value={c.valorFinal1a} formatter={fmtMoney} /></td>
-                        <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', color: 'var(--accent-gold)', fontWeight: 600 }}><AnimatedNumber value={c.valor10a} formatter={fmtMoney} /></td>
-                      </tr>
-                    ))}
+                    {data.cats.map(function(c) {
+                      return (
+                        <tr key={c.id}>
+                          <td>
+                            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 500, color: c.color }}>● <span style={{ color: 'var(--text-primary)', marginLeft: 4 }}>{c.nombre}</span></div>
+                            <div style={{ fontSize: 11, color: 'var(--text-tertiary)', marginLeft: 14, marginTop: 2 }}>{c.subtitulo}</div>
+                          </td>
+                          <td style={{ textAlign: 'center', fontFamily: 'var(--font-mono)', color: 'var(--accent-gold)', fontWeight: 600 }}>{fmtPct(c.pct)}</td>
+                          <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)' }}><AnimatedNumber value={c.monto} formatter={fmtMoney} /></td>
+                          <td style={{ textAlign: 'center' }}><RiskPill riesgo={c.riesgo} /></td>
+                          <td style={{ textAlign: 'center', fontFamily: 'var(--font-mono)', color: c.retornoEfectivo < 0 ? 'var(--accent-red)' : 'var(--accent-gold)', fontWeight: 600 }}>{fmtPct2(c.retornoEfectivo)}</td>
+                          <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', color: c.retornoDolares < 0 ? 'var(--accent-red)' : 'var(--text-primary)' }}><AnimatedNumber value={c.retornoDolares} formatter={fmtMoney} /></td>
+                          <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)' }}><AnimatedNumber value={c.valorFinal1a} formatter={fmtMoney} /></td>
+                          <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', color: 'var(--accent-gold)', fontWeight: 600 }}><AnimatedNumber value={c.valor10a} formatter={fmtMoney} /></td>
+                        </tr>
+                      );
+                    })}
                     <tr style={{ background: 'var(--bg-elev)' }}>
                       <td style={{ fontFamily: 'var(--font-display)', fontWeight: 600 }}>TOTAL</td>
                       <td style={{ textAlign: 'center', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>100.0%</td>
@@ -882,187 +941,117 @@
 
             <section id="timeline" className="section">
               <SectionLabel num="09">Línea de Tiempo de Ejecución · 8 Meses</SectionLabel>
-
-              {(() => {
-                // ===== DATOS DEL TIMELINE =====
+              {(function() {
                 const MESES = ["Jun '26", "Jul '26", "Ago '26", "Sep '26", "Oct '26", "Nov '26", "Dic '26", "Ene '27"];
-
-                // Capital desplegado por mes (acumulado y por categoría)
-                // Mes 1: cash $1,000
-                // Mes 2: + cdt $1,000 = $2,000
-                // Mes 3: + rv $667 = $2,667 + arranca DD EP
-                // Mes 4: + rv $667 = $3,333 + arranca sourcing VC
-                // Mes 5: + rv $666 = $4,000
-                // Mes 6: + ep $3,500 = $7,500
-                // Mes 7: = $7,500
-                // Mes 8: + vc $2,500 = $10,000
-                const desembolsoPorMes = [
-                  monto * 0.10,                                              // Mes 1: cash
-                  monto * 0.10,                                              // Mes 2: cdt
-                  monto * 0.18 / 3,                                          // Mes 3: rv tramo 1
-                  monto * 0.18 / 3,                                          // Mes 4: rv tramo 2
-                  monto * 0.18 / 3,                                          // Mes 5: rv tramo 3
-                  monto * 0.27,                                              // Mes 6: ep
-                  0,                                                          // Mes 7: VC negociación
-                  monto * 0.35                                                // Mes 8: vc cierre
+                const MESES_L = ["JUNIO 2026", "JULIO 2026", "AGOSTO 2026", "SEPTIEMBRE 2026", "OCTUBRE 2026", "NOVIEMBRE 2026", "DICIEMBRE 2026", "ENERO 2027"];
+                const desembolso = [monto * 0.10, monto * 0.10, monto * 0.18 / 3, monto * 0.18 / 3, monto * 0.18 / 3, monto * 0.27, 0, monto * 0.35];
+                const acumulado = [];
+                let sum = 0;
+                for (let i = 0; i < desembolso.length; i++) { sum += desembolso[i]; acumulado.push(sum); }
+                const fases = [
+                  { nombre: "Equivalentes de Efectivo", pct: 0.10, color: "#9CA3B7", start: 1, end: 1 },
+                  { nombre: "Renta Fija — CDT", pct: 0.10, color: "#1F3A5F", start: 1, end: 2 },
+                  { nombre: "Renta Variable", pct: 0.18, color: "#4A7BA6", start: 2, end: 5 },
+                  { nombre: "Equity Privado — Negocio", pct: 0.27, color: "#6B7F5A", start: 3, end: 6 },
+                  { nombre: "Venture Capital", pct: 0.35, color: "#C9A961", start: 4, end: 8 }
                 ];
-                const acumulado = desembolsoPorMes.reduce((arr, val, i) => {
-                  arr.push((arr[i-1] || 0) + val);
-                  return arr;
-                }, []);
-
-                const fasesGantt = [
-                  { catId: "cash", nombre: "Equivalentes de Efectivo", pct: 0.10, color: "#9CA3B7", start: 1, end: 1 },
-                  { catId: "cdt", nombre: "Renta Fija — CDT", pct: 0.10, color: "#1F3A5F", start: 1, end: 2 },
-                  { catId: "rv", nombre: "Renta Variable", pct: 0.18, color: "#4A7BA6", start: 2, end: 5 },
-                  { catId: "ep", nombre: "Equity Privado — Negocio", pct: 0.27, color: "#6B7F5A", start: 3, end: 6 },
-                  { catId: "vc", nombre: "Venture Capital", pct: 0.35, color: "#C9A961", start: 4, end: 8 }
+                const hitos = [
+                  [{ color: "#9CA3B7", cat: "Equivalentes de Efectivo", accion: "Apertura cuenta de alto rendimiento / money market y transferencia inicial" }, { color: "#1F3A5F", cat: "Renta Fija — CDT", accion: "Comparar tasas vigentes en bancos (Bogotá, Davivienda, BBVA, Bancolombia)" }],
+                  [{ color: "#1F3A5F", cat: "Renta Fija — CDT", accion: "Constitución del CDT a 360 días en el banco con mejor tasa E.A." }, { color: "#4A7BA6", cat: "Renta Variable", accion: "Apertura de cuenta en broker (Interactive Brokers, Tyba, Renta4 o similar)" }],
+                  [{ color: "#4A7BA6", cat: "Renta Variable", accion: "Primera entrada DCA: 1/3 del capital asignado (~$600 del $1,800 total)" }, { color: "#6B7F5A", cat: "Equity Privado", accion: "Identificación y first contact con negocio operativo target" }],
+                  [{ color: "#4A7BA6", cat: "Renta Variable", accion: "Segunda entrada DCA: 2/3 del capital asignado" }, { color: "#6B7F5A", cat: "Equity Privado", accion: "Due diligence financiera, operativa y legal del negocio" }, { color: "#C9A961", cat: "Venture Capital", accion: "Sourcing de startup target (network, demo days, fondos de coinversión)" }],
+                  [{ color: "#4A7BA6", cat: "Renta Variable", accion: "Tercera entrada DCA: posición completa armada (100% del 18%)" }, { color: "#6B7F5A", cat: "Equity Privado", accion: "Negociación de términos, valuación y pacto de socios" }, { color: "#C9A961", cat: "Venture Capital", accion: "Due diligence técnica y de equipo de la startup" }],
+                  [{ color: "#6B7F5A", cat: "Equity Privado", accion: "Cierre legal y transferencia de capital — posición del 27% completa" }, { color: "#C9A961", cat: "Venture Capital", accion: "Due diligence legal y financiera de la startup" }],
+                  [{ color: "#C9A961", cat: "Venture Capital", accion: "Negociación de term sheet, valuación y condiciones de salida" }],
+                  [{ color: "#C9A961", cat: "Venture Capital", accion: "Cierre, firma de SAFE/Equity y wire transfer — capital 100% desplegado" }]
                 ];
-
-                const hitosPorMes = [
-                  // Mes 1 - Junio
-                  [
-                    { color: "#9CA3B7", cat: "Equivalentes de Efectivo", accion: "Apertura cuenta de alto rendimiento / money market y transferencia inicial" },
-                    { color: "#1F3A5F", cat: "Renta Fija — CDT", accion: "Comparar tasas vigentes en bancos (Bogotá, Davivienda, BBVA, Bancolombia)" }
-                  ],
-                  // Mes 2 - Julio
-                  [
-                    { color: "#1F3A5F", cat: "Renta Fija — CDT", accion: "Constitución del CDT a 360 días en el banco con mejor tasa E.A." },
-                    { color: "#4A7BA6", cat: "Renta Variable", accion: "Apertura de cuenta en broker (Interactive Brokers, Tyba, Renta4 o similar)" }
-                  ],
-                  // Mes 3 - Agosto
-                  [
-                    { color: "#4A7BA6", cat: "Renta Variable", accion: "Primera entrada DCA: 1/3 del capital asignado (~$600 del $1,800 total)" },
-                    { color: "#6B7F5A", cat: "Equity Privado", accion: "Identificación y first contact con negocio operativo target" }
-                  ],
-                  // Mes 4 - Septiembre
-                  [
-                    { color: "#4A7BA6", cat: "Renta Variable", accion: "Segunda entrada DCA: 2/3 del capital asignado" },
-                    { color: "#6B7F5A", cat: "Equity Privado", accion: "Due diligence financiera, operativa y legal del negocio" },
-                    { color: "#C9A961", cat: "Venture Capital", accion: "Sourcing de startup target (network, demo days, fondos de coinversión)" }
-                  ],
-                  // Mes 5 - Octubre
-                  [
-                    { color: "#4A7BA6", cat: "Renta Variable", accion: "Tercera entrada DCA: posición completa armada (100% del 20%)" },
-                    { color: "#6B7F5A", cat: "Equity Privado", accion: "Negociación de términos, valuación y pacto de socios" },
-                    { color: "#C9A961", cat: "Venture Capital", accion: "Due diligence técnica y de equipo de la startup" }
-                  ],
-                  // Mes 6 - Noviembre
-                  [
-                    { color: "#6B7F5A", cat: "Equity Privado", accion: "Cierre legal y transferencia de capital — posición del 35% completa" },
-                    { color: "#C9A961", cat: "Venture Capital", accion: "Due diligence legal y financiera de la startup" }
-                  ],
-                  // Mes 7 - Diciembre
-                  [
-                    { color: "#C9A961", cat: "Venture Capital", accion: "Negociación de term sheet, valuación y condiciones de salida" }
-                  ],
-                  // Mes 8 - Enero
-                  [
-                    { color: "#C9A961", cat: "Venture Capital", accion: "Cierre, firma de SAFE/Equity y wire transfer — capital 100% desplegado" }
-                  ]
-                ];
-
                 return (
-                  <>
+                  <React.Fragment>
                     <div className="timeline-summary">
-                      <div className="timeline-summary-item">
-                        <div className="timeline-summary-label">Inicio</div>
-                        <div className="timeline-summary-value">Junio 2026</div>
-                      </div>
-                      <div className="timeline-summary-item">
-                        <div className="timeline-summary-label">Cierre Estimado</div>
-                        <div className="timeline-summary-value">Enero 2027</div>
-                      </div>
-                      <div className="timeline-summary-item">
-                        <div className="timeline-summary-label">Duración</div>
-                        <div className="timeline-summary-value">8 Meses</div>
-                      </div>
-                      <div className="timeline-summary-item">
-                        <div className="timeline-summary-label">Capital a Desplegar</div>
-                        <div className="timeline-summary-value"><AnimatedNumber value={monto} formatter={fmtMoney} /></div>
-                      </div>
+                      <div className="timeline-summary-item"><div className="timeline-summary-label">Inicio</div><div className="timeline-summary-value">Junio 2026</div></div>
+                      <div className="timeline-summary-item"><div className="timeline-summary-label">Cierre Estimado</div><div className="timeline-summary-value">Enero 2027</div></div>
+                      <div className="timeline-summary-item"><div className="timeline-summary-label">Duración</div><div className="timeline-summary-value">8 Meses</div></div>
+                      <div className="timeline-summary-item"><div className="timeline-summary-label">Capital a Desplegar</div><div className="timeline-summary-value"><AnimatedNumber value={monto} formatter={fmtMoney} /></div></div>
                     </div>
-
-                    {/* GANTT */}
                     <div className="gantt-chart">
                       <div className="gantt-row gantt-header-row">
                         <div className="gantt-label">FASE DE EJECUCIÓN</div>
                         <div className="gantt-track">
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', height: '100%' }}>
-                            {MESES.map((m, i) => (
-                              <div key={i} className="gantt-month-header">{m}</div>
-                            ))}
+                            {MESES.map(function(m, i) { return <div key={i} className="gantt-month-header">{m}</div>; })}
                           </div>
                         </div>
                       </div>
-                      {fasesGantt.map(f => (
-                        <div key={f.catId} className="gantt-row">
-                          <div className="gantt-label">
-                            <span className="gantt-dot" style={{ background: f.color }} />
-                            <div>
-                              <div className="gantt-fase-name">{f.nombre}</div>
-                              <div className="gantt-fase-meta">{fmtMoney(monto * f.pct)} · {fmtPct(f.pct)}</div>
+                      {fases.map(function(f, idx) {
+                        return (
+                          <div key={idx} className="gantt-row">
+                            <div className="gantt-label">
+                              <span className="gantt-dot" style={{ background: f.color }} />
+                              <div>
+                                <div className="gantt-fase-name">{f.nombre}</div>
+                                <div className="gantt-fase-meta">{fmtMoney(monto * f.pct)} · {fmtPct(f.pct)}</div>
+                              </div>
+                            </div>
+                            <div className="gantt-track">
+                              {[1, 2, 3, 4, 5, 6, 7].map(function(i) { return <div key={i} className="gantt-divider" style={{ left: ((i / 8) * 100) + "%" }} />; })}
+                              <div className="gantt-bar" style={{
+                                left: "calc(" + (((f.start - 1) / 8) * 100) + "% + 6px)",
+                                width: "calc(" + (((f.end - f.start + 1) / 8) * 100) + "% - 12px)",
+                                background: f.color
+                              }}>
+                                {f.start === f.end ? "MES " + f.start : "MESES " + f.start + "–" + f.end}
+                              </div>
                             </div>
                           </div>
-                          <div className="gantt-track">
-                            {[1, 2, 3, 4, 5, 6, 7].map(i => (
-                              <div key={i} className="gantt-divider" style={{ left: `${(i / 8) * 100}%` }} />
-                            ))}
-                            <div className="gantt-bar" style={{
-                              left: `calc(${((f.start - 1) / 8) * 100}% + 6px)`,
-                              width: `calc(${((f.end - f.start + 1) / 8) * 100}% - 12px)`,
-                              background: f.color
-                            }}>
-                              {f.start === f.end ? `MES ${f.start}` : `MESES ${f.start}–${f.end}`}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
-
-                    {/* CAPITAL ACUMULADO */}
                     <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--text-secondary)', margin: '32px 0 16px' }}>
                       CAPITAL DESPLEGADO ACUMULADO POR MES
                     </div>
                     <div className="acumulado-grid">
-                      {MESES.map((m, i) => (
-                        <div key={i} className="acumulado-cell">
-                          <div className="acumulado-mes">{m}</div>
-                          <div className="acumulado-val">{fmtMoney(acumulado[i])}</div>
-                          <div className="acumulado-pct">{fmtPct(acumulado[i] / monto)} desplegado</div>
-                          <div className="acumulado-bar">
-                            <div className="acumulado-bar-fill" style={{ width: `${(acumulado[i] / monto) * 100}%` }} />
+                      {MESES.map(function(m, i) {
+                        return (
+                          <div key={i} className="acumulado-cell">
+                            <div className="acumulado-mes">{m}</div>
+                            <div className="acumulado-val">{fmtMoney(acumulado[i])}</div>
+                            <div className="acumulado-pct">{fmtPct(acumulado[i] / monto)} desplegado</div>
+                            <div className="acumulado-bar">
+                              <div className="acumulado-bar-fill" style={{ width: ((acumulado[i] / monto) * 100) + "%" }} />
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
-
-                    {/* HITOS MES A MES */}
                     <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--text-secondary)', margin: '0 0 16px' }}>
                       HITOS ACCIONABLES MES A MES
                     </div>
                     <div className="meses-detalle">
-                      {MESES.map((m, i) => (
-                        <div key={i} className="mes-card">
-                          <div className="mes-card-header">
-                            <div className="mes-num">{String(i + 1).padStart(2, '0')}</div>
-                            <div className="mes-mes">{m}</div>
+                      {MESES.map(function(m, i) {
+                        return (
+                          <div key={i} className="mes-card">
+                            <div className="mes-card-header">
+                              <div className="mes-num">{("0" + (i + 1)).slice(-2)}</div>
+                              <div className="mes-mes">{m}</div>
+                            </div>
+                            <div className="mes-acciones">
+                              {hitos[i].map(function(h, j) {
+                                return (
+                                  <div key={j} className="hito">
+                                    <span className="hito-dot" style={{ background: h.color }} />
+                                    <div>
+                                      <div className="hito-cat">{h.cat}</div>
+                                      <div className="hito-accion">{h.accion}</div>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
                           </div>
-                          <div className="mes-acciones">
-                            {hitosPorMes[i].map((h, j) => (
-                              <div key={j} className="hito">
-                                <span className="hito-dot" style={{ background: h.color }} />
-                                <div>
-                                  <div className="hito-cat">{h.cat}</div>
-                                  <div className="hito-accion">{h.accion}</div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
-                  </>
+                  </React.Fragment>
                 );
               })()}
             </section>
@@ -1076,7 +1065,7 @@
                   <em> calibración conservadora</em> de retornos esperados frente a benchmarks
                   institucionales para proteger la credibilidad de la proyección,
                   y <em>horizonte predominantemente de largo plazo</em>, aceptando iliquidez en
-                  el 60% del capital a cambio de mayor potencial de retorno vía eventos de liquidez.
+                  el 62% del capital a cambio de mayor potencial de retorno vía eventos de liquidez.
                 </p>
                 <div className="tesis-quote">
                   "Las apuestas de crecimiento se balancean con instrumentos defensivos
@@ -1095,10 +1084,10 @@
 
             <section id="riesgos" className="section">
               <SectionLabel num="11">Riesgos Principales</SectionLabel>
-              <div className="riesgo-item"><div className="riesgo-num">01</div><div><div className="riesgo-title">Concentración en Venture Capital (35%)</div><div className="riesgo-desc">Por estadística de la industria, 65-75% de inversiones VC en etapa temprana no devuelven capital (Cambridge Associates, NBER). Esta es ahora la asignación más alta del portafolio, lo que incrementa la dependencia del éxito de esta apuesta. Puedes activar el Stress Test arriba para simular el escenario de pérdida total en tiempo real sobre todo el dashboard.</div></div></div>
-              <div className="riesgo-item"><div className="riesgo-num">02</div><div><div className="riesgo-title">Iliquidez del 60% del capital</div><div className="riesgo-desc">La mayor parte de la inversión queda comprometida a 5+ años hasta evento de liquidez (venta de participación, ronda secundaria o IPO). No es capital disponible para emergencias y exige disciplina de largo plazo.</div></div></div>
+              <div className="riesgo-item"><div className="riesgo-num">01</div><div><div className="riesgo-title">Concentración en Venture Capital (35%)</div><div className="riesgo-desc">Por estadística de la industria, 65-75% de inversiones VC en etapa temprana no devuelven capital (Cambridge Associates, NBER). Esta es la asignación más alta del portafolio, lo que incrementa la dependencia del éxito de esta apuesta. Puedes activar el Stress Test arriba para simular el escenario de pérdida total en tiempo real sobre todo el dashboard.</div></div></div>
+              <div className="riesgo-item"><div className="riesgo-num">02</div><div><div className="riesgo-title">Iliquidez del 62% del capital</div><div className="riesgo-desc">La mayor parte de la inversión queda comprometida a 5+ años hasta evento de liquidez (venta de participación, ronda secundaria o IPO). No es capital disponible para emergencias y exige disciplina de largo plazo.</div></div></div>
               <div className="riesgo-item"><div className="riesgo-num">03</div><div><div className="riesgo-title">Dependencia de ejecución operativa (27%)</div><div className="riesgo-desc">El 27% del portafolio está en Equity Privado de un negocio operativo, lo que requiere gestión activa y exposición a riesgo sectorial. El retorno esperado del 5.3% PERT está calibrado por debajo del benchmark de industria restaurantera (11.1%) para reflejar riesgo de ejecución.</div></div></div>
-              <div className="riesgo-item"><div className="riesgo-num">04</div><div><div className="riesgo-title">Exposición a renta variable (18%)</div><div className="riesgo-desc">El 18% en acciones cotizadas está sujeto a volatilidad de mercado (~16% anual histórico del S&P 500) y drawdowns potenciales del 30-40% en eventos sistémicos.</div></div></div>
+              <div className="riesgo-item"><div className="riesgo-num">04</div><div><div className="riesgo-title">Exposición a renta variable (18%)</div><div className="riesgo-desc">El 18% en acciones cotizadas está sujeto a volatilidad de mercado (~16% anual histórico del S&amp;P 500) y drawdowns potenciales del 30-40% en eventos sistémicos.</div></div></div>
               <div className="riesgo-item"><div className="riesgo-num">05</div><div><div className="riesgo-title">Riesgo cambiario USD/COP</div><div className="riesgo-desc">El portafolio mixto USD/COP está expuesto a fluctuaciones del tipo de cambio que pueden amplificar o reducir el retorno nominal en cualquier moneda de medición.</div></div></div>
               <div className="disclaimer">
                 <div className="disclaimer-label">Declaración de Responsabilidad</div>
@@ -1112,18 +1101,22 @@
       );
     };
 
-    // Render
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<InvestmentDashboard />);
-
-    // Ocultar loading después del mount
-    setTimeout(() => {
+    try {
+      const root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(<InvestmentDashboard />);
+      setTimeout(function() {
+        const loading = document.getElementById('loading');
+        if (loading) {
+          loading.classList.add('hidden');
+          setTimeout(function() { if (loading.parentNode) loading.parentNode.removeChild(loading); }, 500);
+        }
+      }, 800);
+    } catch (err) {
       const loading = document.getElementById('loading');
       if (loading) {
-        loading.classList.add('hidden');
-        setTimeout(() => loading.remove(), 500);
+        loading.innerHTML = '<div style="max-width:420px;padding:32px;text-align:center;font-family:Georgia,serif"><div style="color:#EF4444;font-size:14px;margin-bottom:16px;letter-spacing:0.15em">ERROR AL RENDERIZAR</div><div style="color:#F5F2EA;font-size:13px;line-height:1.6">' + err.message + '</div></div>';
       }
-    }, 800);
+    }
   </script>
 </body>
 </html>
