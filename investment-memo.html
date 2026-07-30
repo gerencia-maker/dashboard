@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Investment Memo · Propuesta de Distribución de Inversión</title>
-<meta name="description" content="Memo ejecutivo interactivo: distribución de inversión, escenarios PERT, benchmarks de mercado, marco de riesgo y proyección a 10 años.">
+<meta name="description" content="Memo ejecutivo interactivo: distribución de inversión, escenarios PERT, benchmarks de mercado, marco de riesgo, proyección a 10 años y estado de ejecución.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230A0E1A'/%3E%3Ccircle cx='32' cy='32' r='14' fill='%23C9A961'/%3E%3C/svg%3E">
 <script crossorigin src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
@@ -80,7 +80,7 @@ html, body { background: #0A0E1A; }
 .hero-meta-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent-gold); }
 .hero-title { font-family: var(--font-display); font-size: clamp(48px, 7vw, 96px); line-height: 0.96; letter-spacing: -0.025em; font-weight: 400; color: var(--text-primary); margin-bottom: 32px; max-width: 1100px; }
 .hero-title em { font-style: italic; font-weight: 400; color: var(--accent-gold); }
-.hero-subtitle { font-family: var(--font-body); font-size: 17px; line-height: 1.6; color: var(--text-secondary); max-width: 680px; font-weight: 300; margin-bottom: 56px; }
+.hero-subtitle { font-family: var(--font-body); font-size: 17px; line-height: 1.6; color: var(--text-secondary); max-width: 680px; font-weight: 300; margin-bottom: 40px; }
 .hero-identity { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border-subtle); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle); }
 .hero-id-item { background: var(--bg-base); padding: 20px 24px; }
 .hero-id-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 6px; }
@@ -163,7 +163,7 @@ html, body { background: #0A0E1A; }
 .cat-toggle.inactive { opacity: 0.4; }
 .cat-toggle-dot { width: 8px; height: 8px; border-radius: 50%; }
 .detalle-scroll { overflow-x: auto; background: var(--bg-surface); border: 1px solid var(--border-subtle); }
-.detalle-table { width: 100%; min-width: 1100px; border-collapse: collapse; }
+.detalle-table { width: 100%; min-width: 800px; border-collapse: collapse; }
 .detalle-table th { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-secondary); text-align: left; padding: 16px 14px; border-bottom: 1px solid var(--border-strong); font-weight: 500; background: var(--bg-elev); }
 .detalle-table th.right { text-align: right; } .detalle-table th.center { text-align: center; }
 .detalle-table td { padding: 14px; border-bottom: 1px solid var(--border-subtle); font-size: 13px; }
@@ -225,30 +225,23 @@ html, body { background: #0A0E1A; }
 .tt-val { color: var(--text-primary); font-weight: 600; margin-left: auto; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 .mounted .section { animation: fadeUp 0.7s ease-out; }
-@media (max-width: 1024px) {
-  .nav-links { display: none; }
-  .kpi-grid, .hero-identity { grid-template-columns: repeat(2, 1fr); }
-  .escenarios-grid, .riesgo-niveles { grid-template-columns: 1fr; }
-  .composicion-grid { grid-template-columns: 1fr; }
-  .hero-title { font-size: 56px; }
-  .score-banner { grid-template-columns: 1fr; gap: 24px; }
-  .liquidez-mecanismos { grid-template-columns: 1fr; }
-  .control-inner { grid-template-columns: 1fr; gap: 20px; }
-  .meses-detalle { grid-template-columns: repeat(2, 1fr); }
-  .acumulado-grid { grid-template-columns: repeat(4, 1fr); }
-  .timeline-summary { grid-template-columns: repeat(2, 1fr); }
-  .gantt-row { grid-template-columns: 1fr; }
-}
-@media (max-width: 640px) {
-  .container { padding: 0 20px; }
-  .nav-inner, .control-inner { padding: 14px 20px; }
-  .kpi-grid, .hero-identity { grid-template-columns: 1fr; }
-  .hero-title { font-size: 42px; }
-  .escenario-pct { font-size: 56px; }
-  .meses-detalle { grid-template-columns: 1fr; }
-  .acumulado-grid { grid-template-columns: repeat(2, 1fr); }
-  .timeline-summary { grid-template-columns: 1fr; }
-}
+
+.ejecucion-hero { background: linear-gradient(135deg, rgba(201,169,97,0.08) 0%, rgba(201,169,97,0.02) 100%); border: 1px solid var(--accent-gold-dim); border-left: 3px solid var(--accent-gold); padding: 24px 28px; margin-bottom: 40px; border-radius: 4px; }
+.ejecucion-hero-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; }
+.ejecucion-hero-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent-gold); font-weight: 600; }
+.ejecucion-hero-pct { font-family: var(--font-display); font-size: 36px; font-style: italic; font-weight: 500; color: var(--accent-gold); line-height: 1; }
+.ejecucion-hero-bar { height: 8px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; margin-bottom: 20px; position: relative; }
+.ejecucion-hero-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent-gold-dim) 0%, var(--accent-gold) 100%); border-radius: 4px; transition: width 0.6s cubic-bezier(0.33, 1, 0.68, 1); box-shadow: 0 0 12px rgba(201,169,97,0.4); }
+.ejecucion-hero-nums { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.ejecucion-hero-nums > div { display: flex; flex-direction: column; gap: 4px; }
+.ehn-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-tertiary); font-weight: 500; }
+.ehn-val { font-family: var(--font-display); font-size: 20px; font-weight: 500; color: var(--text-primary); line-height: 1; }
+.ejecucion-cat-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); padding: 20px; border-radius: 4px; transition: border-color 0.2s ease; }
+.ejecucion-cat-card:hover { border-color: var(--border-strong); }
+@media (max-width: 640px) { .ejecucion-hero-nums { grid-template-columns: repeat(2, 1fr); } }
+
+@media (max-width: 1024px) { .nav-links { display: none; } .kpi-grid, .hero-identity { grid-template-columns: repeat(2, 1fr); } .escenarios-grid, .riesgo-niveles { grid-template-columns: 1fr; } .composicion-grid { grid-template-columns: 1fr; } .hero-title { font-size: 56px; } .score-banner { grid-template-columns: 1fr; gap: 24px; } .liquidez-mecanismos { grid-template-columns: 1fr; } .control-inner { grid-template-columns: 1fr; gap: 20px; } .meses-detalle { grid-template-columns: repeat(2, 1fr); } .acumulado-grid { grid-template-columns: repeat(4, 1fr); } .timeline-summary { grid-template-columns: repeat(2, 1fr); } .gantt-row { grid-template-columns: 1fr; } }
+@media (max-width: 640px) { .container { padding: 0 20px; } .nav-inner, .control-inner { padding: 14px 20px; } .kpi-grid, .hero-identity { grid-template-columns: 1fr; } .hero-title { font-size: 42px; } .escenario-pct { font-size: 56px; } .meses-detalle { grid-template-columns: 1fr; } .acumulado-grid { grid-template-columns: repeat(2, 1fr); } .timeline-summary { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -258,12 +251,11 @@ html, body { background: #0A0E1A; }
 </div>
 <div id="root"></div>
 <script>
-// Fallback de emergencia
 setTimeout(function() {
   var loading = document.getElementById('loading');
   var root = document.getElementById('root');
   if (loading && !loading.classList.contains('hidden') && (!root || root.children.length === 0)) {
-    loading.innerHTML = '<div style="max-width:420px;padding:32px;text-align:center;font-family:Georgia,serif"><div style="color:#EF4444;font-size:14px;margin-bottom:16px;letter-spacing:0.15em">ERROR DE CARGA</div><div style="color:#F5F2EA;font-size:14px;line-height:1.7">El memo no cargo. Revisa la consola del navegador (F12).</div></div>';
+    loading.innerHTML = '<div style="max-width:420px;padding:32px;text-align:center;font-family:Georgia,serif"><div style="color:#EF4444;font-size:14px;margin-bottom:16px;letter-spacing:0.15em">ERROR DE CARGA</div><div style="color:#F5F2EA;font-size:14px;line-height:1.7">El memo no cargo. Revisa la consola (F12).</div></div>';
   }
 }, 15000);
 </script>
@@ -287,7 +279,7 @@ const {
   CartesianGrid,
   ReferenceLine
 } = Recharts;
-const FECHA_PROPUESTA = "Mayo 2026";
+const FECHA_PROPUESTA = "Julio 2026";
 const TITULAR = "Luz Arango";
 const CATEGORIAS_BASE = [{
   id: "rv",
@@ -308,7 +300,7 @@ const CATEGORIAS_BASE = [{
 }, {
   id: "vc",
   nombre: "Venture Capital",
-  subtitulo: "Etapa Temprana",
+  subtitulo: "Tuk Fat Labs Tech",
   pct: 0.35,
   riesgo: "Alto",
   horizonte: "Largo",
@@ -324,7 +316,7 @@ const CATEGORIAS_BASE = [{
 }, {
   id: "ep",
   nombre: "Equity Privado",
-  subtitulo: "Negocio Operativo",
+  subtitulo: "Empresa de Alimentos",
   pct: 0.27,
   riesgo: "Medio",
   horizonte: "Mediano",
@@ -369,6 +361,51 @@ const CATEGORIAS_BASE = [{
   color: "#9CA3B7",
   benchmark: 0.0457,
   benchmarkLabel: "US Treasury 10Y (4.57%)"
+}];
+
+// ============ ESTADO DE EJECUCIÓN (transacciones reales) ============
+const TRANSACCIONES = [{
+  fecha: "1 Jul 2026",
+  categoriaId: "vc",
+  vehiculo: "Tuk Fat Labs Tech",
+  monto: 900,
+  trm: "1 Jul TRM"
+}, {
+  fecha: "1 Jul 2026",
+  categoriaId: "vc",
+  vehiculo: "Tuk Fat Labs Tech",
+  monto: 169,
+  trm: "1 Jul TRM"
+}, {
+  fecha: "1 Jul 2026",
+  categoriaId: "ep",
+  vehiculo: "Empresa de Alimentos",
+  monto: 330,
+  trm: "1 Jul TRM"
+}, {
+  fecha: "8 Jul 2026",
+  categoriaId: "vc",
+  vehiculo: "Tuk Fat Labs Tech",
+  monto: 1343,
+  trm: "8 Jul TRM"
+}, {
+  fecha: "1 Jul 2026",
+  categoriaId: "vc",
+  vehiculo: "Tuk Fat Labs Tech",
+  monto: 45,
+  trm: "1 Jul TRM"
+}, {
+  fecha: "1 Jul 2026",
+  categoriaId: "vc",
+  vehiculo: "Tuk Fat Labs Tech",
+  monto: 130,
+  trm: "1 Jul TRM"
+}, {
+  fecha: "1 Jul 2026",
+  categoriaId: "vc",
+  vehiculo: "Tuk Fat Labs Tech",
+  monto: 485,
+  trm: "1 Jul TRM"
 }];
 const ESCENARIOS = [{
   id: "cons",
@@ -490,12 +527,18 @@ const InvestmentDashboard = () => {
       const retornoDolares = montoCat * retornoEfectivo;
       const valorFinal1a = montoCat + retornoDolares;
       const valor10a = montoCat * Math.pow(1 + retornoEfectivo, 10);
+      // Ejecutado por categoría
+      const ejecutado = TRANSACCIONES.filter(t => t.categoriaId === c.id).reduce((a, t) => a + t.monto, 0);
+      const pctEjecutado = montoCat > 0 ? ejecutado / montoCat : 0;
       return Object.assign({}, c, {
         monto: montoCat,
         retornoEfectivo,
         retornoDolares,
         valorFinal1a,
-        valor10a
+        valor10a,
+        ejecutado,
+        pctEjecutado,
+        pendiente: Math.max(0, montoCat - ejecutado)
       });
     });
     const consPort = cats.reduce((a, c) => a + c.pct * c.cons, 0);
@@ -531,6 +574,11 @@ const InvestmentDashboard = () => {
       });
       evolucion.push(row);
     }
+
+    // Ejecución global
+    const totalEjecutado = TRANSACCIONES.reduce((a, t) => a + t.monto, 0);
+    const totalRestante = Math.max(0, monto - totalEjecutado);
+    const pctEjecutadoGlobal = monto > 0 ? totalEjecutado / monto : 0;
     return {
       cats,
       consPort,
@@ -552,7 +600,10 @@ const InvestmentDashboard = () => {
       liquidoCorto,
       liquidoMedio,
       liquidoLargo,
-      evolucion
+      evolucion,
+      totalEjecutado,
+      totalRestante,
+      pctEjecutadoGlobal
     };
   }, [monto, escenario, stressVC]);
   const navSections = [{
@@ -586,6 +637,9 @@ const InvestmentDashboard = () => {
     id: "timeline",
     label: "Timeline"
   }, {
+    id: "ejecucion",
+    label: "Ejecución"
+  }, {
     id: "tesis",
     label: "Tesis"
   }, {
@@ -614,8 +668,6 @@ const InvestmentDashboard = () => {
     const el = document.activeElement;
     if (!el || el.id !== 'monto-input') setMontoInput(monto.toLocaleString('en-US'));
   }, [monto]);
-
-  // ============ TIMELINE DATA ============
   const MESES = ["Jun '26", "Jul '26", "Ago '26", "Sep '26", "Oct '26", "Nov '26", "Dic '26", "Ene '27"];
   const desembolso = [monto * 0.10, monto * 0.10, monto * 0.18 / 3, monto * 0.18 / 3, monto * 0.18 / 3, monto * 0.27, 0, monto * 0.35];
   const acumulado = [];
@@ -643,13 +695,13 @@ const InvestmentDashboard = () => {
     start: 2,
     end: 5
   }, {
-    nombre: "Equity Privado — Negocio",
+    nombre: "Equity Privado — Alimentos",
     pct: 0.27,
     color: "#6B7F5A",
     start: 3,
     end: 6
   }, {
-    nombre: "Venture Capital",
+    nombre: "Venture Capital — Tuk Fat Labs",
     pct: 0.35,
     color: "#C9A961",
     start: 4,
@@ -671,6 +723,14 @@ const InvestmentDashboard = () => {
     color: "#4A7BA6",
     cat: "Renta Variable",
     accion: "Apertura de cuenta en broker (Interactive Brokers, Tyba, Renta4 o similar)"
+  }, {
+    color: "#C9A961",
+    cat: "VC · Tuk Fat Labs",
+    accion: "✓ Primeras compras ejecutadas ($3,072 en 6 tramos)"
+  }, {
+    color: "#6B7F5A",
+    cat: "EP · Alimentos",
+    accion: "✓ Primera entrada ejecutada ($330)"
   }], [{
     color: "#4A7BA6",
     cat: "Renta Variable",
@@ -678,7 +738,7 @@ const InvestmentDashboard = () => {
   }, {
     color: "#6B7F5A",
     cat: "Equity Privado",
-    accion: "Identificación y first contact con negocio operativo target"
+    accion: "Continuar due diligence del negocio alimentario"
   }], [{
     color: "#4A7BA6",
     cat: "Renta Variable",
@@ -686,11 +746,11 @@ const InvestmentDashboard = () => {
   }, {
     color: "#6B7F5A",
     cat: "Equity Privado",
-    accion: "Due diligence financiera, operativa y legal del negocio"
+    accion: "Segundo tramo de inversión en empresa alimentaria"
   }, {
     color: "#C9A961",
     cat: "Venture Capital",
-    accion: "Sourcing de startup target (network, demo days, fondos de coinversión)"
+    accion: "Evaluación de nuevas rondas de Tuk Fat Labs"
   }], [{
     color: "#4A7BA6",
     cat: "Renta Variable",
@@ -698,27 +758,27 @@ const InvestmentDashboard = () => {
   }, {
     color: "#6B7F5A",
     cat: "Equity Privado",
-    accion: "Negociación de términos, valuación y pacto de socios"
+    accion: "Cierre de tramos finales del negocio"
   }, {
     color: "#C9A961",
     cat: "Venture Capital",
-    accion: "Due diligence técnica y de equipo de la startup"
+    accion: "Seguimiento post-inversión de Tuk Fat Labs"
   }], [{
     color: "#6B7F5A",
     cat: "Equity Privado",
-    accion: "Cierre legal y transferencia de capital — posición del 27% completa"
+    accion: "Cierre total del 27% en empresa alimentaria"
   }, {
     color: "#C9A961",
     cat: "Venture Capital",
-    accion: "Due diligence legal y financiera de la startup"
+    accion: "Rebalanceo si aplica"
   }], [{
     color: "#C9A961",
     cat: "Venture Capital",
-    accion: "Negociación de term sheet, valuación y condiciones de salida"
+    accion: "Follow-on ronda si aplica"
   }], [{
     color: "#C9A961",
     cat: "Venture Capital",
-    accion: "Cierre, firma de SAFE/Equity y wire transfer — capital 100% desplegado"
+    accion: "Cierre final del 35% del portafolio en VC"
   }]];
   return /*#__PURE__*/React.createElement("div", {
     className: "app-root " + (mounted ? 'mounted' : '')
@@ -841,6 +901,54 @@ const InvestmentDashboard = () => {
   }, "Propuesta de", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("em", null, "distribución"), /*#__PURE__*/React.createElement("br", null), "de inversión"), /*#__PURE__*/React.createElement("p", {
     className: "hero-subtitle"
   }, "Estructura de capital diversificada en cinco clases de activos, calibrada por nivel de riesgo, horizonte de inversión y mecanismo de salida. Modelo en vivo — ajusta el monto, escenario o simula stress tests en la barra superior y observa el impacto en tiempo real sobre cada métrica."), /*#__PURE__*/React.createElement("div", {
+    className: "ejecucion-hero"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ejecucion-hero-header"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ejecucion-hero-label"
+  }, "EJECUCIÓN DEL PORTAFOLIO · A ", FECHA_PROPUESTA.toUpperCase()), /*#__PURE__*/React.createElement("div", {
+    className: "ejecucion-hero-pct"
+  }, /*#__PURE__*/React.createElement(AnimatedNumber, {
+    value: data.pctEjecutadoGlobal,
+    formatter: v => (v * 100).toFixed(1) + "%"
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "ejecucion-hero-bar"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ejecucion-hero-bar-fill",
+    style: {
+      width: data.pctEjecutadoGlobal * 100 + "%"
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "ejecucion-hero-nums"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    className: "ehn-label"
+  }, "INVERTIDO"), /*#__PURE__*/React.createElement("span", {
+    className: "ehn-val",
+    style: {
+      color: 'var(--accent-gold)'
+    }
+  }, /*#__PURE__*/React.createElement(AnimatedNumber, {
+    value: data.totalEjecutado,
+    formatter: fmtMoney
+  }))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    className: "ehn-label"
+  }, "RESTANTE"), /*#__PURE__*/React.createElement("span", {
+    className: "ehn-val"
+  }, /*#__PURE__*/React.createElement(AnimatedNumber, {
+    value: data.totalRestante,
+    formatter: fmtMoney
+  }))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    className: "ehn-label"
+  }, "TRANSACCIONES"), /*#__PURE__*/React.createElement("span", {
+    className: "ehn-val"
+  }, TRANSACCIONES.length)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    className: "ehn-label"
+  }, "ÚLTIMA OPERACIÓN"), /*#__PURE__*/React.createElement("span", {
+    className: "ehn-val",
+    style: {
+      fontSize: 14
+    }
+  }, TRANSACCIONES[TRANSACCIONES.length - 1].fecha)))), /*#__PURE__*/React.createElement("div", {
     className: "hero-identity"
   }, /*#__PURE__*/React.createElement("div", {
     className: "hero-id-item"
@@ -1911,10 +2019,203 @@ const InvestmentDashboard = () => {
   }, h.cat), /*#__PURE__*/React.createElement("div", {
     className: "hito-accion"
   }, h.accion))))))))), /*#__PURE__*/React.createElement("section", {
-    id: "tesis",
+    id: "ejecucion",
     className: "section"
   }, /*#__PURE__*/React.createElement(SectionLabel, {
     num: "10"
+  }, "Estado de Ejecución · Transacciones Realizadas"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      color: 'var(--text-secondary)',
+      fontSize: 15,
+      maxWidth: 760,
+      marginBottom: 40,
+      fontWeight: 300,
+      lineHeight: 1.6
+    }
+  }, "Registro auditable de las operaciones ya ejecutadas. Cada transacción con su fecha, categoría, vehículo de inversión y TRM del día aplicada."), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+      gap: 16,
+      marginBottom: 48
+    }
+  }, data.cats.map(c => /*#__PURE__*/React.createElement("div", {
+    key: c.id,
+    className: "ejecucion-cat-card"
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'baseline',
+      marginBottom: 12
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: 'var(--font-display)',
+      fontSize: 15,
+      fontWeight: 500,
+      color: c.color
+    }
+  }, "● ", /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: 'var(--text-primary)',
+      marginLeft: 4
+    }
+  }, c.nombre)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: 'var(--font-body)',
+      fontSize: 11,
+      color: 'var(--text-tertiary)',
+      marginLeft: 14,
+      marginTop: 2
+    }
+  }, c.subtitulo)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: 'var(--font-display)',
+      fontSize: 22,
+      fontStyle: 'italic',
+      color: c.pctEjecutado >= 1 ? 'var(--accent-green)' : c.pctEjecutado > 0 ? 'var(--accent-gold)' : 'var(--text-tertiary)'
+    }
+  }, (c.pctEjecutado * 100).toFixed(0), "%")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      height: 6,
+      background: 'var(--bg-elev)',
+      borderRadius: 3,
+      overflow: 'hidden',
+      marginBottom: 12
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      height: '100%',
+      width: Math.min(100, c.pctEjecutado * 100) + "%",
+      background: c.color,
+      transition: 'width 0.4s ease'
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      fontFamily: 'var(--font-mono)',
+      fontSize: 11
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: 'var(--text-tertiary)',
+      letterSpacing: '0.1em'
+    }
+  }, "INVERTIDO"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: 'var(--accent-gold)',
+      fontSize: 14,
+      fontWeight: 600
+    }
+  }, fmtMoney(c.ejecutado))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: 'right'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: 'var(--text-tertiary)',
+      letterSpacing: '0.1em'
+    }
+  }, "OBJETIVO"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: 'var(--text-primary)',
+      fontSize: 14,
+      fontWeight: 500
+    }
+  }, fmtMoney(c.monto))))))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: 'var(--font-mono)',
+      fontSize: 11,
+      letterSpacing: '0.15em',
+      textTransform: 'uppercase',
+      color: 'var(--text-secondary)',
+      margin: '0 0 16px'
+    }
+  }, "REGISTRO DE OPERACIONES"), /*#__PURE__*/React.createElement("div", {
+    className: "detalle-scroll"
+  }, /*#__PURE__*/React.createElement("table", {
+    className: "detalle-table"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", {
+    style: {
+      minWidth: 100
+    }
+  }, "Fecha"), /*#__PURE__*/React.createElement("th", null, "Categoría"), /*#__PURE__*/React.createElement("th", null, "Vehículo"), /*#__PURE__*/React.createElement("th", {
+    className: "right"
+  }, "Monto USD"), /*#__PURE__*/React.createElement("th", null, "TRM"))), /*#__PURE__*/React.createElement("tbody", null, TRANSACCIONES.map((t, i) => {
+    const cat = CATEGORIAS_BASE.find(c => c.id === t.categoriaId);
+    return /*#__PURE__*/React.createElement("tr", {
+      key: i
+    }, /*#__PURE__*/React.createElement("td", {
+      style: {
+        fontFamily: 'var(--font-mono)',
+        fontSize: 12,
+        color: 'var(--text-primary)'
+      }
+    }, t.fecha), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontFamily: 'var(--font-display)',
+        fontSize: 14,
+        fontWeight: 500,
+        color: cat ? cat.color : 'var(--text-primary)'
+      }
+    }, "● ", /*#__PURE__*/React.createElement("span", {
+      style: {
+        color: 'var(--text-primary)',
+        marginLeft: 4
+      }
+    }, cat ? cat.nombre : t.categoriaId))), /*#__PURE__*/React.createElement("td", {
+      style: {
+        fontFamily: 'var(--font-body)',
+        fontSize: 13,
+        color: 'var(--text-secondary)'
+      }
+    }, t.vehiculo), /*#__PURE__*/React.createElement("td", {
+      style: {
+        textAlign: 'right',
+        fontFamily: 'var(--font-mono)',
+        fontSize: 14,
+        color: 'var(--accent-gold)',
+        fontWeight: 600
+      }
+    }, fmtMoney(t.monto)), /*#__PURE__*/React.createElement("td", {
+      style: {
+        fontFamily: 'var(--font-mono)',
+        fontSize: 11,
+        color: 'var(--text-tertiary)',
+        letterSpacing: '0.05em'
+      }
+    }, t.trm));
+  }), /*#__PURE__*/React.createElement("tr", {
+    style: {
+      background: 'var(--bg-elev)'
+    }
+  }, /*#__PURE__*/React.createElement("td", {
+    colSpan: 3,
+    style: {
+      fontFamily: 'var(--font-display)',
+      fontWeight: 600
+    }
+  }, "TOTAL EJECUTADO"), /*#__PURE__*/React.createElement("td", {
+    style: {
+      textAlign: 'right',
+      fontFamily: 'var(--font-mono)',
+      fontSize: 15,
+      color: 'var(--accent-gold)',
+      fontWeight: 700
+    }
+  }, fmtMoney(data.totalEjecutado)), /*#__PURE__*/React.createElement("td", {
+    style: {
+      fontFamily: 'var(--font-mono)',
+      fontSize: 11,
+      color: 'var(--text-tertiary)'
+    }
+  }, (data.pctEjecutadoGlobal * 100).toFixed(1) + "% del total")))))), /*#__PURE__*/React.createElement("section", {
+    id: "tesis",
+    className: "section"
+  }, /*#__PURE__*/React.createElement(SectionLabel, {
+    num: "11"
   }, "Tesis de Inversión"), /*#__PURE__*/React.createElement("div", {
     className: "tesis"
   }, /*#__PURE__*/React.createElement("p", {
@@ -1923,20 +2224,20 @@ const InvestmentDashboard = () => {
     className: "tesis-quote"
   }, "\"Las apuestas de crecimiento se balancean con instrumentos defensivos y un negocio operativo con flujo de caja proyectado.\""), /*#__PURE__*/React.createElement("p", {
     className: "tesis-text"
-  }, "Las apuestas de crecimiento — Venture Capital y Renta Variable, que representan el 53% del capital — se balancean con instrumentos defensivos (CDT y Equivalentes de Efectivo, 20%) y un negocio operativo con flujo de caja proyectado (27%). La validación frente a benchmarks de Cambridge Associates, Federal Reserve y Banco de la República confirma que las expectativas están deliberadamente por debajo del mercado, dejando margen razonable para superar la proyección base."))), /*#__PURE__*/React.createElement("section", {
+  }, "Las apuestas de crecimiento — Venture Capital (Tuk Fat Labs Tech) y Renta Variable, que representan el 53% del capital — se balancean con instrumentos defensivos (CDT y Equivalentes de Efectivo, 20%) y un negocio operativo alimentario con flujo de caja proyectado (27%). La validación frente a benchmarks de Cambridge Associates, Federal Reserve y Banco de la República confirma que las expectativas están deliberadamente por debajo del mercado, dejando margen razonable para superar la proyección base."))), /*#__PURE__*/React.createElement("section", {
     id: "riesgos",
     className: "section"
   }, /*#__PURE__*/React.createElement(SectionLabel, {
-    num: "11"
+    num: "12"
   }, "Riesgos Principales"), /*#__PURE__*/React.createElement("div", {
     className: "riesgo-item"
   }, /*#__PURE__*/React.createElement("div", {
     className: "riesgo-num"
   }, "01"), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
     className: "riesgo-title"
-  }, "Concentración en Venture Capital (35%)"), /*#__PURE__*/React.createElement("div", {
+  }, "Concentración en Tuk Fat Labs Tech (35%)"), /*#__PURE__*/React.createElement("div", {
     className: "riesgo-desc"
-  }, "Por estadística de la industria, 65-75% de inversiones VC en etapa temprana no devuelven capital (Cambridge Associates, NBER). Esta es la asignación más alta del portafolio, lo que incrementa la dependencia del éxito de esta apuesta. Puedes activar el Stress Test arriba para simular el escenario de pérdida total en tiempo real sobre todo el dashboard."))), /*#__PURE__*/React.createElement("div", {
+  }, "Por estadística de la industria, 65-75% de inversiones VC en etapa temprana no devuelven capital (Cambridge Associates, NBER). Tuk Fat Labs es la asignación más alta del portafolio, lo que incrementa la dependencia del éxito de esta apuesta. Puedes activar el Stress Test arriba para simular el escenario de pérdida total en tiempo real sobre todo el dashboard."))), /*#__PURE__*/React.createElement("div", {
     className: "riesgo-item"
   }, /*#__PURE__*/React.createElement("div", {
     className: "riesgo-num"
@@ -1952,7 +2253,7 @@ const InvestmentDashboard = () => {
     className: "riesgo-title"
   }, "Dependencia de ejecución operativa (27%)"), /*#__PURE__*/React.createElement("div", {
     className: "riesgo-desc"
-  }, "El 27% del portafolio está en Equity Privado de un negocio operativo, lo que requiere gestión activa y exposición a riesgo sectorial. El retorno esperado del 5.3% PERT está calibrado por debajo del benchmark de industria restaurantera (11.1%) para reflejar riesgo de ejecución."))), /*#__PURE__*/React.createElement("div", {
+  }, "El 27% del portafolio está en Equity Privado de un negocio alimentario, lo que requiere gestión activa y exposición a riesgo sectorial. El retorno esperado del 5.3% PERT está calibrado por debajo del benchmark de industria restaurantera (11.1%) para reflejar riesgo de ejecución."))), /*#__PURE__*/React.createElement("div", {
     className: "riesgo-item"
   }, /*#__PURE__*/React.createElement("div", {
     className: "riesgo-num"
@@ -1978,8 +2279,6 @@ const InvestmentDashboard = () => {
     className: "footer"
   }, "Investment Memo · ", FECHA_PROPUESTA)));
 };
-
-// Render
 try {
   const root = ReactDOM.createRoot(document.getElementById('root'));
   root.render(React.createElement(InvestmentDashboard));
