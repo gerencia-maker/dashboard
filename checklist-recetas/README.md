@@ -27,7 +27,11 @@ Los datos de las recetas **no** están en este repositorio: la página los lee d
 ## Uso
 
 - Al entrar, cada persona elige su nombre (queda guardado en su navegador).
-- Marcar la casilla = receta revisada; se llena «Revisó» con su nombre si estaba vacío.
+- Cada persona da su propio visto bueno: en la hoja hay una columna «VB Nombre» por persona
+  (Johann, Andrea, Néstor) y en la página cada quien solo puede marcar la suya.
+- Una receta está completa cuando tiene el visto bueno de los tres (`REVISORES` en `Code.gs`).
+  Quien entra con otro nombre recibe su propia columna al marcar su primera receta; se ve y se
+  cuenta, pero no frena el avance.
 - Las observaciones se guardan solas al dejar de escribir.
 - La página trae los cambios de los demás cada 45 segundos.
 - En la hoja de Google se puede filtrar, exportar o marcar directamente; la página lo refleja.
