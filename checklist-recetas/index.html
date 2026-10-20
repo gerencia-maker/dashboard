@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Check-list de recetas</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232B6A4F'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11.5' stroke='white' stroke-width='3.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#F5F2EC; --surface:#FFFFFF; --surface-2:#FAF8F4; --ink:#1E2320; --ink-2:#4A524D; --ink-3:#7A827D;
+  --line:#E4DFD6; --line-2:#D6D0C5;
+  --accent:#2B6A4F; --accent-ink:#FFFFFF; --accent-soft:#E3F0E9; --accent-line:#B9D8C7;
+  --warn:#9A5B0F; --warn-soft:#FBEFD9; --bad:#A8352A; --bad-soft:#FBE6E3;
+  --shadow:0 1px 2px rgba(30,35,32,.06),0 2px 8px rgba(30,35,32,.04);
+  --r:12px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#141816; --surface:#1C211F; --surface-2:#202624; --ink:#E9ECEA; --ink-2:#B7BFBA; --ink-3:#8A938E;
+    --line:#2C3330; --line-2:#3A423E;
+    --accent:#5DB58C; --accent-ink:#0E1A14; --accent-soft:#1F3329; --accent-line:#2F5341;
+    --warn:#E3A857; --warn-soft:#33281A; --bad:#EE8A7E; --bad-soft:#3A2220;
+    --shadow:none; color-scheme:dark;
+  }
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+
+/* header */
+header{padding:22px 0 14px;display:flex;gap:16px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap}
+h1{font-size:24px;line-height:1.15;margin:0;letter-spacing:-.01em}
+.sub{margin:4px 0 0;color:var(--ink-2)}
+.me{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sync{font-size:13px;color:var(--ink-3);display:inline-flex;align-items:center;gap:6px}
+.sync::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ink-3)}
+.sync.ok::before{background:var(--accent)} .sync.busy::before{background:var(--warn)} .sync.err::before{background:var(--bad)}
+.btn{border:1px solid var(--line-2);background:var(--surface);border-radius:999px;padding:7px 14px;cursor:pointer}
+.btn:hover{border-color:var(--ink-3)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+
+/* tabs as progress cards */
+.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:6px 0 14px}
+.tab{appearance:none;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:12px 14px 13px;cursor:pointer;box-shadow:var(--shadow);min-width:0}
+.tab:hover{border-color:var(--line-2)}
+.tab[aria-selected=true]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.tab .t{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tab .n{font-size:13px;color:var(--ink-2);margin-top:2px;font-variant-numeric:tabular-nums}
+.tab .n b{font-size:20px;color:var(--ink);font-weight:650;margin-right:2px}
+.bar{height:6px;border-radius:99px;background:var(--line);margin-top:9px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:99px;transition:width .35s ease}
+
+/* toolbar */
+.toolbar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0;display:flex;gap:8px;flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--line)}
+.search{flex:1 1 240px;min-width:0;position:relative}
+.search input{width:100%;border:1px solid var(--line-2);background:var(--surface);border-radius:10px;padding:9px 12px 9px 34px}
+.search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--ink-3)}
+.seg{display:inline-flex;border:1px solid var(--line-2);border-radius:10px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:none;padding:8px 12px;cursor:pointer;color:var(--ink-2)}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--bg);font-weight:600}
+select.f{border:1px solid var(--line-2);background:var(--surface);border-radius:10px;padding:8px 10px;max-width:220px}
+.togg{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--ink-2);cursor:pointer;user-select:none}
+.count{font-size:13px;color:var(--ink-3);margin-left:auto}
+
+/* list */
+.list{margin:12px 0 60px;display:flex;flex-direction:column;gap:6px}
+.row{display:grid;grid-template-columns:40px minmax(0,1.35fr) 118px minmax(0,1fr) 22px;gap:12px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:11px 12px}
+.row.done{background:var(--accent-soft);border-color:var(--accent-line)}
+.row[hidden]{display:none}
+.chk{display:flex;justify-content:center;padding-top:2px;cursor:pointer}
+.chk input{position:absolute;opacity:0;width:1px;height:1px}
+.box{width:26px;height:26px;border-radius:8px;border:2px solid var(--line-2);background:var(--surface);display:grid;place-items:center;transition:background .15s,border-color .15s}
+.box svg{opacity:0;transform:scale(.6);transition:all .15s}
+.chk input:checked+.box{background:var(--accent);border-color:var(--accent)}
+.chk input:checked+.box svg{opacity:1;transform:none;color:var(--accent-ink)}
+.chk input:focus-visible+.box{outline:2px solid var(--accent);outline-offset:2px}
+.title{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.code{font:600 12px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--ink-2);background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:3px 6px}
+.row.done .code{background:transparent}
+.name{font-weight:600}
+.meta{font-size:13px;color:var(--ink-2);margin-top:4px;display:flex;flex-wrap:wrap;gap:4px 12px}
+.pill{font-size:12px;border-radius:99px;padding:2px 8px;display:inline-block}
+.pill.alert{background:var(--warn-soft);color:var(--warn)}
+.upd{font-size:12px;color:var(--ink-3);margin-top:4px}
+.who select{width:100%;border:1px solid var(--line-2);background:var(--surface);border-radius:8px;padding:7px 8px}
+.obs textarea{width:100%;min-height:36px;resize:vertical;border:1px solid var(--line-2);background:var(--surface);border-radius:8px;padding:7px 9px;line-height:1.35;display:block}
+.who select:focus,.obs textarea:focus,.search input:focus,select.f:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
+.st{padding-top:8px;display:flex;justify-content:center}
+.st i{width:10px;height:10px;border-radius:50%;display:block}
+.st[data-s=saving] i{background:var(--warn);animation:pulse 1s infinite}
+.st[data-s=saved] i{background:var(--accent)}
+.st[data-s=error] i{background:var(--bad);cursor:pointer}
+@keyframes pulse{50%{opacity:.35}}
+.lbl{display:none;font-size:12px;color:var(--ink-3);margin-bottom:3px}
+
+/* preguntas */
+.row.q{grid-template-columns:40px minmax(0,1fr) 22px}
+.q .body{display:flex;flex-direction:column;gap:8px}
+.q .pasa{color:var(--ink-2);font-size:14px}
+.q .preg{font-weight:600;background:var(--surface-2);border-left:3px solid var(--warn);padding:8px 10px;border-radius:6px}
+.row.q.done .preg{border-left-color:var(--accent);background:transparent}
+.q .ans{display:grid;grid-template-columns:minmax(0,1fr) 140px;gap:10px}
+.q .ans textarea{min-height:60px}
+
+.empty,.setup,.loading{background:var(--surface);border:1px dashed var(--line-2);border-radius:var(--r);padding:28px;text-align:center;color:var(--ink-2);margin:14px 0}
+.setup{text-align:left}
+.setup ol{padding-left:20px}
+.setup code{background:var(--surface-2);padding:1px 5px;border-radius:5px}
+
+/* dialog */
+dialog{border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);padding:22px;max-width:380px;width:calc(100% - 32px);box-shadow:0 20px 60px rgba(0,0,0,.25)}
+dialog::backdrop{background:rgba(20,24,22,.45)}
+dialog h2{margin:0 0 4px;font-size:19px}
+dialog p{margin:0 0 14px;color:var(--ink-2)}
+.choices{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.choices .btn{padding:10px 18px}
+.other{display:flex;gap:8px}
+.other input{flex:1;min-width:0;border:1px solid var(--line-2);border-radius:10px;padding:9px 12px;background:var(--surface)}
+
+.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:all .25s;max-width:calc(100% - 32px)}
+.toast.on{opacity:1;transform:translateX(-50%)}
+
+@media (max-width:820px){
+  .tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .row{grid-template-columns:36px minmax(0,1fr) 18px;gap:8px 10px}
+  .row .who,.row .obs{grid-column:2 / 4}
+  .row .st{grid-column:3;grid-row:1}
+  .lbl{display:block}
+  .q .ans{grid-template-columns:1fr}
+  .count{margin-left:0;width:100%}
+  h1{font-size:21px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Check-list de recetas</h1>
+      <p class="sub">El Rancherito · revisión de ingredientes y cantidades</p>
+    </div>
+    <div class="me">
+      <span id="sync" class="sync">Conectando…</span>
+      <button id="whoBtn" class="btn" type="button">¿Quién eres?</button>
+    </div>
+  </header>
+
+  <nav id="tabs" class="tabs" role="tablist" aria-label="Secciones"></nav>
+
+  <section class="toolbar" aria-label="Filtros">
+    <label class="search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="Buscar por código, receta u observación" autocomplete="off">
+    </label>
+    <div class="seg" id="estado" role="group" aria-label="Estado">
+      <button type="button" data-v="todas" aria-pressed="true">Todas</button>
+      <button type="button" data-v="pend" aria-pressed="false">Pendientes</button>
+      <button type="button" data-v="rev" aria-pressed="false">Revisadas</button>
+    </div>
+    <select id="cat" class="f" aria-label="Categoría"></select>
+    <label class="togg"><input type="checkbox" id="soloAlerta"> Solo con alerta</label>
+    <span class="count" id="count"></span>
+  </section>
+
+  <div id="msg"></div>
+  <div id="list" class="list"></div>
+</div>
+
+<dialog id="whoDlg">
+  <h2>¿Quién eres?</h2>
+  <p>Tu nombre queda registrado en cada receta que marques o comentes.</p>
+  <div class="choices" id="whoChoices"></div>
+  <form class="other" id="whoForm">
+    <input id="whoOther" placeholder="Otro nombre" maxlength="40" autocomplete="name">
+    <button class="btn" type="submit">Listo</button>
+  </form>
+</dialog>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="config.js"></script>
+<script>
+(() => {
+  'use strict';
+  const CFG = Object.assign({ SCRIPT_URL: '', REVISORES: ['Andrea', 'Néstor'], REFRESCO_SEG: 45 }, window.CHECKLIST_CONFIG || {});
+  const SECCIONES = [
+    { key: 'Acopio', label: 'Acopio' },
+    { key: 'Cocina intermedia', label: 'Cocina intermedia' },
+    { key: 'Restaurantes', label: 'Restaurantes' },
+    { key: 'Preguntas para Andrea', label: 'Preguntas para Andrea', q: true }
+  ];
+  const $ = s => document.querySelector(s);
+  const fmt = n => (n === '' || n == null || isNaN(n)) ? '' : Number(n).toLocaleString('es-CO');
+  const norm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch (_) { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (_) {} }
+  };
+
+  const S = {
+    rows: new Map(), order: [], els: new Map(), local: new Map(),
+    tab: store.get('checklist.tab') || 'Acopio', estado: 'todas', cat: '', q: '', soloAlerta: false,
+    me: store.get('checklist.who') || '', lastSync: null
+  };
+  if (!SECCIONES.some(s => s.key === S.tab)) S.tab = 'Acopio';
+
+  function h(tag, attrs, ...kids) {
+    const el = document.createElement(tag);
+    for (const k in attrs || {}) {
+      const v = attrs[k];
+      if (v == null || v === false) continue;
+      if (k === 'class') el.className = v;
+      else if (k === 'text') el.textContent = v;
+      else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+      else el.setAttribute(k, v === true ? '' : v);
+    }
+    for (const c of kids.flat()) if (c != null && c !== false) el.append(c.nodeType ? c : document.createTextNode(c));
+    return el;
+  }
+  const CHECK_SVG = () => { const d = document.createElement('span'); d.className = 'box'; d.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'; return d; };
+
+  let toastT;
+  function toast(t) { const el = $('#toast'); el.textContent = t; el.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('on'), 2600); }
+
+  function setSync(kind, text) { const el = $('#sync'); el.className = 'sync ' + kind; el.textContent = text; }
+  function syncIdle() {
+    const pend = [...S.local.values()].some(l => l.inflight || Object.keys(l.pending).length);
+    const err = [...S.local.values()].some(l => l.error);
+    if (err) setSync('err', 'Sin guardar — reintentando');
+    else if (pend) setSync('busy', 'Guardando…');
+    else setSync('ok', S.lastSync ? 'Al día · ' + S.lastSync.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }) : 'Al día');
+  }
+
+  /* ---------- red ---------- */
+  async function api(method, body) {
+    const opt = method === 'GET' ? { method: 'GET', cache: 'no-store' } : { method: 'POST', body: JSON.stringify(body) };
+    const url = method === 'GET' ? CFG.SCRIPT_URL + (CFG.SCRIPT_URL.includes('?') ? '&' : '?') + 't=' + Date.now() : CFG.SCRIPT_URL;
+    const res = await fetch(url, opt);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const j = await res.json();
+    if (!j.ok) throw new Error(j.error || 'Error del servidor');
+    return j;
+  }
+
+  function loc(id) { if (!S.local.has(id)) S.local.set(id, { pending: {}, inflight: false, error: false, timer: null }); return S.local.get(id); }
+
+  function save(id, fields, delay = 0) {
+    if (!S.me) { askWho(() => save(id, fields, delay)); return; }
+    const l = loc(id);
+    Object.assign(l.pending, fields);
+    clearTimeout(l.timer);
+    setRowStatus(id, 'saving'); syncIdle();
+    l.timer = setTimeout(() => flush(id), delay);
+  }
+
+  async function flush(id) {
+    const l = loc(id);
+    clearTimeout(l.timer);
+    if (l.inflight || !Object.keys(l.pending).length) return;
+    const fields = l.pending; l.pending = {}; l.inflight = true; l.error = false;
+    setRowStatus(id, 'saving'); syncIdle();
+    try {
+      const j = await api('POST', { id, fields, who: S.me });
+      l.inflight = false;
+      if (j.row) {
+        const r = S.rows.get(id);
+        // conservar lo que la persona siguió escribiendo mientras se guardaba
+        for (const k of ['chk', 'rev', 'obs', 'upd']) if (!(k in l.pending)) r[k] = j.row[k];
+        paintRow(id, true);
+      }
+      if (Object.keys(l.pending).length) flush(id);
+      else setRowStatus(id, 'saved');
+    } catch (e) {
+      l.inflight = false; l.error = true;
+      l.pending = Object.assign({}, fields, l.pending);
+      setRowStatus(id, 'error');
+      l.timer = setTimeout(() => flush(id), 12000);
+    }
+    syncIdle(); updateCounts();
+  }
+
+  async function load(first) {
+    if (!first) setSync('busy', 'Actualizando…');
+    try {
+      const j = await api('GET');
+      S.lastSync = new Date();
+      merge(j.rows || [], first);
+      syncIdle();
+      return true;
+    } catch (e) {
+      setSync('err', 'Sin conexión');
+      if (first) showMsg('error', 'No pude cargar el check-list. Revisa tu conexión y recarga la página.\n(' + e.message + ')');
+      return false;
+    }
+  }
+
+  function merge(rows, first) {
+    const active = document.activeElement;
+    for (const r of rows) {
+      const id = String(r.id);
+      if (!S.rows.has(id)) { S.rows.set(id, r); S.order.push(id); continue; }
+      const l = S.local.get(id);
+      const el = S.els.get(id);
+      if (l && (l.inflight || Object.keys(l.pending).length)) continue;
+      if (el && active && el.contains(active) && active.tagName === 'TEXTAREA') continue;
+      const cur = S.rows.get(id);
+      const changed = ['chk', 'rev', 'obs', 'upd'].some(k => String(cur[k]) !== String(r[k]));
+      S.rows.set(id, Object.assign(cur, r));
+      if (changed && el) paintRow(id, false);
+    }
+    if (first) { buildAll(); }
+    updateCounts(); applyFilters();
+  }
+
+  /* ---------- dibujo ---------- */
+  function buildTabs() {
+    const nav = $('#tabs'); nav.innerHTML = '';
+    for (const s of SECCIONES) {
+      nav.append(h('button', { class: 'tab', role: 'tab', type: 'button', 'data-k': s.key, 'aria-selected': String(S.tab === s.key), onclick: () => setTab(s.key) },
+        h('div', { class: 't', text: s.label }),
+        h('div', { class: 'n' }, h('b', { text: '0' }), h('span', { text: ' de 0' })),
+        h('div', { class: 'bar' }, h('i'))));
+    }
+  }
+
+  function updateCounts() {
+    for (const s of SECCIONES) {
+      let tot = 0, ok = 0;
+      for (const id of S.order) { const r = S.rows.get(id); if (r.sec === s.key) { tot++; if (r.chk) ok++; } }
+      const t = document.querySelector(`.tab[data-k="${CSS.escape(s.key)}"]`);
+      if (!t) continue;
+      t.querySelector('b').textContent = ok;
+      t.querySelector('.n span').textContent = ' de ' + tot + (s.q ? ' respondidas' : ' revisadas');
+      t.querySelector('.bar i').style.width = (tot ? ok / tot * 100 : 0) + '%';
+    }
+  }
+
+  function revisorSelect(id, r) {
+    const opts = [''].concat(CFG.REVISORES);
+    if (r.rev && !opts.includes(r.rev)) opts.push(r.rev);
+    if (S.me && !opts.includes(S.me)) opts.push(S.me);
+    const sel = h('select', { 'aria-label': 'Revisó', onchange: e => { S.rows.get(id).rev = e.target.value; save(id, { rev: e.target.value }); } },
+      opts.map(o => h('option', { value: o, text: o || '—' })));
+    sel.value = r.rev || '';
+    return sel;
+  }
+
+  function buildRow(id) {
+    const r = S.rows.get(id);
+    const isQ = r.sec === 'Preguntas para Andrea';
+    const cb = h('input', { type: 'checkbox', 'aria-label': (isQ ? 'Marcar respondida: ' : 'Marcar revisada: ') + r.rec });
+    cb.checked = !!r.chk;
+    cb.addEventListener('change', () => {
+      const row = S.rows.get(id); row.chk = cb.checked;
+      const f = { chk: cb.checked };
+      if (cb.checked && !row.rev && S.me) { row.rev = S.me; f.rev = S.me; }
+      paintRow(id, false); updateCounts(); save(id, f);
+      if (S.estado !== 'todas') setTimeout(applyFilters, 600);
+    });
+    const ta = h('textarea', { rows: isQ ? 3 : 1, placeholder: isQ ? 'Respuesta de Andrea' : 'Observaciones (opcional)', 'aria-label': isQ ? 'Respuesta' : 'Observaciones', maxlength: 3000 });
+    ta.value = r.obs || '';
+    ta.addEventListener('input', () => {
+      const row = S.rows.get(id); row.obs = ta.value;
+      const f = { obs: ta.value };
+      if (isQ && ta.value.trim() && !row.chk) { row.chk = true; f.chk = true; if (!row.rev && S.me) { row.rev = S.me; f.rev = S.me; } paintRow(id, false); updateCounts(); }
+      save(id, f, 1200);
+    });
+    ta.addEventListener('blur', () => flush(id));
+    const st = h('div', { class: 'st', title: '' }, h('i'));
+    st.addEventListener('click', () => { if (st.dataset.s === 'error') flush(id); });
+    const upd = h('div', { class: 'upd' });
+    let el;
+    if (isQ) {
+      el = h('div', { class: 'row q', 'data-id': id },
+        h('label', { class: 'chk' }, cb, CHECK_SVG()),
+        h('div', { class: 'body' },
+          h('div', { class: 'title' }, h('span', { class: 'code', text: r.cod }), h('span', { class: 'name', text: r.rec })),
+          r.cat ? h('div', { class: 'meta' }, h('span', { text: 'Insumo cargado: ' + r.cat }), Number(r.und) > 0 ? h('span', { text: 'Venta en espera: $' + fmt(r.und) }) : null) : null,
+          h('div', { class: 'pasa', text: r.alerta }),
+          h('div', { class: 'preg', text: r.preg }),
+          h('div', { class: 'ans' },
+            h('div', { class: 'obs' }, h('div', { class: 'lbl', text: 'Respuesta' }), ta),
+            h('div', { class: 'who' }, h('div', { class: 'lbl', text: 'Respondió' }), revisorSelect(id, r))),
+          upd),
+        st);
+    } else {
+      const meta = h('div', { class: 'meta' },
+        r.cat ? h('span', { text: r.cat }) : null,
+        r.ing !== '' && r.ing != null ? h('span', { text: r.ing + (Number(r.ing) === 1 ? ' ingrediente' : ' ingredientes') }) : null,
+        r.und !== '' && r.und != null ? h('span', { text: fmt(r.und) + ' und vendidas' }) : null,
+        r.alerta ? h('span', { class: 'pill alert', text: '⚠ ' + r.alerta }) : null);
+      el = h('div', { class: 'row', 'data-id': id },
+        h('label', { class: 'chk' }, cb, CHECK_SVG()),
+        h('div', { class: 'main' }, h('div', { class: 'title' }, h('span', { class: 'code', text: r.cod }), h('span', { class: 'name', text: r.rec })), meta, upd),
+        h('div', { class: 'who' }, h('div', { class: 'lbl', text: 'Revisó' }), revisorSelect(id, r)),
+        h('div', { class: 'obs' }, h('div', { class: 'lbl', text: 'Observaciones' }), ta),
+        st);
+    }
+    el._cb = cb; el._ta = ta; el._st = st; el._upd = upd; el._sel = el.querySelector('.who select');
+    el._search = norm([r.cod, r.rec, r.cat, r.alerta, r.preg].join(' '));
+    return el;
+  }
+
+  function paintRow(id, fromServer) {
+    const el = S.els.get(id); if (!el) return;
+    const r = S.rows.get(id);
+    el.classList.toggle('done', !!r.chk);
+    el._cb.checked = !!r.chk;
+    if (fromServer || document.activeElement !== el._ta) { if (el._ta.value !== (r.obs || '')) el._ta.value = r.obs || ''; }
+    if (document.activeElement !== el._sel) {
+      if (r.rev && ![...el._sel.options].some(o => o.value === r.rev)) el._sel.append(h('option', { value: r.rev, text: r.rev }));
+      el._sel.value = r.rev || '';
+    }
+    el._upd.textContent = r.upd ? 'Última edición: ' + r.upd : '';
+  }
+
+  function setRowStatus(id, s) {
+    const el = S.els.get(id); if (!el) return;
+    el._st.dataset.s = s;
+    el._st.title = s === 'saving' ? 'Guardando…' : s === 'saved' ? 'Guardado' : s === 'error' ? 'No se guardó. Toca para reintentar.' : '';
+  }
+
+  function buildAll() {
+    const list = $('#list'); list.innerHTML = '';
+    const frag = document.createDocumentFragment();
+    for (const id of S.order) { const el = buildRow(id); S.els.set(id, el); paintRow(id, true); frag.append(el); }
+    list.append(frag);
+    buildCatOptions();
+  }
+
+  function buildCatOptions() {
+    const sel = $('#cat');
+    const cats = [...new Set(S.order.map(id => S.rows.get(id)).filter(r => r.sec === S.tab).map(r => r.cat).filter(Boolean))].sort();
+    const isQ = S.tab === 'Preguntas para Andrea';
+    sel.innerHTML = '';
+    sel.append(h('option', { value: '', text: 'Todas las categorías' }));
+    if (!isQ) cats.forEach(c => sel.append(h('option', { value: c, text: c })));
+    sel.hidden = isQ || cats.length < 2;
+    if (!cats.includes(S.cat)) S.cat = '';
+    sel.value = S.cat;
+  }
+
+  function applyFilters() {
+    const q = norm(S.q.trim());
+    let shown = 0, total = 0;
+    for (const id of S.order) {
+      const r = S.rows.get(id), el = S.els.get(id);
+      if (!el) continue;
+      let ok = r.sec === S.tab;
+      if (ok) total++;
+      if (ok && S.estado === 'pend') ok = !r.chk;
+      if (ok && S.estado === 'rev') ok = !!r.chk;
+      if (ok && S.cat) ok = r.cat === S.cat;
+      if (ok && S.soloAlerta) ok = !!r.alerta;
+      if (ok && q) ok = el._search.includes(q) || norm(r.obs).includes(q) || norm(r.rev).includes(q);
+      el.hidden = !ok; if (ok) shown++;
+    }
+    $('#count').textContent = shown === total ? total + ' en esta sección' : 'Mostrando ' + shown + ' de ' + total;
+    $('#msg').innerHTML = '';
+    if (S.order.length && !shown) showMsg('empty', 'Nada coincide con los filtros.');
+  }
+
+  function setTab(k) {
+    S.tab = k; store.set('checklist.tab', k);
+    document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.k === k)));
+    $('#soloAlerta').parentElement.hidden = k === 'Preguntas para Andrea';
+    if (k === 'Preguntas para Andrea') S.soloAlerta = false, $('#soloAlerta').checked = false;
+    buildCatOptions(); applyFilters();
+    window.scrollTo({ top: Math.min(window.scrollY, $('#tabs').offsetTop), behavior: 'smooth' });
+  }
+
+  function showMsg(kind, text) { const m = $('#msg'); m.innerHTML = ''; m.append(h('div', { class: kind, text })); }
+
+  /* ---------- quién ---------- */
+  let whoCb = null;
+  function askWho(cb) {
+    whoCb = cb || null;
+    const box = $('#whoChoices'); box.innerHTML = '';
+    CFG.REVISORES.forEach(n => box.append(h('button', { class: 'btn' + (S.me === n ? ' primary' : ''), type: 'button', text: n, onclick: () => setWho(n) })));
+    $('#whoOther').value = CFG.REVISORES.includes(S.me) ? '' : S.me;
+    const d = $('#whoDlg'); if (d.showModal) { if (!d.open) d.showModal(); } else { const n = prompt('¿Quién eres?', S.me); if (n) setWho(n); }
+  }
+  function setWho(n) {
+    n = String(n || '').trim().slice(0, 40); if (!n) return;
+    S.me = n; store.set('checklist.who', n);
+    $('#whoBtn').textContent = 'Tú: ' + n;
+    const d = $('#whoDlg'); if (d.open) d.close();
+    S.els.forEach((el, id) => { if (![...el._sel.options].some(o => o.value === n)) el._sel.append(h('option', { value: n, text: n })); });
+    toast('Hola, ' + n + '. Tus cambios se guardan solos.');
+    const cb = whoCb; whoCb = null; if (cb) cb();
+  }
+  $('#whoForm').addEventListener('submit', e => { e.preventDefault(); setWho($('#whoOther').value); });
+  $('#whoBtn').addEventListener('click', () => askWho());
+  if (S.me) $('#whoBtn').textContent = 'Tú: ' + S.me;
+
+  /* ---------- filtros ---------- */
+  let qT;
+  $('#q').addEventListener('input', e => { clearTimeout(qT); qT = setTimeout(() => { S.q = e.target.value; applyFilters(); }, 120); });
+  $('#estado').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    S.estado = b.dataset.v;
+    document.querySelectorAll('#estado button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    applyFilters();
+  });
+  $('#cat').addEventListener('change', e => { S.cat = e.target.value; applyFilters(); });
+  $('#soloAlerta').addEventListener('change', e => { S.soloAlerta = e.target.checked; applyFilters(); });
+
+  window.addEventListener('beforeunload', e => {
+    const pend = [...S.local.values()].some(l => l.inflight || Object.keys(l.pending).length);
+    if (pend) { S.local.forEach((l, id) => flush(id)); e.preventDefault(); e.returnValue = ''; }
+  });
+
+  /* ---------- arranque ---------- */
+  buildTabs();
+  setTab(S.tab);
+  if (!CFG.SCRIPT_URL) {
+    setSync('err', 'Sin conectar');
+    const m = $('#msg'); m.innerHTML = '';
+    const box = h('div', { class: 'setup' });
+    box.innerHTML = '<b>Esta página aún no está conectada a la hoja de Google.</b><ol><li>Abre la hoja de Google del check-list.</li><li>Extensiones › Apps Script › pega el código de <code>apps-script/Code.gs</code>.</li><li>Implementar › Nueva implementación › Aplicación web · Ejecutar como: <i>Yo</i> · Acceso: <i>Cualquier persona</i>.</li><li>Copia la URL que termina en <code>/exec</code> y pégala en <code>config.js</code>.</li></ol>';
+    m.append(box);
+    return;
+  }
+  showMsg('loading', 'Cargando recetas…');
+  load(true).then(ok => {
+    if (!ok) return;
+    if (!S.me) askWho();
+    setInterval(() => { if (document.visibilityState === 'visible') load(false); }, Math.max(15, CFG.REFRESCO_SEG) * 1000);
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') load(false); });
+  });
+})();
+</script>
+</body>
+</html>
