@@ -19,8 +19,10 @@ const VB = 'VB ';
 // Quienes tienen que dar su visto bueno para que una receta quede completa. Quien se
 // agregue después tiene su columna y su conteo, pero no frena el avance.
 const REVISORES = ['Johann', 'Andrea', 'Néstor'];
-const SECCIONES = ['Acopio', 'Cocina intermedia', 'Restaurantes', 'Preguntas para Andrea'];
+const SECCIONES = ['Acopio', 'Cocina intermedia', 'Restaurantes', 'Preguntas para Andrea', 'Pendientes de Andrea', 'Menús EPM'];
 const VERSION_HOJA = '2';
+// Pestaña donde se importa un Excel con tareas nuevas (mismos encabezados que «Checklist»).
+const HOJA_NUEVAS = 'Nuevas';
 
 // Encabezados que se buscan en la fila 1 (por el inicio del texto).
 const CAMPOS = {
@@ -103,6 +105,75 @@ function doPost(e) {
     return json_({ ok: false, error: String(err) });
   } finally {
     try { lock.releaseLock(); } catch (_) {}
+  }
+}
+
+/* ---------- tareas nuevas ---------- */
+
+// Menú «Check-list» en la hoja, para agregar tareas sin abrir el editor.
+function onOpen() {
+  SpreadsheetApp.getUi().createMenu('Check-list')
+    .addItem('Agregar las tareas de la pestaña «' + HOJA_NUEVAS + '»', 'agregarNuevas')
+    .addToUi();
+}
+
+/**
+ * Pasa a «Checklist» las filas de la pestaña «Nuevas» (un Excel importado con
+ * Archivo › Importar › Insertar hojas nuevas). Busca cada columna por su nombre,
+ * así no importa el orden; salta los ID que ya están y no toca lo que ya hay.
+ * Al terminar, la pestaña queda como «Nuevas · agregadas <fecha>».
+ */
+function agregarNuevas() {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    prepararHoja_(true);
+    const ss = SpreadsheetApp.getActive();
+    const origen = ss.getSheetByName(HOJA_NUEVAS);
+    if (!origen) throw new Error('No encontré la pestaña «' + HOJA_NUEVAS + '». Impórtala primero: Archivo › Importar › Subir › Insertar hojas nuevas.');
+    const datos = origen.getDataRange().getValues();
+    const encO = datos[0].map(h => String(h).trim());
+    const colO = {};
+    Object.keys(CAMPOS).forEach(k => { colO[k] = encO.findIndex(h => h.indexOf(CAMPOS[k]) === 0); });
+    if (colO.id < 0 || colO.sec < 0) throw new Error('A la pestaña «' + HOJA_NUEVAS + '» le faltan las columnas ID y Sección.');
+
+    const sh = hoja_();
+    const cols = columnas_(sh);
+    const ancho = sh.getLastColumn();
+    const n = sh.getLastRow() - 1;
+    const ya = new Set(n > 0 ? sh.getRange(2, cols.idx.id + 1, n, 1).getValues().map(r => String(r[0]).trim()) : []);
+    const filas = [];
+    datos.slice(1).forEach(r => {
+      const id = String(r[colO.id] || '').trim();
+      if (!id || ya.has(id)) return;
+      ya.add(id);
+      const fila = new Array(ancho).fill('');
+      Object.keys(CAMPOS).forEach(k => {
+        if (k === 'upd' || colO[k] < 0 || cols.idx[k] < 0) return;
+        const v = r[colO[k]];
+        fila[cols.idx[k]] = typeof v === 'string' ? limpiar_(v, 3000) : v;
+      });
+      cols.vb.forEach(v => { fila[v.col] = false; });
+      filas.push(fila);
+    });
+
+    const marca = ahora_();
+    if (filas.length) {
+      const desde = sh.getLastRow() + 1;
+      sh.getRange(desde, 1, filas.length, ancho).setValues(filas);
+      cols.vb.forEach(v => sh.getRange(desde, v.col + 1, filas.length, 1).insertCheckboxes());
+      const h = hojaHistorial_();
+      h.getRange(h.getLastRow() + 1, 1, filas.length, 8).setValues(filas.map(f =>
+        [marca, f[cols.idx.id], cols.idx.cod >= 0 ? f[cols.idx.cod] : '', cols.idx.rec >= 0 ? f[cols.idx.rec] : '', 'Tarea agregada', '', f[cols.idx.sec], 'Pestaña ' + HOJA_NUEVAS]));
+    }
+    origen.setName(HOJA_NUEVAS + ' · agregadas ' + marca.replace(':', 'h'));
+    armarResumen_();
+    const msg = filas.length ? 'Listo: ' + filas.length + ' tareas nuevas en «' + HOJA + '».' : 'No había tareas nuevas: todas ya estaban en «' + HOJA + '».';
+    ss.toast(msg, 'Check-list', 10);
+    Logger.log(msg);
+    return msg;
+  } finally {
+    lock.releaseLock();
   }
 }
 

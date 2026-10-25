@@ -36,6 +36,24 @@ Los datos de las recetas **no** están en este repositorio: la página los lee d
 - La página trae los cambios de los demás cada 45 segundos.
 - En la hoja de Google se puede filtrar, exportar o marcar directamente; la página lo refleja.
 
+## Agregar tareas nuevas
+
+Las tareas nuevas llegan en un Excel con una pestaña **«Nuevas»** y los mismos encabezados de «Checklist»
+(el orden de las columnas no importa: se buscan por nombre).
+
+1. En la hoja de Google: *Archivo › Importar › Subir* → el Excel → **Insertar hojas nuevas**.
+2. Menú **Check-list › Agregar las tareas de la pestaña «Nuevas»**.
+   Pasa las filas al final de «Checklist» con sus casillas, salta los ID que ya están y no toca lo ya marcado.
+   La pestaña queda como «Nuevas · agregadas <fecha>».
+
+Pestañas de la página:
+
+- **Acopio, Cocina intermedia, Restaurantes**: recetas; quedan completas con el visto bueno de los tres.
+- **Preguntas para Andrea, Pendientes de Andrea, Menús EPM**: preguntas; quedan listas cuando tienen respuesta.
+  En las dos últimas, «Categoría» es el tipo de tarea y sirve de filtro.
+
+Una sección nueva se agrega en `SECCIONES` de `index.html` y de `Code.gs`.
+
 ## Si cambias el script
 
 Después de editar `Code.gs`: *Implementar › Gestionar implementaciones › editar › Versión: nueva*. Así la URL no cambia.

@@ -45,7 +45,7 @@ h1{font-size:24px;line-height:1.15;margin:0;letter-spacing:-.01em}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
 
 /* tabs as progress cards */
-.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:6px 0 14px}
+.tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:6px 0 14px}
 .tab{appearance:none;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:12px 14px 13px;cursor:pointer;box-shadow:var(--shadow);min-width:0}
 .tab:hover{border-color:var(--line-2)}
 .tab[aria-selected=true]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
@@ -96,6 +96,7 @@ select.f{border:1px solid var(--line-2);background:var(--surface);border-radius:
 .meta{font-size:13px;color:var(--ink-2);margin-top:4px;display:flex;flex-wrap:wrap;gap:4px 12px}
 .pill{font-size:12px;border-radius:99px;padding:2px 8px;display:inline-block}
 .pill.alert{background:var(--warn-soft);color:var(--warn)}
+.pill.tipo{background:var(--surface-2);border:1px solid var(--line);color:var(--ink-2)}
 .upd{font-size:12px;color:var(--ink-3);margin-top:4px}
 .obs textarea{width:100%;min-height:36px;resize:vertical;border:1px solid var(--line-2);background:var(--surface);border-radius:8px;padding:7px 9px;line-height:1.35;display:block}
 .obs textarea:focus,.search input:focus,select.f:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
@@ -199,8 +200,15 @@ dialog p{margin:0 0 14px;color:var(--ink-2)}
     { key: 'Acopio', label: 'Acopio' },
     { key: 'Cocina intermedia', label: 'Cocina intermedia' },
     { key: 'Restaurantes', label: 'Restaurantes' },
-    { key: 'Preguntas para Andrea', label: 'Preguntas para Andrea', q: true }
+    // «insumo»: la categoría de estas filas es el insumo cargado, no un tipo de tarea.
+    { key: 'Preguntas para Andrea', label: 'Preguntas para Andrea', q: true, insumo: true },
+    // 24-oct-2026: lo que quedó del archivo ITEM SIESAS y los menús EPM de Copacabana.
+    // Son preguntas: quedan listas cuando tienen respuesta. La categoría dice qué hay que hacer.
+    { key: 'Pendientes de Andrea', label: 'Pendientes de Andrea', q: true },
+    { key: 'Menús EPM', label: 'Menús EPM sin receta', q: true }
   ];
+  const SEC = new Map(SECCIONES.map(s => [s.key, s]));
+  const secDe = k => SEC.get(k) || {};
   const $ = s => document.querySelector(s);
   const fmt = n => (n === '' || n == null || isNaN(n)) ? '' : Number(n).toLocaleString('es-CO');
   const norm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
@@ -229,7 +237,7 @@ dialog p{margin:0 0 14px;color:var(--ink-2)}
   const esMio = n => !!S.me && clave(n) === clave(S.me);
   const miNombre = () => S.revisores.find(esMio) || S.me;
   const vbDe = (r, n) => !!(r.vb && r.vb[n]);
-  const esQ = r => r.sec === 'Preguntas para Andrea';
+  const esQ = r => !!secDe(r.sec).q;
   // Quien se agrega después tiene su columna, pero no frena el avance: un nombre mal escrito no deja todo incompleto.
   const completa = r => S.obligatorios.length > 0 && S.obligatorios.every(n => vbDe(r, n));
   // Una pregunta está lista cuando tiene respuesta; una receta, cuando todos dieron su visto bueno.
@@ -429,11 +437,15 @@ dialog p{margin:0 0 14px;color:var(--ink-2)}
     st.addEventListener('click', () => { if (st.dataset.s === 'error') flush(id); });
     const upd = h('div', { class: 'upd' });
     let el;
+    const codigo = r.cod !== '' && r.cod != null ? h('span', { class: 'code', text: r.cod }) : null;
     if (isQ) {
+      const venta = Number(r.und) > 0;
       el = h('div', { class: 'row q', 'data-id': id },
         h('div', { class: 'body' },
-          h('div', { class: 'title' }, h('span', { class: 'code', text: r.cod }), h('span', { class: 'name', text: r.rec })),
-          r.cat ? h('div', { class: 'meta' }, h('span', { text: 'Insumo cargado: ' + r.cat }), Number(r.und) > 0 ? h('span', { text: 'Venta en espera: $' + fmt(r.und) }) : null) : null,
+          h('div', { class: 'title' }, codigo, h('span', { class: 'name', text: r.rec })),
+          secDe(r.sec).insumo
+            ? (r.cat ? h('div', { class: 'meta' }, h('span', { text: 'Insumo cargado: ' + r.cat }), venta ? h('span', { text: 'Venta en espera: $' + fmt(r.und) }) : null) : null)
+            : (r.cat || venta ? h('div', { class: 'meta' }, r.cat ? h('span', { class: 'pill tipo', text: r.cat }) : null, venta ? h('span', { text: 'Venta: $' + fmt(r.und) }) : null) : null),
           h('div', { class: 'pasa', text: r.alerta }),
           h('div', { class: 'preg', text: r.preg }),
           h('div', { class: 'ans obs' }, h('div', { class: 'lbl', text: 'Respuesta' }), ta),
@@ -447,7 +459,7 @@ dialog p{margin:0 0 14px;color:var(--ink-2)}
         r.und !== '' && r.und != null ? h('span', { text: fmt(r.und) + ' und vendidas' }) : null,
         r.alerta ? h('span', { class: 'pill alert', text: '⚠ ' + r.alerta }) : null);
       el = h('div', { class: 'row', 'data-id': id },
-        h('div', { class: 'main' }, h('div', { class: 'title' }, h('span', { class: 'code', text: r.cod }), h('span', { class: 'name', text: r.rec })), meta, upd),
+        h('div', { class: 'main' }, h('div', { class: 'title' }, codigo, h('span', { class: 'name', text: r.rec })), meta, upd),
         vbs,
         h('div', { class: 'obs' }, h('div', { class: 'lbl', text: 'Observaciones' }), ta),
         st);
@@ -483,11 +495,12 @@ dialog p{margin:0 0 14px;color:var(--ink-2)}
   function buildCatOptions() {
     const sel = $('#cat');
     const cats = [...new Set(S.order.map(id => S.rows.get(id)).filter(r => r.sec === S.tab).map(r => r.cat).filter(Boolean))].sort();
-    const isQ = S.tab === 'Preguntas para Andrea';
+    // En las preguntas viejas la categoría es el insumo cargado: no sirve de filtro.
+    const sinFiltro = !!secDe(S.tab).insumo;
     sel.innerHTML = '';
-    sel.append(h('option', { value: '', text: 'Todas las categorías' }));
-    if (!isQ) cats.forEach(c => sel.append(h('option', { value: c, text: c })));
-    sel.hidden = isQ || cats.length < 2;
+    sel.append(h('option', { value: '', text: secDe(S.tab).q ? 'Todo lo pendiente' : 'Todas las categorías' }));
+    if (!sinFiltro) cats.forEach(c => sel.append(h('option', { value: c, text: c })));
+    sel.hidden = sinFiltro || cats.length < 2;
     if (!cats.includes(S.cat)) S.cat = '';
     sel.value = S.cat;
   }
@@ -515,8 +528,9 @@ dialog p{margin:0 0 14px;color:var(--ink-2)}
   function setTab(k) {
     S.tab = k; store.set('checklist.tab', k);
     document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.k === k)));
-    $('#soloAlerta').parentElement.hidden = k === 'Preguntas para Andrea';
-    if (k === 'Preguntas para Andrea') S.soloAlerta = false, $('#soloAlerta').checked = false;
+    const q = !!secDe(k).q;
+    $('#soloAlerta').parentElement.hidden = q;
+    if (q) S.soloAlerta = false, $('#soloAlerta').checked = false;
     buildCatOptions(); applyFilters();
     window.scrollTo({ top: Math.min(window.scrollY, $('#tabs').offsetTop), behavior: 'smooth' });
   }
