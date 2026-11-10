@@ -20,6 +20,107 @@ main{min-width:0}.route{background:var(--paper);padding:32px;border:1px solid va
 .map-invitation{display:flex;align-items:center;gap:24px;justify-content:space-between;margin-top:28px;padding-top:24px;border-top:1px solid var(--line)}.map-invitation h3{font-size:17px}.map-invitation p{font-size:13px;color:var(--muted);margin-top:7px;max-width:630px}.map-action{display:inline-block;background:var(--green-soft);border:1px solid #c7dbcf;border-radius:7px;color:var(--green);padding:10px 13px;text-decoration:none;font-size:12px;font-weight:650;white-space:nowrap}.map-action:hover{background:#deece2}.route-map-link{margin:-6px 0 27px;padding-bottom:17px;border-bottom:1px solid var(--line);font-size:12px}.route-map-link a{color:var(--green)}.map-section-tools{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:0 0 16px}.map-section-tools p{font-size:12px;color:var(--muted)}.map-frame{display:block;border:1px solid var(--line);border-radius:8px;width:100%;height:680px;background:#171d21}.map-reading-links{display:flex;flex-wrap:wrap;gap:9px 18px;margin-top:21px;font-size:12px}.map-reading-links span{flex-basis:100%;font-weight:650;color:var(--muted);margin-bottom:2px}.map-print{display:none}
 @media(max-width:800px){.map-invitation{display:block}.map-invitation .map-action{margin-top:15px}.map-section-tools{align-items:flex-start;flex-direction:column;gap:11px}.map-frame{height:620px}.map-section-tools .map-action{white-space:normal}.map-reading-links{gap:10px 16px}}
 @media print{.map-invitation,.route-map-link,.map-section-tools,.map-frame,.map-reading-links{display:none!important}.map-print{display:block;font-size:10pt;overflow-wrap:anywhere}#diagrama{break-before:auto}}
+
+@media screen{
+  body{font-size:20px}
+  h1{font-size:clamp(36px,3.2vw,56px)}
+  h2{font-size:clamp(30px,2.4vw,40px)}
+  h3{font-size:24px}
+  .masthead{padding:20px}
+  .hero{max-width:none;width:100%;margin:0;padding:26px 20px 24px}
+  .hero p{font-size:20px;max-width:110ch}
+  .workspace{max-width:none;width:100%;margin:0;padding:0 16px 32px;grid-template-columns:240px minmax(0,1fr);gap:24px}
+  .route{padding:24px}
+  .route-intro{font-size:20px;max-width:none;margin:14px 0 28px}
+  .brand strong{font-size:18px}
+  .brand small,.header-meta,.version{font-size:16px}
+  .eyebrow,.nav-title{font-size:14px}
+  .nav-list a{font-size:18px;padding:11px 12px}
+  button,.rail-actions button{font-size:17px;min-height:44px}
+  .rail-hint{font-size:16px}
+  .legend h3{font-size:17px}
+  .legend-item{font-size:15px}
+  .badge{font-size:14px;padding:5px 8px;white-space:normal}
+  .entry-flow h3{font-size:22px}
+  .entry-flow p{font-size:18px}
+  .entry-flow .eyebrow{font-size:14px}
+  .block-heading{font-size:24px}
+  .menu-route{grid-template-columns:36px minmax(0,1fr) 20px;gap:12px}
+  .menu-number{font-size:17px;width:32px;height:32px}
+  .menu-route strong{font-size:20px}
+  .menu-route small{font-size:18px}
+  .return-flow h3{font-size:23px}
+  .return-flow p,.changes{font-size:19px}
+  .step{grid-template-columns:180px minmax(0,1fr);gap:24px}
+  .actor{font-size:16px;padding-left:44px}
+  .actor:before{width:32px;height:32px;font-size:14px}
+  .step:before{left:16px;top:32px}
+  .step-heading{flex-wrap:wrap}
+  .step-heading h3{font-size:23px}
+  .step-body>p{font-size:20px;line-height:1.7}
+  details,.note,.note strong{font-size:18px}
+  .decision-label{font-size:17px}
+  .fork h3{font-size:23px}
+  .fork .eyebrow{font-size:14px}
+  .fork p,.fork li{font-size:19px}
+  .provider-chain span{font-size:18px}
+  .provider-chain small{font-size:16px}
+  .section-sources{font-size:16px}
+  table,td{font-size:18px}
+  th{font-size:17px}
+  .evidence h3{font-size:24px}
+  .evidence p,.reading-note,.next-checks{font-size:19px}
+  .map-invitation h3{font-size:24px}
+  .map-invitation p{font-size:19px;max-width:none}
+  .map-action,.route-map-link,.map-section-tools p,.map-reading-links{font-size:17px}
+  .map-action{padding:12px 15px}
+  .map-frame{height:clamp(680px,calc(100dvh - 220px),1200px)}
+  .share-feedback,.share-fallback{font-size:17px}
+  .page-footer{max-width:none;width:100%;padding:20px;font-size:15px}
+}
+@media screen and (max-width:1100px){
+  .workspace{grid-template-columns:220px minmax(0,1fr);gap:18px;padding-inline:12px}
+  .route{padding:22px}
+  .step{grid-template-columns:150px minmax(0,1fr);gap:18px}
+  .entry-flow{grid-template-columns:minmax(0,1fr);gap:10px}
+  .connector{transform:rotate(90deg);line-height:1}
+  .step-heading h3,.entry-flow h3{font-size:22px}
+}
+@media screen and (max-width:800px){
+  body{font-size:18px}
+  .workspace{display:block;padding:0 10px 24px}
+  .masthead{padding:16px 12px}
+  .hero{padding:24px 12px}
+  .hero p,.route-intro,.step-body>p{font-size:18px}
+  .nav-list a{font-size:16px;padding:10px 11px}
+  .rail-actions button{font-size:16px}
+  .brand strong{font-size:15px}
+  .brand small,.header-meta{font-size:13px}
+  .header-meta{max-width:110px}
+  .eyebrow{font-size:13px}
+  .route{padding:20px 16px}
+  .entry-flow p,.menu-route small,.changes,.return-flow p,.fork p,.fork li,.evidence p,.reading-note,.next-checks,.map-invitation p,details,.note,.note strong{font-size:17px}
+  .menu-route strong{font-size:19px}
+  .block-heading,.return-flow h3,.map-invitation h3,.evidence h3{font-size:22px}
+  .actor{font-size:15px}
+  .badge{font-size:13px}
+  .section-sources,.map-action,.route-map-link,.map-section-tools p,.map-reading-links,.page-footer{font-size:16px}
+  .map-frame{height:720px}
+  table,td,th{font-size:16px}
+}
+@media screen and (max-width:520px){
+  h1,.hero h1{font-size:36px}
+  h2{font-size:30px}
+  .step{display:block;padding-left:42px}
+  .actor{padding:0 0 9px;font-size:14px}
+  .actor:before{left:-42px;width:30px;height:30px;font-size:13px}
+  .step:before{left:14px;top:30px}
+  .step-heading h3{font-size:22px}
+  .step-heading .badge{margin-top:8px}
+  .menu-route{grid-template-columns:32px minmax(0,1fr) 18px;gap:9px}
+  .menu-grid,.fork,.evidence{grid-template-columns:minmax(0,1fr)}
+  .map-action{white-space:normal}
+}
 </style></head>
 <body>
 <a class="skip-link" href="#main-content">Saltar al flujo</a>
@@ -46,7 +147,7 @@ main{min-width:0}.route{background:var(--paper);padding:32px;border:1px solid va
   function loadMap(hash) {
     if (!frame.hasAttribute('src') || (hash && frame.dataset.mapHash !== hash)) {
       frame.dataset.mapHash = hash;
-      frame.src = 'mapa.html?embed=1' + (hash ? '#' + hash : '');
+      frame.src = 'mapa.html?embed=1&v=lectura-amplia' + (hash ? '#' + hash : '');
     }
     frame.hidden = false;
   }
